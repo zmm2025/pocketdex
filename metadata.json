@@ -1,0 +1,5 @@
+{
+  "name": "PocketDex Tracker",
+  "description": "A sleek, mobile-first companion app for Pokémon TCG Pocket. Track your collection and view statistics.",
+  "requestFramePermissions": []
+}
