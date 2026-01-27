@@ -1,4 +1,17 @@
-import { Card, CardType, Rarity, SetData } from '../types';
+﻿import {
+  Ability,
+  Attack,
+  Card,
+  CardType,
+  EnergyCost,
+  EnergyType,
+  ExStatus,
+  PokemonStage,
+  Rarity,
+  RaritySymbol,
+  SetData,
+  Weakness,
+} from '../types';
 
 // ============================================================================
 // ASSET CONFIGURATION
@@ -6,44 +19,127 @@ import { Card, CardType, Rarity, SetData } from '../types';
 // See assets/INSTRUCTIONS.md for where to place files.
 
 const ASSET_BASE = '/assets';
-const EXT = 'jpg'; 
+const EXT = 'jpg';
 
 // -- Path Generators --
 
-export const getCardPath = (setId: string, number: string) => 
+export const getCardPath = (setId: string, number: string) =>
   `${ASSET_BASE}/cards/${setId}/${number}.${EXT}`;
 
-export const getSetLogoPath = (setId: string) => 
+export const getSetLogoPath = (setId: string) =>
   `${ASSET_BASE}/sets/${setId}/logo.png`; // Logos are PNG
 
-export const getPackArtPath = (setId: string, variant: string) => 
+export const getPackArtPath = (setId: string, variant: string) =>
   `${ASSET_BASE}/sets/${setId}/pack_${variant}.jpg`; // Pack art is JPG
 
-export const getRarityIconPath = (rarity: Rarity) => {
-  // Updated to match Serebii file naming convention (no underscores)
-  let filename = 'diamond1';
+const RARITY_SYMBOLS: RaritySymbol[] = [
+  'diamond1',
+  'diamond2',
+  'diamond3',
+  'diamond4',
+  'star1',
+  'star2',
+  'star3',
+  'shiny1',
+  'shiny2',
+  'crown',
+];
+
+const RARITY_SYMBOL_SET = new Set<RaritySymbol>(RARITY_SYMBOLS);
+
+const mapRarityToSymbol = (rarity: Rarity): RaritySymbol => {
   switch (rarity) {
-    case Rarity.COMMON: filename = 'diamond1'; break;
-    case Rarity.UNCOMMON: filename = 'diamond2'; break;
-    case Rarity.RARE: filename = 'diamond3'; break;
-    case Rarity.DOUBLE_RARE: 
-    case Rarity.ART_RARE: filename = 'star1'; break;
-    case Rarity.SUPER_RARE: filename = 'star2'; break;
-    case Rarity.ILLUSTRATION_RARE: filename = 'star3'; break;
-    case Rarity.CROWN_RARE: filename = 'crown'; break;
+    case Rarity.COMMON:
+      return 'diamond1';
+    case Rarity.UNCOMMON:
+      return 'diamond2';
+    case Rarity.RARE:
+      return 'diamond3';
+    case Rarity.DOUBLE_RARE:
+    case Rarity.ART_RARE:
+      return 'star1';
+    case Rarity.SUPER_RARE:
+      return 'star2';
+    case Rarity.ILLUSTRATION_RARE:
+      return 'star3';
+    case Rarity.CROWN_RARE:
+      return 'crown';
+    default:
+      return 'diamond1';
   }
-  return `${ASSET_BASE}/icons/rarity/${filename}.png`;
 };
 
-export const getTypeIconPath = (type: string) => 
-  `${ASSET_BASE}/icons/types/${type.toLowerCase()}.png`;
+const mapSymbolToRarity = (symbol?: RaritySymbol): Rarity => {
+  switch (symbol) {
+    case 'diamond1':
+      return Rarity.COMMON;
+    case 'diamond2':
+      return Rarity.UNCOMMON;
+    case 'diamond3':
+      return Rarity.RARE;
+    case 'diamond4':
+      return Rarity.DOUBLE_RARE;
+    case 'star1':
+      return Rarity.DOUBLE_RARE;
+    case 'star2':
+      return Rarity.SUPER_RARE;
+    case 'star3':
+      return Rarity.ILLUSTRATION_RARE;
+    case 'shiny1':
+    case 'shiny2':
+      return Rarity.SUPER_RARE;
+    case 'crown':
+      return Rarity.CROWN_RARE;
+    default:
+      return Rarity.COMMON;
+  }
+};
 
+export const getRarityIconPath = (rarity: Rarity | RaritySymbol) => {
+  const symbol = RARITY_SYMBOL_SET.has(rarity as RaritySymbol)
+    ? (rarity as RaritySymbol)
+    : mapRarityToSymbol(rarity as Rarity);
+  return `${ASSET_BASE}/icons/rarity/${symbol}.png`;
+};
+
+export const getTypeIconPath = (type: string) =>
+  `${ASSET_BASE}/icons/types/${type.toLowerCase()}.png`;
 
 // ============================================================================
 // DATA
 // ============================================================================
 
-export const SETS: SetData[] = [
+type ScrapedSet = {
+  id: string;
+  name: string;
+  totalCards: number;
+  slug?: string;
+};
+
+type ScrapedCard = {
+  id: string;
+  name: string;
+  set: string;
+  number: string;
+  hp?: number;
+  pokemonName?: string;
+  pokemonStage?: PokemonStage | null;
+  pokemonType?: EnergyType;
+  attacks?: Attack[];
+  abilities?: Ability[];
+  weakness?: Weakness;
+  retreatCost?: EnergyCost[];
+  illustrator?: string;
+  raritySymbol?: RaritySymbol;
+  exStatus?: ExStatus;
+};
+
+type ScrapedSetPayload = {
+  set?: ScrapedSet;
+  cards?: ScrapedCard[];
+};
+
+const DEFAULT_SETS: SetData[] = [
   // Block A
   { id: 'A1', name: 'Genetic Apex', totalCards: 286, coverImage: getSetLogoPath('A1') },
   { id: 'A1a', name: 'Mythical Island', totalCards: 86, coverImage: getSetLogoPath('A1a') },
@@ -56,14 +152,14 @@ export const SETS: SetData[] = [
   { id: 'A4', name: 'Wisdom of Sea and Sky', totalCards: 241, coverImage: getSetLogoPath('A4') },
   { id: 'A4a', name: 'Secluded Springs', totalCards: 105, coverImage: getSetLogoPath('A4a') },
   { id: 'A4b', name: 'Deluxe Pack ex', totalCards: 379, coverImage: getSetLogoPath('A4b') },
-  
+
   // Block B
   { id: 'B1', name: 'Mega Rising', totalCards: 331, coverImage: getSetLogoPath('B1') },
   { id: 'B1a', name: 'Crimson Blaze', totalCards: 103, coverImage: getSetLogoPath('B1a') },
-  
+
   // Promos
   { id: 'PROMO-A', name: 'Promo-A', totalCards: 24, coverImage: getSetLogoPath('PROMO-A') },
-  { id: 'PROMO-B', name: 'Promo-B', totalCards: 10, coverImage: getSetLogoPath('PROMO-B') }
+  { id: 'PROMO-B', name: 'Promo-B', totalCards: 10, coverImage: getSetLogoPath('PROMO-B') },
 ];
 
 // Metadata override for known cards to provide better UX than generic generated names
@@ -89,38 +185,85 @@ const KNOWN_METADATA: Record<string, Partial<Card>> = {
   'A1-222': { name: 'Pikachu (Immersive)', rarity: Rarity.ILLUSTRATION_RARE, type: CardType.POKEMON, hp: 120 },
 };
 
-// Generate full card list based on sets and total counts
-export const CARDS: Card[] = SETS.flatMap(set => {
-  return Array.from({ length: set.totalCards }, (_, i) => {
-    const numInt = i + 1;
-    const numStr = numInt.toString().padStart(3, '0');
-    const id = `${set.id}-${numStr}`;
-    const known = KNOWN_METADATA[id];
+const generateFallbackCards = (sets: SetData[]): Card[] =>
+  sets.flatMap((set) => {
+    return Array.from({ length: set.totalCards }, (_, i) => {
+      const numInt = i + 1;
+      const numStr = numInt.toString().padStart(3, '0');
+      const id = `${set.id}-${numStr}`;
+      const known = KNOWN_METADATA[id];
 
-    return {
-      id,
-      set: set.id,
-      number: numStr,
-      image: getCardPath(set.id, numStr),
-      name: known?.name || `${set.name} #${numStr}`,
-      rarity: known?.rarity || Rarity.COMMON,
-      type: known?.type || CardType.POKEMON,
-      hp: known?.hp,
-      ...known
-    } as Card;
+      return {
+        id,
+        set: set.id,
+        number: numStr,
+        image: getCardPath(set.id, numStr),
+        name: known?.name || `${set.name} #${numStr}`,
+        rarity: known?.rarity || Rarity.COMMON,
+        type: known?.type || CardType.POKEMON,
+        hp: known?.hp,
+        ...known,
+      } as Card;
+    });
   });
+
+const normalizeScrapedCard = (raw: ScrapedCard): Card => {
+  return {
+    id: raw.id,
+    set: raw.set,
+    number: raw.number,
+    image: getCardPath(raw.set, raw.number),
+    name: raw.name,
+    rarity: mapSymbolToRarity(raw.raritySymbol),
+    raritySymbol: raw.raritySymbol,
+    type: CardType.POKEMON,
+    hp: raw.hp,
+    pokemonName: raw.pokemonName,
+    pokemonStage: raw.pokemonStage ?? null,
+    pokemonType: raw.pokemonType,
+    attacks: raw.attacks ?? [],
+    abilities: raw.abilities ?? [],
+    weakness: raw.weakness,
+    retreatCost: raw.retreatCost,
+    illustrator: raw.illustrator,
+    exStatus: raw.exStatus ?? 'non-ex',
+  };
+};
+
+const setModules = import.meta.glob('../assets/data/sets/*.json', { eager: true });
+const scrapedPayloads = Object.values(setModules).map((module) => {
+  const payload = (module as { default?: ScrapedSetPayload }).default;
+  return payload ?? (module as ScrapedSetPayload);
 });
+const scrapedSets = scrapedPayloads
+  .map((payload) => payload.set)
+  .filter((set): set is ScrapedSet => Boolean(set));
+const scrapedCards = scrapedPayloads.flatMap((payload) => payload.cards ?? []);
+const hasScrapedCards = scrapedCards.length > 0;
+
+export const SETS: SetData[] = hasScrapedCards && Array.isArray(scrapedSets) && scrapedSets.length > 0
+  ? scrapedSets.map((set) => ({
+      id: set.id,
+      name: set.name,
+      totalCards: set.totalCards,
+      coverImage: getSetLogoPath(set.id),
+    }))
+  : DEFAULT_SETS;
+
+export const CARDS: Card[] = hasScrapedCards
+  ? scrapedCards.map(normalizeScrapedCard)
+  : generateFallbackCards(DEFAULT_SETS);
 
 // Get all cards
 export const getAllCards = () => CARDS;
 
 // Get card by ID
-export const getCardById = (id: string) => CARDS.find(c => c.id === id);
+export const getCardById = (id: string) => CARDS.find((c) => c.id === id);
 
 // Get Set Progress
 export const getSetProgress = (setId: string, collection: Record<string, number>) => {
-  const setCards = CARDS.filter(c => c.set === setId);
+  const setCards = CARDS.filter((c) => c.set === setId);
   const total = setCards.length;
-  const owned = setCards.filter(c => (collection[c.id] || 0) > 0).length;
+  const owned = setCards.filter((c) => (collection[c.id] || 0) > 0).length;
   return { total, owned, percentage: total === 0 ? 0 : Math.round((owned / total) * 100) };
 };

@@ -1,0 +1,115 @@
+{
+  "generatedAt": "2026-01-27T09:31:38.824Z",
+  "source": "https://www.serebii.net/tcgpocket/",
+  "sets": [
+    {
+      "id": "A1",
+      "name": "Genetic Apex",
+      "packName": "Genetic Apex",
+      "packs": [
+        "Pikachu",
+        "Charizard",
+        "Mewtwo"
+      ],
+      "totalCards": 286
+    },
+    {
+      "id": "A1a",
+      "name": "Mythical Island",
+      "packName": "Mythical Island",
+      "packs": [],
+      "totalCards": 86
+    },
+    {
+      "id": "A2",
+      "name": "Space-Time Smackdown",
+      "packName": "Space-Time Smackdown",
+      "packs": [],
+      "totalCards": 207
+    },
+    {
+      "id": "A2a",
+      "name": "Triumphant Light",
+      "packName": "Triumphant Light",
+      "packs": [],
+      "totalCards": 96
+    },
+    {
+      "id": "A2b",
+      "name": "Shining Revelry",
+      "packName": "Shining Revelry",
+      "packs": [],
+      "totalCards": 111
+    },
+    {
+      "id": "A3",
+      "name": "Celestial Guardians",
+      "packName": "Celestial Guardians",
+      "packs": [],
+      "totalCards": 239
+    },
+    {
+      "id": "A3a",
+      "name": "Extradimensional Crisis",
+      "packName": "Extradimensional Crisis",
+      "packs": [],
+      "totalCards": 103
+    },
+    {
+      "id": "A3b",
+      "name": "Eevee Grove",
+      "packName": "Eevee Grove",
+      "packs": [],
+      "totalCards": 107
+    },
+    {
+      "id": "A4",
+      "name": "Wisdom of Sea and Sky",
+      "packName": "Wisdom of Sea and Sky",
+      "packs": [],
+      "totalCards": 241
+    },
+    {
+      "id": "A4a",
+      "name": "Secluded Springs",
+      "packName": "Secluded Springs",
+      "packs": [],
+      "totalCards": 105
+    },
+    {
+      "id": "A4b",
+      "name": "Deluxe Pack ex",
+      "packName": "Deluxe Pack ex",
+      "packs": [],
+      "totalCards": 379
+    },
+    {
+      "id": "B1",
+      "name": "Mega Rising",
+      "packName": "Mega Rising",
+      "packs": [],
+      "totalCards": 331
+    },
+    {
+      "id": "B1a",
+      "name": "Crimson Blaze",
+      "packName": "Crimson Blaze",
+      "packs": [],
+      "totalCards": 103
+    },
+    {
+      "id": "PROMO-A",
+      "name": "Promo-A",
+      "packName": "Promo-A",
+      "packs": [],
+      "totalCards": 117
+    },
+    {
+      "id": "PROMO-B",
+      "name": "Promo-B",
+      "packName": "Promo-B",
+      "packs": [],
+      "totalCards": 24
+    }
+  ]
+}

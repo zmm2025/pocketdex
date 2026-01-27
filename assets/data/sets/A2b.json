@@ -1,0 +1,3263 @@
+{
+  "generatedAt": "2026-01-27T09:31:23.875Z",
+  "source": "https://www.serebii.net/tcgpocket/",
+  "set": {
+    "id": "A2b",
+    "name": "Shining Revelry",
+    "packName": "Shining Revelry",
+    "totalCards": 111,
+    "packs": []
+  },
+  "cards": [
+    {
+      "id": "A2b-009",
+      "set": "A2b",
+      "number": "009",
+      "name": "Charmeleon",
+      "pokemonName": "Charmeleon",
+      "pokemonStage": "Stage 1",
+      "hp": 90,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "90 HP",
+          "cost": [],
+          "damage": "40"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "kodama",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-002",
+      "set": "A2b",
+      "number": "002",
+      "name": "Kakuna",
+      "pokemonName": "Kakuna",
+      "pokemonStage": "Stage 1",
+      "hp": 80,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "80 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Yuka Morii",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-008",
+      "set": "A2b",
+      "number": "008",
+      "name": "Charmander",
+      "pokemonName": "Charmander",
+      "pokemonStage": "Basic",
+      "hp": 60,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Megumi Mizutani",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-001",
+      "set": "A2b",
+      "number": "001",
+      "name": "Weedle",
+      "pokemonName": "Weedle",
+      "pokemonStage": "Basic",
+      "hp": 50,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "50 HP",
+          "cost": []
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Akira Komayama",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-003",
+      "set": "A2b",
+      "number": "003",
+      "name": "Beedrill ex",
+      "pokemonName": "Beedrill",
+      "pokemonStage": "Stage 2",
+      "hp": 170,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "170 HP",
+          "cost": [],
+          "damage": "80"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA Igarashi",
+      "raritySymbol": "diamond4",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-004",
+      "set": "A2b",
+      "number": "004",
+      "name": "Pinsir",
+      "pokemonName": "Pinsir",
+      "pokemonStage": "Basic",
+      "hp": 90,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "90 HP",
+          "cost": [],
+          "damage": "50+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Satoshi Shirai",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-010",
+      "set": "A2b",
+      "number": "010",
+      "name": "Charizard ex",
+      "pokemonName": "Charizard",
+      "pokemonStage": "Stage 2",
+      "hp": 180,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "180 HP",
+          "cost": []
+        },
+        {
+          "name": "",
+          "cost": [],
+          "damage": "150",
+          "text": "Fire Fire Fire Colorless Colorless"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "PLANETA Igarashi",
+      "raritySymbol": "diamond4",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-013",
+      "set": "A2b",
+      "number": "013",
+      "name": "Paldean Tauros",
+      "pokemonName": "Paldean Tauros",
+      "pokemonStage": "Basic",
+      "hp": 110,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "110 HP",
+          "cost": [],
+          "damage": "80"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Minahamu",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-014",
+      "set": "A2b",
+      "number": "014",
+      "name": "Tentacool",
+      "pokemonName": "Tentacool",
+      "pokemonStage": "Basic",
+      "hp": 70,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "10"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Shibuzoh.",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-012",
+      "set": "A2b",
+      "number": "012",
+      "name": "Magmortar",
+      "pokemonName": "Magmortar",
+      "pokemonStage": null,
+      "hp": 120,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "120 HP",
+          "cost": [],
+          "damage": "70"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "Miki Tanaka",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-007",
+      "set": "A2b",
+      "number": "007",
+      "name": "Meowscarada",
+      "pokemonName": "Meowscarada",
+      "pokemonStage": null,
+      "hp": 140,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "140 HP",
+          "cost": [],
+          "damage": "60+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "mashu",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-015",
+      "set": "A2b",
+      "number": "015",
+      "name": "Tentacruel",
+      "pokemonName": "Tentacruel",
+      "pokemonStage": "Stage 1",
+      "hp": 100,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "100 HP",
+          "cost": [],
+          "damage": "40"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "match",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-005",
+      "set": "A2b",
+      "number": "005",
+      "name": "Sprigatito",
+      "pokemonName": "Sprigatito",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": []
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "mashu",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-006",
+      "set": "A2b",
+      "number": "006",
+      "name": "Floragato",
+      "pokemonName": "Floragato",
+      "pokemonStage": null,
+      "hp": 90,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "90 HP",
+          "cost": [],
+          "damage": "40"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "mashu",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-011",
+      "set": "A2b",
+      "number": "011",
+      "name": "Magmar",
+      "pokemonName": "Magmar",
+      "pokemonStage": "Basic",
+      "hp": 70,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Miki Tanaka",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-016",
+      "set": "A2b",
+      "number": "016",
+      "name": "Buizel",
+      "pokemonName": "Buizel",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "10"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "sui",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-017",
+      "set": "A2b",
+      "number": "017",
+      "name": "Floatzel",
+      "pokemonName": "Floatzel",
+      "pokemonStage": null,
+      "hp": 90,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "90 HP",
+          "cost": []
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Kouki Saitou",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-022",
+      "set": "A2b",
+      "number": "022",
+      "name": "Pikachu ex",
+      "pokemonName": "Pikachu",
+      "pokemonStage": "Basic",
+      "hp": 120,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "120 HP",
+          "cost": [],
+          "damage": "150"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA Igarashi",
+      "raritySymbol": "diamond4",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-024",
+      "set": "A2b",
+      "number": "024",
+      "name": "Electrode",
+      "pokemonName": "Electrode",
+      "pokemonStage": "Stage 1",
+      "hp": 90,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "90 HP",
+          "cost": [],
+          "damage": "50+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Shigenori Negishi",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-019",
+      "set": "A2b",
+      "number": "019",
+      "name": "Wugtrio ex",
+      "pokemonName": "Wugtrio",
+      "pokemonStage": null,
+      "hp": 140,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "140 HP",
+          "cost": []
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA Tsuji",
+      "raritySymbol": "diamond4",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-018",
+      "set": "A2b",
+      "number": "018",
+      "name": "Wiglett",
+      "pokemonName": "Wiglett",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": []
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "miki kudo",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-020",
+      "set": "A2b",
+      "number": "020",
+      "name": "Dondozo",
+      "pokemonName": "Dondozo",
+      "pokemonStage": null,
+      "hp": 120,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "120 HP",
+          "cost": [],
+          "damage": "80"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "Tomowaka",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-029",
+      "set": "A2b",
+      "number": "029",
+      "name": "Abra",
+      "pokemonName": "Abra",
+      "pokemonStage": "Basic",
+      "hp": 60,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Mousho",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-021",
+      "set": "A2b",
+      "number": "021",
+      "name": "Tatsugiri",
+      "pokemonName": "Tatsugiri",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Water",
+      "attacks": [],
+      "abilities": [
+        {
+          "name": "70 HP"
+        }
+      ],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Tomowaka",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-030",
+      "set": "A2b",
+      "number": "030",
+      "name": "Kadabra",
+      "pokemonName": "Kadabra",
+      "pokemonStage": "Stage 1",
+      "hp": 80,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "80 HP",
+          "cost": [],
+          "damage": "30"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Mousho",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-031",
+      "set": "A2b",
+      "number": "031",
+      "name": "Alakazam",
+      "pokemonName": "Alakazam",
+      "pokemonStage": "Stage 2",
+      "hp": 130,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "130 HP",
+          "cost": [],
+          "damage": "80"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Mousho",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-027",
+      "set": "A2b",
+      "number": "027",
+      "name": "Pawmo",
+      "pokemonName": "Pawmo",
+      "pokemonStage": null,
+      "hp": 90,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "90 HP",
+          "cost": [],
+          "damage": "40"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Saboteri",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-028",
+      "set": "A2b",
+      "number": "028",
+      "name": "Pawmot",
+      "pokemonName": "Pawmot",
+      "pokemonStage": null,
+      "hp": 140,
+      "pokemonType": "Lightning",
+      "attacks": [],
+      "abilities": [
+        {
+          "name": "140 HP"
+        }
+      ],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "illustrator": "Saboteri",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-035",
+      "set": "A2b",
+      "number": "035",
+      "name": "Giratina ex",
+      "pokemonName": "Giratina",
+      "pokemonStage": null,
+      "hp": 150,
+      "pokemonType": "Psychic",
+      "attacks": [],
+      "abilities": [
+        {
+          "name": "150 HP"
+        }
+      ],
+      "weakness": {
+        "type": "Darkness",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "PLANETA Yamashita",
+      "raritySymbol": "diamond4",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-037",
+      "set": "A2b",
+      "number": "037",
+      "name": "Machop",
+      "pokemonName": "Machop",
+      "pokemonStage": "Basic",
+      "hp": 60,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Mina Nakai",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-038",
+      "set": "A2b",
+      "number": "038",
+      "name": "Machoke",
+      "pokemonName": "Machoke",
+      "pokemonStage": "Stage 1",
+      "hp": 100,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "100 HP",
+          "cost": [],
+          "damage": "30+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Kouki Saitou",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-041",
+      "set": "A2b",
+      "number": "041",
+      "name": "Hitmonchan",
+      "pokemonName": "Hitmonchan",
+      "pokemonStage": "Basic",
+      "hp": 90,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "90 HP",
+          "cost": []
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Tomokazu Komiya",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-042",
+      "set": "A2b",
+      "number": "042",
+      "name": "Riolu",
+      "pokemonName": "Riolu",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "40"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "You Iribi",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-043",
+      "set": "A2b",
+      "number": "043",
+      "name": "Lucario ex",
+      "pokemonName": "Lucario",
+      "pokemonStage": null,
+      "hp": 150,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "150 HP",
+          "cost": [],
+          "damage": "100"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "PLANETA CG Works",
+      "raritySymbol": "diamond4",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-023",
+      "set": "A2b",
+      "number": "023",
+      "name": "Voltorb",
+      "pokemonName": "Voltorb",
+      "pokemonStage": "Basic",
+      "hp": 70,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "10"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Masakazu Fukuda",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-025",
+      "set": "A2b",
+      "number": "025",
+      "name": "Pachirisu",
+      "pokemonName": "Pachirisu",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "10"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "imoniii",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-045",
+      "set": "A2b",
+      "number": "045",
+      "name": "Ekans",
+      "pokemonName": "Ekans",
+      "pokemonStage": "Basic",
+      "hp": 70,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "30"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Midori Harada",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-046",
+      "set": "A2b",
+      "number": "046",
+      "name": "Arbok",
+      "pokemonName": "Arbok",
+      "pokemonStage": "Stage 1",
+      "hp": 110,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "110 HP",
+          "cost": [],
+          "damage": "70"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Midori Harada",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-044",
+      "set": "A2b",
+      "number": "044",
+      "name": "Flamigo",
+      "pokemonName": "Flamigo",
+      "pokemonStage": null,
+      "hp": 80,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "80 HP",
+          "cost": [],
+          "damage": "50x"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "REND",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-026",
+      "set": "A2b",
+      "number": "026",
+      "name": "Pawmi",
+      "pokemonName": "Pawmi",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Saboteri",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-049",
+      "set": "A2b",
+      "number": "049",
+      "name": "Spiritomb",
+      "pokemonName": "Spiritomb",
+      "pokemonStage": null,
+      "hp": 80,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "80 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Grass",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Shin Nagasawa",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-032",
+      "set": "A2b",
+      "number": "032",
+      "name": "Mr. Mime",
+      "pokemonName": "Mr. Mime",
+      "pokemonStage": "Basic",
+      "hp": 90,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "90 HP",
+          "cost": [],
+          "damage": "20x"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Atsuko Nishida",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-034",
+      "set": "A2b",
+      "number": "034",
+      "name": "Drifblim",
+      "pokemonName": "Drifblim",
+      "pokemonStage": null,
+      "hp": 90,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "90 HP",
+          "cost": [],
+          "damage": "40"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": "+20"
+      },
+      "illustrator": "Hajime Kusajima",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-033",
+      "set": "A2b",
+      "number": "033",
+      "name": "Drifloon",
+      "pokemonName": "Drifloon",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "kodama",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-047",
+      "set": "A2b",
+      "number": "047",
+      "name": "Paldean Wooper",
+      "pokemonName": "Paldean Wooper",
+      "pokemonStage": null,
+      "hp": 50,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "50 HP",
+          "cost": [],
+          "damage": "10"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Mori Yuu",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-048",
+      "set": "A2b",
+      "number": "048",
+      "name": "Paldean Clodsire ex",
+      "pokemonName": "Paldean Clodsire",
+      "pokemonStage": null,
+      "hp": 160,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "160 HP",
+          "cost": [],
+          "damage": "60+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "PLANETA Mochizuki",
+      "raritySymbol": "diamond4",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-039",
+      "set": "A2b",
+      "number": "039",
+      "name": "Machamp",
+      "pokemonName": "Machamp",
+      "pokemonStage": "Stage 2",
+      "hp": 150,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "150 HP",
+          "cost": [],
+          "damage": "70+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Kouki Saitou",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-040",
+      "set": "A2b",
+      "number": "040",
+      "name": "Hitmonlee",
+      "pokemonName": "Hitmonlee",
+      "pokemonStage": "Basic",
+      "hp": 80,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "80 HP",
+          "cost": []
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Tomokazu Komiya",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-050",
+      "set": "A2b",
+      "number": "050",
+      "name": "Shroodle",
+      "pokemonName": "Shroodle",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Krgc",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-036",
+      "set": "A2b",
+      "number": "036",
+      "name": "Gimmighoul",
+      "pokemonName": "Gimmighoul",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": []
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "HYOGONOSUKE",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-059",
+      "set": "A2b",
+      "number": "059",
+      "name": "Raticate",
+      "pokemonName": "Raticate",
+      "pokemonStage": "Stage 1",
+      "hp": 90,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "90 HP",
+          "cost": [],
+          "damage": "50"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Kyoko Umemoto",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-053",
+      "set": "A2b",
+      "number": "053",
+      "name": "Tinkatuff",
+      "pokemonName": "Tinkatuff",
+      "pokemonStage": null,
+      "hp": 90,
+      "pokemonType": "Metal",
+      "attacks": [
+        {
+          "name": "90 HP",
+          "cost": [],
+          "damage": "30+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "miki kudo",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-060",
+      "set": "A2b",
+      "number": "060",
+      "name": "Jigglypuff",
+      "pokemonName": "Jigglypuff",
+      "pokemonStage": "Basic",
+      "hp": 60,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Kanako Eo",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-057",
+      "set": "A2b",
+      "number": "057",
+      "name": "Gholdengo",
+      "pokemonName": "Gholdengo",
+      "pokemonStage": null,
+      "hp": 120,
+      "pokemonType": "Metal",
+      "attacks": [
+        {
+          "name": "120 HP",
+          "cost": [],
+          "damage": "50x"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "HYOGONOSUKE",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-055",
+      "set": "A2b",
+      "number": "055",
+      "name": "Varoom",
+      "pokemonName": "Varoom",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Metal",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "10"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Souichirou Gunjima",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-054",
+      "set": "A2b",
+      "number": "054",
+      "name": "Tinkaton ex",
+      "pokemonName": "Tinkaton",
+      "pokemonStage": null,
+      "hp": 170,
+      "pokemonType": "Metal",
+      "attacks": [
+        {
+          "name": "170 HP",
+          "cost": [],
+          "damage": "80+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "PLANETA Mochizuki",
+      "raritySymbol": "diamond4",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-056",
+      "set": "A2b",
+      "number": "056",
+      "name": "Revavroom",
+      "pokemonName": "Revavroom",
+      "pokemonStage": null,
+      "hp": 110,
+      "pokemonType": "Metal",
+      "attacks": [
+        {
+          "name": "110 HP",
+          "cost": [],
+          "damage": "70"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Souichirou Gunjima",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-063",
+      "set": "A2b",
+      "number": "063",
+      "name": "Lickilicky",
+      "pokemonName": "Lickilicky",
+      "pokemonStage": null,
+      "hp": 130,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "130 HP",
+          "cost": [],
+          "damage": "70"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "Suwama Chiaki",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-065",
+      "set": "A2b",
+      "number": "065",
+      "name": "Bibarel ex",
+      "pokemonName": "Bibarel",
+      "pokemonStage": null,
+      "hp": 160,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "160 HP",
+          "cost": [],
+          "damage": "100"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "PLANETA CG Works",
+      "raritySymbol": "diamond4",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-070",
+      "set": "A2b",
+      "number": "070",
+      "name": "Pokemon Center Lady",
+      "pokemonName": "Pokemon Center Lady",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "Susumu Maeya",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-071",
+      "set": "A2b",
+      "number": "071",
+      "name": "Red",
+      "pokemonName": "Red",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "Teeziro",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-072",
+      "set": "A2b",
+      "number": "072",
+      "name": "Team Rocket Grunt",
+      "pokemonName": "Team Rocket Grunt",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "kantaro",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-058",
+      "set": "A2b",
+      "number": "058",
+      "name": "Rattata",
+      "pokemonName": "Rattata",
+      "pokemonStage": "Basic",
+      "hp": 50,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "50 HP",
+          "cost": [],
+          "damage": "10"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Eri Yamaki",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-073",
+      "set": "A2b",
+      "number": "073",
+      "name": "Meowscarada",
+      "pokemonName": "Meowscarada",
+      "pokemonStage": null,
+      "hp": 140,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "140 HP",
+          "cost": [],
+          "damage": "60+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "danciao",
+      "raritySymbol": "star1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-051",
+      "set": "A2b",
+      "number": "051",
+      "name": "Grafaiai",
+      "pokemonName": "Grafaiai",
+      "pokemonStage": null,
+      "hp": 90,
+      "pokemonType": "Darkness",
+      "attacks": [],
+      "abilities": [
+        {
+          "name": "90 HP"
+        }
+      ],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Krgc",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-052",
+      "set": "A2b",
+      "number": "052",
+      "name": "Tinkatink",
+      "pokemonName": "Tinkatink",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Metal",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "miki kudo",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-061",
+      "set": "A2b",
+      "number": "061",
+      "name": "Wigglytuff",
+      "pokemonName": "Wigglytuff",
+      "pokemonStage": "Stage 1",
+      "hp": 100,
+      "pokemonType": "Colorless",
+      "attacks": [],
+      "abilities": [
+        {
+          "name": "100 HP"
+        }
+      ],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "miki kudo",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-074",
+      "set": "A2b",
+      "number": "074",
+      "name": "Buizel",
+      "pokemonName": "Buizel",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "10"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Shimaris Yukichi",
+      "raritySymbol": "star1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-075",
+      "set": "A2b",
+      "number": "075",
+      "name": "Tatsugiri",
+      "pokemonName": "Tatsugiri",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Water",
+      "attacks": [],
+      "abilities": [
+        {
+          "name": "70 HP"
+        }
+      ],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "cochi8i",
+      "raritySymbol": "star1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-076",
+      "set": "A2b",
+      "number": "076",
+      "name": "Grafaiai",
+      "pokemonName": "Grafaiai",
+      "pokemonStage": null,
+      "hp": 90,
+      "pokemonType": "Darkness",
+      "attacks": [],
+      "abilities": [
+        {
+          "name": "90 HP"
+        }
+      ],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Teeziro",
+      "raritySymbol": "star1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-062",
+      "set": "A2b",
+      "number": "062",
+      "name": "Lickitung",
+      "pokemonName": "Lickitung",
+      "pokemonStage": "Basic",
+      "hp": 80,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "80 HP",
+          "cost": [],
+          "damage": "30"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Sumiyoshi Kizuki",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-064",
+      "set": "A2b",
+      "number": "064",
+      "name": "Bidoof",
+      "pokemonName": "Bidoof",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "30"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Sekio",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-079",
+      "set": "A2b",
+      "number": "079",
+      "name": "Beedrill ex",
+      "pokemonName": "Beedrill",
+      "pokemonStage": "Stage 2",
+      "hp": 170,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "170 HP",
+          "cost": [],
+          "damage": "80"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA Igarashi",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-080",
+      "set": "A2b",
+      "number": "080",
+      "name": "Charizard ex",
+      "pokemonName": "Charizard",
+      "pokemonStage": "Stage 2",
+      "hp": 180,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "180 HP",
+          "cost": []
+        },
+        {
+          "name": "",
+          "cost": [],
+          "damage": "150",
+          "text": "Fire Fire Fire Colorless Colorless"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "PLANETA Igarashi",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-066",
+      "set": "A2b",
+      "number": "066",
+      "name": "Buneary",
+      "pokemonName": "Buneary",
+      "pokemonStage": null,
+      "hp": 50,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "50 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Kagemaru Himeno",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-081",
+      "set": "A2b",
+      "number": "081",
+      "name": "Wugtrio ex",
+      "pokemonName": "Wugtrio",
+      "pokemonStage": null,
+      "hp": 140,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "140 HP",
+          "cost": []
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA Tsuji",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-067",
+      "set": "A2b",
+      "number": "067",
+      "name": "Lopunny",
+      "pokemonName": "Lopunny",
+      "pokemonStage": null,
+      "hp": 100,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "100 HP",
+          "cost": [],
+          "damage": "30"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Minahamu",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-082",
+      "set": "A2b",
+      "number": "082",
+      "name": "Pikachu ex",
+      "pokemonName": "Pikachu",
+      "pokemonStage": "Basic",
+      "hp": 120,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "120 HP",
+          "cost": [],
+          "damage": "150"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA Igarashi",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-069",
+      "set": "A2b",
+      "number": "069",
+      "name": "Iono",
+      "pokemonName": "Iono",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "saino misaki",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-083",
+      "set": "A2b",
+      "number": "083",
+      "name": "Giratina ex",
+      "pokemonName": "Giratina",
+      "pokemonStage": null,
+      "hp": 150,
+      "pokemonType": "Psychic",
+      "attacks": [],
+      "abilities": [
+        {
+          "name": "150 HP"
+        }
+      ],
+      "weakness": {
+        "type": "Darkness",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "PLANETA Yamashita",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-084",
+      "set": "A2b",
+      "number": "084",
+      "name": "Lucario ex",
+      "pokemonName": "Lucario",
+      "pokemonStage": null,
+      "hp": 150,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "150 HP",
+          "cost": [],
+          "damage": "100"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "PLANETA CG Works",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-085",
+      "set": "A2b",
+      "number": "085",
+      "name": "Paldean Clodsire ex",
+      "pokemonName": "Paldean Clodsire",
+      "pokemonStage": null,
+      "hp": 160,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "160 HP",
+          "cost": [],
+          "damage": "60+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "PLANETA Igarashi",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-087",
+      "set": "A2b",
+      "number": "087",
+      "name": "Bibarel ex",
+      "pokemonName": "Bibarel",
+      "pokemonStage": null,
+      "hp": 160,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "160 HP",
+          "cost": [],
+          "damage": "100"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "PLANETA CG Works",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-086",
+      "set": "A2b",
+      "number": "086",
+      "name": "Tinkaton ex",
+      "pokemonName": "Tinkaton",
+      "pokemonStage": null,
+      "hp": 170,
+      "pokemonType": "Metal",
+      "attacks": [
+        {
+          "name": "170 HP",
+          "cost": [],
+          "damage": "80+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "PLANETA Igarashi",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-088",
+      "set": "A2b",
+      "number": "088",
+      "name": "Iono",
+      "pokemonName": "Iono",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "saino misaki",
+      "raritySymbol": "star2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-089",
+      "set": "A2b",
+      "number": "089",
+      "name": "Pokemon Center Lady",
+      "pokemonName": "Pokemon Center Lady",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "Susumu Maeya",
+      "raritySymbol": "star2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-090",
+      "set": "A2b",
+      "number": "090",
+      "name": "Red",
+      "pokemonName": "Red",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "Teeziro",
+      "raritySymbol": "star2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-091",
+      "set": "A2b",
+      "number": "091",
+      "name": "Team Rocket Grunt",
+      "pokemonName": "Team Rocket Grunt",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "kantaro",
+      "raritySymbol": "star2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-068",
+      "set": "A2b",
+      "number": "068",
+      "name": "Cyclizar",
+      "pokemonName": "Cyclizar",
+      "pokemonStage": null,
+      "hp": 80,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "80 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "HAGIYA Kaoru",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-092",
+      "set": "A2b",
+      "number": "092",
+      "name": "Pikachu ex",
+      "pokemonName": "Pikachu",
+      "pokemonStage": "Basic",
+      "hp": 120,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "120 HP",
+          "cost": [],
+          "damage": "150"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "You Iribi",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-093",
+      "set": "A2b",
+      "number": "093",
+      "name": "Paldean Clodsire ex",
+      "pokemonName": "Paldean Clodsire",
+      "pokemonStage": null,
+      "hp": 160,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "160 HP",
+          "cost": [],
+          "damage": "60+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "REND",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-094",
+      "set": "A2b",
+      "number": "094",
+      "name": "Tinkaton ex",
+      "pokemonName": "Tinkaton",
+      "pokemonStage": null,
+      "hp": 170,
+      "pokemonType": "Metal",
+      "attacks": [
+        {
+          "name": "170 HP",
+          "cost": [],
+          "damage": "80+"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "kurumitsu",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-096",
+      "set": "A2b",
+      "number": "096",
+      "name": "Giratina ex",
+      "pokemonName": "Giratina",
+      "pokemonStage": null,
+      "hp": 150,
+      "pokemonType": "Psychic",
+      "attacks": [],
+      "abilities": [
+        {
+          "name": "150 HP"
+        }
+      ],
+      "weakness": {
+        "type": "Darkness",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Shinji Kanda",
+      "raritySymbol": "star3",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-097",
+      "set": "A2b",
+      "number": "097",
+      "name": "Weedle",
+      "pokemonName": "Weedle",
+      "pokemonStage": "Basic",
+      "hp": 50,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "50 HP",
+          "cost": []
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Sanosuke Sakuma",
+      "raritySymbol": "shiny1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-099",
+      "set": "A2b",
+      "number": "099",
+      "name": "Charmander",
+      "pokemonName": "Charmander",
+      "pokemonStage": "Basic",
+      "hp": 60,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Souichirou Gunjima",
+      "raritySymbol": "shiny1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-104",
+      "set": "A2b",
+      "number": "104",
+      "name": "Riolu",
+      "pokemonName": "Riolu",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "40"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "GOSSAN",
+      "raritySymbol": "shiny1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-105",
+      "set": "A2b",
+      "number": "105",
+      "name": "Varoom",
+      "pokemonName": "Varoom",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Metal",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "10"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "nagimiso",
+      "raritySymbol": "shiny1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-077",
+      "set": "A2b",
+      "number": "077",
+      "name": "Gholdengo",
+      "pokemonName": "Gholdengo",
+      "pokemonStage": null,
+      "hp": 120,
+      "pokemonType": "Metal",
+      "attacks": [
+        {
+          "name": "120 HP",
+          "cost": [],
+          "damage": "50x"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Jerky",
+      "raritySymbol": "star1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-106",
+      "set": "A2b",
+      "number": "106",
+      "name": "Revavroom",
+      "pokemonName": "Revavroom",
+      "pokemonStage": null,
+      "hp": 110,
+      "pokemonType": "Metal",
+      "attacks": [
+        {
+          "name": "110 HP",
+          "cost": [],
+          "damage": "70"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "nagimiso",
+      "raritySymbol": "shiny1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-078",
+      "set": "A2b",
+      "number": "078",
+      "name": "Wigglytuff",
+      "pokemonName": "Wigglytuff",
+      "pokemonStage": "Stage 1",
+      "hp": 100,
+      "pokemonType": "Colorless",
+      "attacks": [],
+      "abilities": [
+        {
+          "name": "100 HP"
+        }
+      ],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "5ban Graphics",
+      "raritySymbol": "star1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-107",
+      "set": "A2b",
+      "number": "107",
+      "name": "Beedrill ex",
+      "pokemonName": "Beedrill",
+      "pokemonStage": "Stage 2",
+      "hp": 170,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "170 HP",
+          "cost": [],
+          "damage": "80"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA Igarashi",
+      "raritySymbol": "shiny2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-095",
+      "set": "A2b",
+      "number": "095",
+      "name": "Bibarel ex",
+      "pokemonName": "Bibarel",
+      "pokemonStage": null,
+      "hp": 160,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "160 HP",
+          "cost": [],
+          "damage": "100"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "USGMEN",
+      "raritySymbol": "star2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-098",
+      "set": "A2b",
+      "number": "098",
+      "name": "Kakuna",
+      "pokemonName": "Kakuna",
+      "pokemonStage": "Stage 1",
+      "hp": 80,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "80 HP",
+          "cost": [],
+          "damage": "20"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Sanosuke Sakuma",
+      "raritySymbol": "shiny1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-108",
+      "set": "A2b",
+      "number": "108",
+      "name": "Charizard ex",
+      "pokemonName": "Charizard",
+      "pokemonStage": "Stage 2",
+      "hp": 180,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "180 HP",
+          "cost": []
+        },
+        {
+          "name": "",
+          "cost": [],
+          "damage": "150",
+          "text": "Fire Fire Fire Colorless Colorless"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "PLANETA Igarashi",
+      "raritySymbol": "shiny2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-100",
+      "set": "A2b",
+      "number": "100",
+      "name": "Charmeleon",
+      "pokemonName": "Charmeleon",
+      "pokemonStage": "Stage 1",
+      "hp": 90,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "90 HP",
+          "cost": [],
+          "damage": "40"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Souichirou Gunjima",
+      "raritySymbol": "shiny1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-102",
+      "set": "A2b",
+      "number": "102",
+      "name": "Dondozo",
+      "pokemonName": "Dondozo",
+      "pokemonStage": null,
+      "hp": 120,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "120 HP",
+          "cost": [],
+          "damage": "80"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "GOSSAN",
+      "raritySymbol": "shiny1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-103",
+      "set": "A2b",
+      "number": "103",
+      "name": "Pachirisu",
+      "pokemonName": "Pachirisu",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "70 HP",
+          "cost": [],
+          "damage": "10"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Tomowaka",
+      "raritySymbol": "shiny1",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-109",
+      "set": "A2b",
+      "number": "109",
+      "name": "Wugtrio ex",
+      "pokemonName": "Wugtrio",
+      "pokemonStage": null,
+      "hp": 140,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "140 HP",
+          "cost": []
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA Tsuji",
+      "raritySymbol": "shiny2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-110",
+      "set": "A2b",
+      "number": "110",
+      "name": "Lucario ex",
+      "pokemonName": "Lucario",
+      "pokemonStage": null,
+      "hp": 150,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "150 HP",
+          "cost": [],
+          "damage": "100"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "PLANETA CG Works",
+      "raritySymbol": "shiny2",
+      "exStatus": "ex"
+    },
+    {
+      "id": "A2b-111",
+      "set": "A2b",
+      "number": "111",
+      "name": "Poke Ball",
+      "pokemonName": "Poke Ball",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "Toyste Beach",
+      "raritySymbol": "crown",
+      "exStatus": "non-ex"
+    },
+    {
+      "id": "A2b-101",
+      "set": "A2b",
+      "number": "101",
+      "name": "Wiglett",
+      "pokemonName": "Wiglett",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "60 HP",
+          "cost": []
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": "+20"
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Souichirou Gunjima",
+      "raritySymbol": "shiny1",
+      "exStatus": "non-ex"
+    }
+  ]
+}

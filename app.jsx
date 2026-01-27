@@ -72,7 +72,66 @@ const getRarityIconPath = (rarity) => {
 
 const getTypeIconPath = (type) => `${ASSET_BASE}/icons/types/${type.toLowerCase()}.png`;
 
-const SETS = [
+const DATA_INDEX_PATH = `${ASSET_BASE}/data/index.json`;
+const SET_DATA_DIR = `${ASSET_BASE}/data/sets`;
+
+const mapSymbolToRarity = (symbol) => {
+  switch (symbol) {
+    case "diamond1":
+      return Rarity.COMMON;
+    case "diamond2":
+      return Rarity.UNCOMMON;
+    case "diamond3":
+      return Rarity.RARE;
+    case "diamond4":
+      return Rarity.DOUBLE_RARE;
+    case "star1":
+      return Rarity.DOUBLE_RARE;
+    case "star2":
+      return Rarity.SUPER_RARE;
+    case "star3":
+      return Rarity.ILLUSTRATION_RARE;
+    case "shiny1":
+    case "shiny2":
+      return Rarity.SUPER_RARE;
+    case "crown":
+      return Rarity.CROWN_RARE;
+    default:
+      return Rarity.COMMON;
+  }
+};
+
+const buildSetsFromScraped = (sets) =>
+  sets.map((set) => ({
+    id: set.id,
+    name: set.name,
+    totalCards: set.totalCards,
+    coverImage: getSetLogoPath(set.id)
+  }));
+
+const buildCardsFromScraped = (cards) =>
+  cards.map((card) => ({
+    id: card.id,
+    set: card.set,
+    number: card.number,
+    image: getCardPath(card.set, card.number),
+    name: card.name,
+    rarity: mapSymbolToRarity(card.raritySymbol),
+    raritySymbol: card.raritySymbol,
+    type: CardType.POKEMON,
+    hp: card.hp,
+    pokemonName: card.pokemonName,
+    pokemonStage: card.pokemonStage,
+    pokemonType: card.pokemonType,
+    attacks: card.attacks,
+    abilities: card.abilities,
+    weakness: card.weakness,
+    retreatCost: card.retreatCost,
+    illustrator: card.illustrator,
+    exStatus: card.exStatus
+  }));
+
+const FALLBACK_SETS = [
   { id: "A1", name: "Genetic Apex", totalCards: 286, coverImage: getSetLogoPath("A1") },
   { id: "A1a", name: "Mythical Island", totalCards: 86, coverImage: getSetLogoPath("A1a") },
   { id: "A2", name: "Space-Time Smackdown", totalCards: 207, coverImage: getSetLogoPath("A2") },
@@ -110,7 +169,7 @@ const KNOWN_METADATA = {
   "A1-222": { name: "Pikachu (Immersive)", rarity: Rarity.ILLUSTRATION_RARE, type: CardType.POKEMON, hp: 120 }
 };
 
-const CARDS = SETS.flatMap((set) => {
+const FALLBACK_CARDS = FALLBACK_SETS.flatMap((set) => {
   return Array.from({ length: set.totalCards }, (_, i) => {
     const numInt = i + 1;
     const numStr = numInt.toString().padStart(3, "0");
@@ -131,8 +190,8 @@ const CARDS = SETS.flatMap((set) => {
   });
 });
 
-const getSetProgress = (setId, collection) => {
-  const setCards = CARDS.filter((card) => card.set === setId);
+const getSetProgress = (setId, collection, cards) => {
+  const setCards = cards.filter((card) => card.set === setId);
   const total = setCards.length;
   const owned = setCards.filter((card) => (collection[card.id] || 0) > 0).length;
   return {
@@ -320,6 +379,8 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSetId, setSelectedSetId] = useState("A1");
   const [filterOwned, setFilterOwned] = useState("all");
+  const [cards, setCards] = useState(FALLBACK_CARDS);
+  const [sets, setSets] = useState(FALLBACK_SETS);
 
   const dragRef = useRef({
     active: false,
@@ -329,6 +390,38 @@ const App = () => {
 
   useEffect(() => {
     setCollection(getCollection());
+  }, []);
+
+  useEffect(() => {
+    const loadScrapedData = async () => {
+      try {
+        const indexResponse = await fetch(DATA_INDEX_PATH, { cache: "no-store" });
+        if (!indexResponse.ok) return;
+        const indexPayload = await indexResponse.json();
+        if (!indexPayload || !Array.isArray(indexPayload.sets) || indexPayload.sets.length === 0) {
+          return;
+        }
+
+        const setIds = indexPayload.sets.map((set) => set.id);
+        const setPayloads = await Promise.all(
+          setIds.map(async (setId) => {
+            const response = await fetch(`${SET_DATA_DIR}/${setId}.json`, { cache: "no-store" });
+            if (!response.ok) return null;
+            return response.json();
+          })
+        );
+
+        const cards = setPayloads.flatMap((payload) => (payload && payload.cards) || []);
+        if (cards.length === 0) return;
+
+        setCards(buildCardsFromScraped(cards));
+        setSets(buildSetsFromScraped(indexPayload.sets));
+      } catch (error) {
+        // Ignore fetch errors and keep fallback data
+      }
+    };
+
+    loadScrapedData();
   }, []);
 
   useEffect(() => {
@@ -414,7 +507,7 @@ const App = () => {
   );
 
   const renderCollection = () => {
-    const filteredCards = CARDS.filter((card) => {
+    const filteredCards = cards.filter((card) => {
       const matchesSet = selectedSetId === "ALL" || card.set === selectedSetId;
       const matchesSearch =
         card.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -444,7 +537,7 @@ const App = () => {
               onChange={(event) => setSelectedSetId(event.target.value)}
               className="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg p-2 flex-1 max-w-[200px] outline-none focus:border-blue-500 truncate"
             >
-              {SETS.map((set) => (
+              {sets.map((set) => (
                 <option key={set.id} value={set.id}>
                   {set.name} ({set.id})
                 </option>
@@ -524,8 +617,8 @@ const App = () => {
       </div>
 
       <div className="space-y-6 pb-12">
-        {SETS.map((set) => {
-          const stats = getSetProgress(set.id, collection);
+        {sets.map((set) => {
+          const stats = getSetProgress(set.id, collection, cards);
           return (
             <div key={set.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
               <div className="flex items-center justify-between mb-4">

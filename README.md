@@ -14,10 +14,17 @@ A mobile-first companion app for Pokémon TCG Pocket. Track your collection, vie
     npm install
     ```
 
-2.  **Download Assets**
-    This pulls card images and icons from the web.
+2.  **Download Assets + Card Data**
+    This pulls card images/icons from Serebii and scrapes card metadata into `assets/data/sets/{SET}.json` plus `assets/data/index.json`.
     ```bash
     npm run assets
+    ```
+    Optional flags:
+    ```bash
+    npm run assets -- --data-only
+    npm run assets -- --assets-only
+    npm run assets -- --skip-stage
+    npm run assets -- --set A1,A1a
     ```
 
 3.  **Start Development Server**

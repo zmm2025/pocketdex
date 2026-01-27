@@ -1,4 +1,4 @@
-export enum Rarity {
+﻿export enum Rarity {
   COMMON = 'Common', // Diamond 1
   UNCOMMON = 'Uncommon', // Diamond 2
   RARE = 'Rare', // Diamond 3
@@ -10,11 +10,61 @@ export enum Rarity {
 }
 
 export enum CardType {
-  POKEMON = 'Pokémon',
+  POKEMON = 'PokÃ©mon',
   TRAINER = 'Trainer',
   ITEM = 'Item',
   SUPPORTER = 'Supporter',
 }
+
+export type EnergyType =
+  | 'Grass'
+  | 'Fire'
+  | 'Water'
+  | 'Lightning'
+  | 'Psychic'
+  | 'Fighting'
+  | 'Darkness'
+  | 'Metal'
+  | 'Dragon'
+  | 'Colorless';
+
+export interface EnergyCost {
+  type: EnergyType;
+  count: number;
+}
+
+export interface Attack {
+  name: string;
+  cost: EnergyCost[];
+  damage?: string;
+  text?: string;
+}
+
+export interface Ability {
+  name: string;
+  text?: string;
+}
+
+export interface Weakness {
+  type: EnergyType;
+  value: string;
+}
+
+export type PokemonStage = 'Basic' | 'Stage 1' | 'Stage 2';
+
+export type RaritySymbol =
+  | 'diamond1'
+  | 'diamond2'
+  | 'diamond3'
+  | 'diamond4'
+  | 'star1'
+  | 'star2'
+  | 'star3'
+  | 'shiny1'
+  | 'shiny2'
+  | 'crown';
+
+export type ExStatus = 'non-ex' | 'ex' | 'mega-ex';
 
 export interface Card {
   id: string;
@@ -23,9 +73,19 @@ export interface Card {
   number: string;
   image: string;
   rarity: Rarity;
+  raritySymbol?: RaritySymbol;
   type: CardType;
   hp?: number;
   description?: string;
+  pokemonName?: string;
+  pokemonStage?: PokemonStage | null;
+  pokemonType?: EnergyType;
+  attacks?: Attack[];
+  abilities?: Ability[];
+  weakness?: Weakness;
+  retreatCost?: EnergyCost[];
+  illustrator?: string;
+  exStatus?: ExStatus;
 }
 
 export interface SetData {
