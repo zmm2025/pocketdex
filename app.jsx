@@ -8,7 +8,7 @@ import {
   Search,
   Minus,
   ImageOff
-} from "https://esm.sh/lucide-react@0.563.0";
+} from "https://esm.sh/lucide-react@0.563.0?deps=react@18.2.0";
 
 const Rarity = Object.freeze({
   COMMON: "Common",
