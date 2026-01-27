@@ -36,7 +36,7 @@ export interface EnergyCost {
 export interface Attack {
   name: string;
   cost: EnergyCost[];
-  damage?: string;
+  damage?: number;
   text?: string;
 }
 
@@ -47,7 +47,7 @@ export interface Ability {
 
 export interface Weakness {
   type: EnergyType;
-  value: string;
+  value: number;
 }
 
 export type PokemonStage = 'Basic' | 'Stage 1' | 'Stage 2';
@@ -64,20 +64,44 @@ export type RaritySymbol =
   | 'shiny2'
   | 'crown';
 
+export type RarityDescription =
+  | 'Common'
+  | 'Uncommon'
+  | 'Rare'
+  | 'Double Rare'
+  | 'Art Rare'
+  | 'Special Art Rare'
+  | 'Immersive Rare'
+  | 'Shiny Rare'
+  | 'Double Shiny Rare'
+  | 'Crown Rare';
+
+export const RARITY_DESCRIPTIONS_BY_SYMBOL: Record<RaritySymbol, RarityDescription> = {
+  diamond1: 'Common',
+  diamond2: 'Uncommon',
+  diamond3: 'Rare',
+  diamond4: 'Double Rare',
+  star1: 'Art Rare',
+  star2: 'Special Art Rare',
+  star3: 'Immersive Rare',
+  shiny1: 'Shiny Rare',
+  shiny2: 'Double Shiny Rare',
+  crown: 'Crown Rare',
+};
+
 export type ExStatus = 'non-ex' | 'ex' | 'mega-ex';
 
 export interface Card {
   id: string;
   name: string;
   set: string;
-  number: string;
+  number: number;
   image: string;
   rarity: Rarity;
   raritySymbol?: RaritySymbol;
   type: CardType;
   hp?: number;
   description?: string;
-  pokemonName?: string;
   pokemonStage?: PokemonStage | null;
   pokemonType?: EnergyType;
   attacks?: Attack[];
@@ -86,6 +110,7 @@ export interface Card {
   retreatCost?: EnergyCost[];
   illustrator?: string;
   exStatus?: ExStatus;
+  boosterPacks?: string[];
 }
 
 export interface SetData {

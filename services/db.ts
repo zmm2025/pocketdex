@@ -9,6 +9,8 @@
   PokemonStage,
   Rarity,
   RaritySymbol,
+  RARITY_DESCRIPTIONS_BY_SYMBOL,
+  RarityDescription,
   SetData,
   Weakness,
 } from '../types';
@@ -20,11 +22,12 @@
 
 const ASSET_BASE = '/assets';
 const EXT = 'jpg';
+const padCardNumber = (value: number | string) => String(value).padStart(3, '0');
 
 // -- Path Generators --
 
-export const getCardPath = (setId: string, number: string) =>
-  `${ASSET_BASE}/cards/${setId}/${number}.${EXT}`;
+export const getCardPath = (setId: string, number: number | string) =>
+  `${ASSET_BASE}/cards/${setId}/${padCardNumber(number)}.${EXT}`;
 
 export const getSetLogoPath = (setId: string) =>
   `${ASSET_BASE}/sets/${setId}/logo.png`; // Logos are PNG
@@ -95,6 +98,9 @@ const mapSymbolToRarity = (symbol?: RaritySymbol): Rarity => {
   }
 };
 
+export const getRarityDescription = (symbol?: RaritySymbol): RarityDescription | undefined =>
+  symbol ? RARITY_DESCRIPTIONS_BY_SYMBOL[symbol] : undefined;
+
 export const getRarityIconPath = (rarity: Rarity | RaritySymbol) => {
   const symbol = RARITY_SYMBOL_SET.has(rarity as RaritySymbol)
     ? (rarity as RaritySymbol)
@@ -117,12 +123,10 @@ type ScrapedSet = {
 };
 
 type ScrapedCard = {
-  id: string;
   name: string;
   set: string;
-  number: string;
+  number: number;
   hp?: number;
-  pokemonName?: string;
   pokemonStage?: PokemonStage | null;
   pokemonType?: EnergyType;
   attacks?: Attack[];
@@ -132,6 +136,7 @@ type ScrapedCard = {
   illustrator?: string;
   raritySymbol?: RaritySymbol;
   exStatus?: ExStatus;
+  boosterPacks?: string[];
 };
 
 type ScrapedSetPayload = {
@@ -196,8 +201,8 @@ const generateFallbackCards = (sets: SetData[]): Card[] =>
       return {
         id,
         set: set.id,
-        number: numStr,
-        image: getCardPath(set.id, numStr),
+    number: numInt,
+    image: getCardPath(set.id, numInt),
         name: known?.name || `${set.name} #${numStr}`,
         rarity: known?.rarity || Rarity.COMMON,
         type: known?.type || CardType.POKEMON,
@@ -208,17 +213,19 @@ const generateFallbackCards = (sets: SetData[]): Card[] =>
   });
 
 const normalizeScrapedCard = (raw: ScrapedCard): Card => {
+  const number = Number(raw.number);
+  const safeNumber = Number.isFinite(number) ? number : 0;
+  const id = `${raw.set}-${padCardNumber(safeNumber)}`;
   return {
-    id: raw.id,
+    id,
     set: raw.set,
-    number: raw.number,
-    image: getCardPath(raw.set, raw.number),
+    number: safeNumber,
+    image: getCardPath(raw.set, safeNumber),
     name: raw.name,
     rarity: mapSymbolToRarity(raw.raritySymbol),
     raritySymbol: raw.raritySymbol,
     type: CardType.POKEMON,
     hp: raw.hp,
-    pokemonName: raw.pokemonName,
     pokemonStage: raw.pokemonStage ?? null,
     pokemonType: raw.pokemonType,
     attacks: raw.attacks ?? [],
@@ -227,6 +234,7 @@ const normalizeScrapedCard = (raw: ScrapedCard): Card => {
     retreatCost: raw.retreatCost,
     illustrator: raw.illustrator,
     exStatus: raw.exStatus ?? 'non-ex',
+    boosterPacks: raw.boosterPacks,
   };
 };
 

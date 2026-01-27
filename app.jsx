@@ -36,8 +36,9 @@ const View = Object.freeze({
 
 const ASSET_BASE = "assets";
 const EXT = "jpg";
+const padCardNumber = (value) => String(value).padStart(3, "0");
 
-const getCardPath = (setId, number) => `${ASSET_BASE}/cards/${setId}/${number}.${EXT}`;
+const getCardPath = (setId, number) => `${ASSET_BASE}/cards/${setId}/${padCardNumber(number)}.${EXT}`;
 const getSetLogoPath = (setId) => `${ASSET_BASE}/sets/${setId}/logo.png`;
 const getPackArtPath = (setId, variant) => `${ASSET_BASE}/sets/${setId}/pack_${variant}.jpg`;
 
@@ -101,6 +102,19 @@ const mapSymbolToRarity = (symbol) => {
   }
 };
 
+const RARITY_DESCRIPTIONS_BY_SYMBOL = {
+  diamond1: "Common",
+  diamond2: "Uncommon",
+  diamond3: "Rare",
+  diamond4: "Double Rare",
+  star1: "Art Rare",
+  star2: "Special Art Rare",
+  star3: "Immersive Rare",
+  shiny1: "Shiny Rare",
+  shiny2: "Double Shiny Rare",
+  crown: "Crown Rare"
+};
+
 const buildSetsFromScraped = (sets) =>
   sets.map((set) => ({
     id: set.id,
@@ -110,26 +124,28 @@ const buildSetsFromScraped = (sets) =>
   }));
 
 const buildCardsFromScraped = (cards) =>
-  cards.map((card) => ({
-    id: card.id,
-    set: card.set,
-    number: card.number,
-    image: getCardPath(card.set, card.number),
-    name: card.name,
-    rarity: mapSymbolToRarity(card.raritySymbol),
-    raritySymbol: card.raritySymbol,
-    type: CardType.POKEMON,
-    hp: card.hp,
-    pokemonName: card.pokemonName,
-    pokemonStage: card.pokemonStage,
-    pokemonType: card.pokemonType,
-    attacks: card.attacks,
-    abilities: card.abilities,
-    weakness: card.weakness,
-    retreatCost: card.retreatCost,
-    illustrator: card.illustrator,
-    exStatus: card.exStatus
-  }));
+  cards.map((card) => {
+    const id = card.id || `${card.set}-${padCardNumber(card.number)}`;
+    return {
+      id,
+      set: card.set,
+      number: card.number,
+      image: getCardPath(card.set, card.number),
+      name: card.name,
+      rarity: mapSymbolToRarity(card.raritySymbol),
+      raritySymbol: card.raritySymbol,
+      type: CardType.POKEMON,
+      hp: card.hp,
+      pokemonStage: card.pokemonStage,
+      pokemonType: card.pokemonType,
+      attacks: card.attacks,
+      abilities: card.abilities,
+      weakness: card.weakness,
+      retreatCost: card.retreatCost,
+      illustrator: card.illustrator,
+      exStatus: card.exStatus
+    };
+  });
 
 const FALLBACK_SETS = [
   { id: "A1", name: "Genetic Apex", totalCards: 286, coverImage: getSetLogoPath("A1") },
@@ -179,9 +195,9 @@ const FALLBACK_CARDS = FALLBACK_SETS.flatMap((set) => {
     return {
       id,
       set: set.id,
-      number: numStr,
-      image: getCardPath(set.id, numStr),
-      name: (known && known.name) || `${set.name} #${numStr}`,
+      number: numInt,
+      image: getCardPath(set.id, numInt),
+      name: (known && known.name) || `${set.name} #${numInt}`,
       rarity: (known && known.rarity) || Rarity.COMMON,
       type: (known && known.type) || CardType.POKEMON,
       hp: known && known.hp,
@@ -330,7 +346,7 @@ const CardItem = ({
           <div className="w-full h-full flex flex-col items-center justify-center p-2 text-center text-gray-500 bg-gray-800">
             <ImageOff size={24} className="mb-2 opacity-50" />
             <span className="text-[10px] font-mono">
-              {card.set}-{card.number}
+              {card.set}-{padCardNumber(card.number)}
             </span>
           </div>
         )}
@@ -511,7 +527,7 @@ const App = () => {
       const matchesSet = selectedSetId === "ALL" || card.set === selectedSetId;
       const matchesSearch =
         card.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        card.number.includes(searchQuery);
+        String(card.number).includes(searchQuery);
       const isOwned = (collection[card.id] || 0) > 0;
 
       if (filterOwned === "owned" && !isOwned) return false;

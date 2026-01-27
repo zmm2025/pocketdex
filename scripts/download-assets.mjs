@@ -47,7 +47,18 @@ const SETS_TO_DOWNLOAD = [
     packs: ['pikachu', 'charizard', 'mewtwo'],
   },
   { id: 'A1a', name: 'Mythical Island', slug: 'mythicalisland', start: 1, end: 86 },
-  { id: 'A2', name: 'Space-Time Smackdown', slug: 'space-timesmackdown', start: 1, end: 207 },
+  {
+    id: 'A2',
+    name: 'Space-Time Smackdown',
+    slug: 'space-timesmackdown',
+    packNames: {
+      dialga: 'Dialga',
+      palkia: 'Palkia',
+    },
+    start: 1,
+    end: 207,
+    packs: ['dialga', 'palkia'],
+  },
   { id: 'A2a', name: 'Triumphant Light', slug: 'triumphantlight', start: 1, end: 96 },
   { id: 'A2b', name: 'Shining Revelry', slug: 'shiningrevelry', start: 1, end: 112 },
   { id: 'A3', name: 'Celestial Guardians', slug: 'celestialguardians', start: 1, end: 239 },
@@ -191,6 +202,13 @@ const normalizeEnergyType = (value) => {
   const key = value.toLowerCase();
   return ENERGY_TYPE_MAP[key] || undefined;
 };
+
+const toTitleCase = (value) =>
+  value
+    .split(/[\s_-]+/)
+    .filter(Boolean)
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
 
 const toEnergyCounts = (energies) => {
   const counts = {};
@@ -406,6 +424,11 @@ const extractCells = (rowHtml) => {
   return cells;
 };
 
+const extractTableRows = (html) => {
+  if (!html) return [];
+  return Array.from(html.matchAll(/<tr>[\s\S]*?<\/tr>/gi)).map((match) => match[0]);
+};
+
 const parseIllustrator = (html) => {
   const match = /Illustration:\s*<a[^>]*><u>([^<]+)<\/u>/i.exec(html);
   if (!match) return undefined;
@@ -432,9 +455,10 @@ const parseWeakness = (html) => {
   const typeMatch = /tcgpocket\/image\/([a-z0-9]+)\.png/i.exec(cell);
   const valueMatch = /\.png"[^>]*>([^<]*)/i.exec(cell);
   const type = normalizeEnergyType(typeMatch ? typeMatch[1] : undefined);
-  const value = normalizeWhitespace(decodeHtml(valueMatch ? valueMatch[1] : normalizeText(cell)));
+  const valueText = normalizeWhitespace(decodeHtml(valueMatch ? valueMatch[1] : normalizeText(cell)));
+  const valueNumber = Number((valueText.match(/-?\d+/) || [])[0]);
   if (!type) return undefined;
-  return { type, value };
+  return Number.isFinite(valueNumber) ? { type, value: valueNumber } : undefined;
 };
 
 const parseRetreatCost = (html) => {
@@ -450,10 +474,10 @@ const parseRetreatCost = (html) => {
 
 const parseAttackRows = (html) => {
   const attacks = [];
-  const rows = Array.from(html.matchAll(/<tr>([\s\S]*?\/tcgpocket\/dex\/moves\/[\s\S]*?)<\/tr>/gi));
+  const rows = extractTableRows(html);
 
-  rows.forEach((rowMatch) => {
-    const rowHtml = rowMatch[0];
+  rows.forEach((rowHtml) => {
+    if (!/tcgpocket\/dex\/moves\//i.test(rowHtml)) return;
     if (/ability\.png/i.test(rowHtml)) return;
 
     const cells = extractCells(rowHtml);
@@ -467,15 +491,17 @@ const parseAttackRows = (html) => {
 
     const nameMatch = /<b>([^<]+)<\/b>/i.exec(attackCell);
     const name = normalizeWhitespace(decodeHtml(nameMatch ? nameMatch[1] : ''));
+    if (!name) return;
     const fullText = normalizeText(attackCell);
     const text = normalizeWhitespace(fullText.replace(new RegExp(`^${name}`, 'i'), '').trim());
 
     const damageText = normalizeText(damageCell);
+    const damageNumber = Number((damageText.match(/-?\d+/) || [])[0]);
 
     attacks.push({
       name,
       cost,
-      damage: damageText || undefined,
+      damage: Number.isFinite(damageNumber) ? damageNumber : undefined,
       text: text || undefined,
     });
   });
@@ -485,10 +511,9 @@ const parseAttackRows = (html) => {
 
 const parseAbilityRows = (html) => {
   const abilities = [];
-  const rows = Array.from(html.matchAll(/<tr>([\s\S]*?ability\.png[\s\S]*?)<\/tr>/gi));
+  const rows = extractTableRows(html);
 
-  rows.forEach((rowMatch) => {
-    const rowHtml = rowMatch[0];
+  rows.forEach((rowHtml) => {
     if (!/ability\.png/i.test(rowHtml)) return;
 
     const cells = extractCells(rowHtml);
@@ -504,6 +529,53 @@ const parseAbilityRows = (html) => {
   });
 
   return abilities;
+};
+
+const parseBoosterPacks = (html) => {
+  if (!html) return [];
+  const sectionMatch =
+    /<p>\s*<h2>Available Booster Packs<\/h2>\s*<\/p>([\s\S]*?)(?:<p>\s*<h2>|<\/main>|<\/div>)/i.exec(
+      html
+    );
+  if (!sectionMatch) return [];
+  const section = sectionMatch[1];
+  const tables = Array.from(section.matchAll(/<table class="tab"[\s\S]*?<\/table>/gi)).map(
+    (match) => match[0]
+  );
+  const slugify = (value) =>
+    value
+      .toLowerCase()
+      .replace(/&[^;]+;/g, '')
+      .replace(/[^a-z0-9]+/g, '')
+      .trim();
+  const packs = [];
+  tables.forEach((tableHtml) => {
+    const nameMatches = Array.from(tableHtml.matchAll(/class="fooevo">([^<]+)</gi)).map(
+      (match) => normalizeWhitespace(decodeHtml(match[1]))
+    );
+    const imageMatches = Array.from(
+      tableHtml.matchAll(/<img[^>]+src="([^"]+?\.(?:jpg|png))"/gi)
+    ).map((match) => match[1].split('?')[0]);
+
+    const count = Math.max(nameMatches.length, imageMatches.length);
+    for (let i = 0; i < count; i += 1) {
+      const name = nameMatches[i];
+      const imageSrc = imageMatches[i];
+      let id = '';
+      if (imageSrc) {
+        const fileName = imageSrc.split('/').pop() || '';
+        id = fileName.replace(/\.(?:jpg|png)$/i, '').trim();
+      } else if (name) {
+        id = slugify(name);
+      }
+      if (!id || /^\d+$/.test(id)) continue;
+      packs.push({
+        id,
+        name: name || toTitleCase(id),
+      });
+    }
+  });
+  return packs;
 };
 
 const parseCardName = (html) => {
@@ -595,14 +667,6 @@ const parseCardPage = async (html, options) => {
     ? 'ex'
     : 'non-ex';
 
-  const pokemonName = normalizeWhitespace(
-    name
-      .replace(/\bmega\b/i, '')
-      .replace(/\bex\b/i, '')
-      .replace(/\s+/g, ' ')
-      .trim()
-  );
-
   const cardInfoBlockMatch = /<td class="cardinfo">([\s\S]*?)<p><h2>Available Booster Packs<\/h2><\/p>/i.exec(
     html
   );
@@ -618,11 +682,9 @@ const parseCardPage = async (html, options) => {
   const pokemonStage = options.includeStage ? await fetchPokemonStage(dexId) : null;
 
   return {
-    id: options.id,
     set: options.setId,
     number: options.number,
     name,
-    pokemonName: pokemonName || undefined,
     pokemonStage,
     hp,
     pokemonType,
@@ -633,6 +695,7 @@ const parseCardPage = async (html, options) => {
     illustrator,
     raritySymbol,
     exStatus,
+    boosterPacks: options.boosterPacks?.length ? options.boosterPacks : undefined,
   };
 };
 
@@ -743,40 +806,6 @@ const run = async () => {
     ensureDir(setDir);
     ensureDir(cardDir);
 
-    // -- Set Assets (Logo, Icon, Packs) --
-    if (!dataOnly) {
-      const setAssets = [
-        {
-          url: `https://www.serebii.net/tcgpocket/logo/${setInfo.slug}.png`,
-          dest: path.join(setDir, 'logo.png'),
-        },
-        {
-          url: `https://www.serebii.net/tcgpocket/logo/${setInfo.slug}-th.png`,
-          dest: path.join(setDir, 'icon.png'),
-        },
-      ];
-
-      if (setInfo.packs) {
-        setInfo.packs.forEach((variant) => {
-          setAssets.push({
-            url: `https://www.serebii.net/tcgpocket/${setInfo.slug}/${variant}.jpg`,
-            dest: path.join(setDir, `pack_${variant}.jpg`),
-          });
-        });
-      }
-
-      const setAssetResult = await downloadBatch(
-        setAssets,
-        `${setInfo.id} Branding & Packs`,
-        assetConcurrency,
-        progressIntervalMs,
-        progressBarWidth
-      );
-      summary.assets.downloaded += setAssetResult.success;
-      summary.assets.failed += setAssetResult.fail;
-      summary.assets.skipped += setAssetResult.skipped;
-    }
-
     // -- Card Numbers --
     let cardNumbers = [];
     try {
@@ -791,18 +820,48 @@ const run = async () => {
       cardNumbers = Array.from({ length: fallbackEnd - setInfo.start + 1 }, (_, i) => setInfo.start + i);
     }
 
-    setData.push({
-      id: setInfo.id,
-      name: setInfo.name,
-      packName: setInfo.name,
-      packs: setInfo.packs
-        ? setInfo.packs.map((variant) =>
-            (setInfo.packNames && setInfo.packNames[variant]) ||
-            `${variant.charAt(0).toUpperCase()}${variant.slice(1)}`
-          )
-        : [],
-      totalCards: cardNumbers.length,
-    });
+    const packMap = new Map();
+    const packOrder = [];
+    const registerPack = (id, name) => {
+      if (!id) return;
+      if (!packMap.has(id)) {
+        packMap.set(id, name || toTitleCase(id));
+        packOrder.push(id);
+      }
+    };
+
+    if (setInfo.packs) {
+      setInfo.packs.forEach((variant) => {
+        const name =
+          (setInfo.packNames && setInfo.packNames[variant]) || toTitleCase(variant);
+        registerPack(variant, name);
+      });
+    }
+
+    // -- Set Assets (Logo, Icon) --
+    if (!dataOnly) {
+      const setAssets = [
+        {
+          url: `https://www.serebii.net/tcgpocket/logo/${setInfo.slug}.png`,
+          dest: path.join(setDir, 'logo.png'),
+        },
+        {
+          url: `https://www.serebii.net/tcgpocket/logo/${setInfo.slug}-th.png`,
+          dest: path.join(setDir, 'icon.png'),
+        },
+      ];
+
+      const setAssetResult = await downloadBatch(
+        setAssets,
+        `${setInfo.id} Branding`,
+        assetConcurrency,
+        progressIntervalMs,
+        progressBarWidth
+      );
+      summary.assets.downloaded += setAssetResult.success;
+      summary.assets.failed += setAssetResult.fail;
+      summary.assets.skipped += setAssetResult.skipped;
+    }
 
     let successCount = 0;
     let failCount = 0;
@@ -819,8 +878,8 @@ const run = async () => {
       progressIntervalMs,
       progressBarWidth
     );
-    const handleCard = async (num) => {
-      const paddedNum = padNumber(num);
+  const handleCard = async (num) => {
+    const paddedNum = padNumber(num);
       const fileName = `${paddedNum}.jpg`;
       const filePath = path.join(cardDir, fileName);
       const imageUrl = `https://www.serebii.net/tcgpocket/${setInfo.slug}/${num}.jpg`;
@@ -856,11 +915,14 @@ const run = async () => {
                 parseFailCount++;
                 return;
               }
+              const boosterPackEntries = parseBoosterPacks(html);
+              boosterPackEntries.forEach((pack) => registerPack(pack.id, pack.name));
+              const boosterPackIds = boosterPackEntries.map((pack) => pack.id);
               const card = await parseCardPage(html, {
-                id: `${setInfo.id}-${paddedNum}`,
                 setId: setInfo.id,
-                number: paddedNum,
+                number: num,
                 includeStage,
+                boosterPacks: boosterPackIds,
               });
               setCards.push(card);
               parsedCount++;
@@ -909,20 +971,19 @@ const run = async () => {
     }
 
     if (!assetsOnly) {
+      setCards.sort((a, b) => a.number - b.number);
+      const packEntries = packOrder.map((id) => ({
+        id,
+        name: packMap.get(id) || toTitleCase(id),
+      }));
       const setPayload = {
         generatedAt: new Date().toISOString(),
         source: 'https://www.serebii.net/tcgpocket/',
         set: {
           id: setInfo.id,
           name: setInfo.name,
-          packName: setInfo.name,
           totalCards: cardNumbers.length,
-          packs: setInfo.packs
-            ? setInfo.packs.map((variant) =>
-                (setInfo.packNames && setInfo.packNames[variant]) ||
-                `${variant.charAt(0).toUpperCase()}${variant.slice(1)}`
-              )
-            : [],
+          packs: packEntries,
         },
         cards: setCards,
       };
@@ -931,6 +992,35 @@ const run = async () => {
       console.log(`  Saved ${setInfo.id} data to ${path.relative(process.cwd(), setPath)}`);
       summary.data.setFiles += 1;
     }
+
+    const packEntries = packOrder.map((id) => ({
+      id,
+      name: packMap.get(id) || toTitleCase(id),
+    }));
+
+    if (!dataOnly && packEntries.length > 0) {
+      const packAssets = packEntries.map((pack) => ({
+        url: `https://www.serebii.net/tcgpocket/${setInfo.slug}/${pack.id}.jpg`,
+        dest: path.join(setDir, `pack_${pack.id}.jpg`),
+      }));
+      const packAssetResult = await downloadBatch(
+        packAssets,
+        `${setInfo.id} Packs`,
+        assetConcurrency,
+        progressIntervalMs,
+        progressBarWidth
+      );
+      summary.assets.downloaded += packAssetResult.success;
+      summary.assets.failed += packAssetResult.fail;
+      summary.assets.skipped += packAssetResult.skipped;
+    }
+
+    setData.push({
+      id: setInfo.id,
+      name: setInfo.name,
+      packs: packEntries,
+      totalCards: cardNumbers.length,
+    });
 
     summary.sets += 1;
     summary.assets.downloaded += successCount;

@@ -1,64 +1,41 @@
 {
-  "generatedAt": "2026-01-27T09:31:19.033Z",
+  "generatedAt": "2026-01-27T10:22:05.336Z",
   "source": "https://www.serebii.net/tcgpocket/",
   "set": {
     "id": "A1a",
     "name": "Mythical Island",
-    "packName": "Mythical Island",
     "totalCards": 86,
-    "packs": []
+    "packs": [
+      {
+        "id": "mew",
+        "name": "Mew"
+      }
+    ]
   },
   "cards": [
     {
-      "id": "A1a-010",
       "set": "A1a",
-      "number": "010",
-      "name": "Ponyta",
-      "pokemonName": "Ponyta",
-      "pokemonStage": "Basic",
-      "hp": 60,
-      "pokemonType": "Fire",
-      "attacks": [
-        {
-          "name": "60 HP",
-          "cost": [],
-          "damage": "10+"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Water",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Tomokazu Komiya",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-001",
-      "set": "A1a",
-      "number": "001",
+      "number": 1,
       "name": "Exeggcute",
-      "pokemonName": "Exeggcute",
       "pokemonStage": "Basic",
       "hp": 50,
       "pokemonType": "Grass",
       "attacks": [
         {
-          "name": "50 HP",
-          "cost": []
+          "name": "Growth Spurt",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "text": "Take a Grass Energy from your Energy Zone and attach it to this Pokémon"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Fire",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -68,59 +45,39 @@
       ],
       "illustrator": "Yuka Morii",
       "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-011",
       "set": "A1a",
-      "number": "011",
-      "name": "Rapidash",
-      "pokemonName": "Rapidash",
-      "pokemonStage": "Stage 1",
-      "hp": 100,
-      "pokemonType": "Fire",
-      "attacks": [
-        {
-          "name": "100 HP",
-          "cost": [],
-          "damage": "40+"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Water",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "AKIRA EGAWA",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-002",
-      "set": "A1a",
-      "number": "002",
+      "number": 2,
       "name": "Exeggutor",
-      "pokemonName": "Exeggutor",
       "pokemonStage": "Stage 1",
       "hp": 130,
       "pokemonType": "Grass",
       "attacks": [
         {
-          "name": "130 HP",
-          "cost": [],
-          "damage": "80+"
+          "name": "Psychic",
+          "cost": [
+            {
+              "type": "Grass",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 3
+            }
+          ],
+          "damage": 80,
+          "text": "This attack does 20 more damage for each Energy attached to your opponent's Active Pokémon"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Fire",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -130,182 +87,39 @@
       ],
       "illustrator": "Masakazu Fukuda",
       "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-012",
       "set": "A1a",
-      "number": "012",
-      "name": "Magmar",
-      "pokemonName": "Magmar",
-      "pokemonStage": "Basic",
-      "hp": 80,
-      "pokemonType": "Fire",
-      "attacks": [
-        {
-          "name": "80 HP",
-          "cost": [],
-          "damage": "80"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Water",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "sui",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-008",
-      "set": "A1a",
-      "number": "008",
-      "name": "Shiinotic",
-      "pokemonName": "Shiinotic",
-      "pokemonStage": null,
-      "hp": 90,
-      "pokemonType": "Grass",
-      "attacks": [
-        {
-          "name": "90 HP",
-          "cost": [],
-          "damage": "50"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fire",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 2
-        }
-      ],
-      "illustrator": "Mizue",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-004",
-      "set": "A1a",
-      "number": "004",
-      "name": "Snivy",
-      "pokemonName": "Snivy",
-      "pokemonStage": null,
-      "hp": 70,
-      "pokemonType": "Grass",
-      "attacks": [
-        {
-          "name": "70 HP",
-          "cost": [],
-          "damage": "40"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fire",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Kagemaru Himeno",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-005",
-      "set": "A1a",
-      "number": "005",
-      "name": "Servine",
-      "pokemonName": "Servine",
-      "pokemonStage": null,
-      "hp": 80,
-      "pokemonType": "Grass",
-      "attacks": [
-        {
-          "name": "80 HP",
-          "cost": [],
-          "damage": "50"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fire",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Shigenori Negishi",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-015",
-      "set": "A1a",
-      "number": "015",
-      "name": "Salandit",
-      "pokemonName": "Salandit",
-      "pokemonStage": null,
-      "hp": 60,
-      "pokemonType": "Fire",
-      "attacks": [
-        {
-          "name": "60 HP",
-          "cost": []
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Water",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Naoki Saito",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-003",
-      "set": "A1a",
-      "number": "003",
+      "number": 3,
       "name": "Celebi ex",
-      "pokemonName": "Celebi",
       "pokemonStage": null,
       "hp": 130,
       "pokemonType": "Grass",
       "attacks": [
         {
-          "name": "130 HP",
-          "cost": [],
-          "damage": "50x"
+          "name": "Powerful Bloom",
+          "cost": [
+            {
+              "type": "Grass",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 50,
+          "text": "Flip a coin for each Energy attached to this Pokémon. This attack does 50 damage for each heads"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Fire",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -315,26 +129,125 @@
       ],
       "illustrator": "PLANETA CG Works",
       "raritySymbol": "diamond4",
-      "exStatus": "ex"
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-006",
       "set": "A1a",
-      "number": "006",
+      "number": 4,
+      "name": "Snivy",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "Vine Whip",
+          "cost": [
+            {
+              "type": "Grass",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 40
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Kagemaru Himeno",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 5,
+      "name": "Servine",
+      "pokemonStage": null,
+      "hp": 80,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "Vine Whip",
+          "cost": [
+            {
+              "type": "Grass",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 50
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Shigenori Negishi",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 6,
       "name": "Serperior",
-      "pokemonName": "Serperior",
       "pokemonStage": null,
       "hp": 110,
       "pokemonType": "Grass",
-      "attacks": [],
+      "attacks": [
+        {
+          "name": "Solar Beam",
+          "cost": [
+            {
+              "type": "Grass",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 3
+            }
+          ],
+          "damage": 70
+        }
+      ],
       "abilities": [
         {
-          "name": "110 HP"
+          "name": "Jungle Totem",
+          "text": "Each Grass Energy attached to your Grass Pokémon provides 2 Grass Energy. This effect doesn't stack"
         }
       ],
       "weakness": {
         "type": "Fire",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -344,28 +257,110 @@
       ],
       "illustrator": "Yoshioka",
       "raritySymbol": "diamond3",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-009",
       "set": "A1a",
-      "number": "009",
-      "name": "Dhelmise",
-      "pokemonName": "Dhelmise",
+      "number": 7,
+      "name": "Morelull",
       "pokemonStage": null,
-      "hp": 100,
+      "hp": 60,
       "pokemonType": "Grass",
       "attacks": [
         {
-          "name": "100 HP",
-          "cost": [],
-          "damage": "20+"
+          "name": "Ram",
+          "cost": [
+            {
+              "type": "Grass",
+              "count": 1
+            }
+          ],
+          "damage": 20
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Fire",
-        "value": "+20"
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Saya Tsuruta",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 8,
+      "name": "Shiinotic",
+      "pokemonStage": null,
+      "hp": 90,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "Flickering Spores",
+          "cost": [
+            {
+              "type": "Grass",
+              "count": 2
+            }
+          ],
+          "damage": 50,
+          "text": "Your opponent's Active Pokémon is now Asleep"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Mizue",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 9,
+      "name": "Dhelmise",
+      "pokemonStage": null,
+      "hp": 100,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "Energy Whip",
+          "cost": [
+            {
+              "type": "Grass",
+              "count": 1
+            }
+          ],
+          "damage": 20,
+          "text": "If this Pokémon has at least 3 extra Grass Energy attached, this attack does 70 more damage."
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": 20
       },
       "retreatCost": [
         {
@@ -375,89 +370,35 @@
       ],
       "illustrator": "Hasuno",
       "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-016",
       "set": "A1a",
-      "number": "016",
-      "name": "Salazzle",
-      "pokemonName": "Salazzle",
-      "pokemonStage": null,
-      "hp": 80,
-      "pokemonType": "Fire",
-      "attacks": [
-        {
-          "name": "80 HP",
-          "cost": [],
-          "damage": "30"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Water",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Mitsuhiro Arita",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-007",
-      "set": "A1a",
-      "number": "007",
-      "name": "Morelull",
-      "pokemonName": "Morelull",
-      "pokemonStage": null,
-      "hp": 60,
-      "pokemonType": "Grass",
-      "attacks": [
-        {
-          "name": "60 HP",
-          "cost": [],
-          "damage": "20"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fire",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Saya Tsuruta",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-017",
-      "set": "A1a",
-      "number": "017",
-      "name": "Magikarp",
-      "pokemonName": "Magikarp",
+      "number": 10,
+      "name": "Ponyta",
       "pokemonStage": "Basic",
-      "hp": 30,
-      "pokemonType": "Water",
+      "hp": 60,
+      "pokemonType": "Fire",
       "attacks": [
         {
-          "name": "30 HP",
-          "cost": []
+          "name": "Stomp",
+          "cost": [
+            {
+              "type": "Fire",
+              "count": 1
+            }
+          ],
+          "damage": 10,
+          "text": "Flip a coin. If heads, this attack does 30 more damage"
         }
       ],
       "abilities": [],
       "weakness": {
-        "type": "Lightning",
-        "value": "+20"
+        "type": "Water",
+        "value": 20
       },
       "retreatCost": [
         {
@@ -465,30 +406,120 @@
           "count": 1
         }
       ],
-      "illustrator": "Mitsuhiro Arita",
+      "illustrator": "Tomokazu Komiya",
       "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-013",
       "set": "A1a",
-      "number": "013",
-      "name": "Larvesta",
-      "pokemonName": "Larvesta",
-      "pokemonStage": null,
-      "hp": 80,
+      "number": 11,
+      "name": "Rapidash",
+      "pokemonStage": "Stage 1",
+      "hp": 100,
       "pokemonType": "Fire",
       "attacks": [
         {
-          "name": "80 HP",
-          "cost": [],
-          "damage": "30"
+          "name": "Rising Lunge",
+          "cost": [
+            {
+              "type": "Fire",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 40,
+          "text": "Flip a coin. If heads, this attack does 60 more damage"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Water",
-        "value": "+20"
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "AKIRA EGAWA",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 12,
+      "name": "Magmar",
+      "pokemonStage": "Basic",
+      "hp": 80,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "Fire Blast",
+          "cost": [
+            {
+              "type": "Fire",
+              "count": 2
+            }
+          ],
+          "damage": 80,
+          "text": "Discard 2 Fire Energy from this Pokémon"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "sui",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 13,
+      "name": "Larvesta",
+      "pokemonStage": null,
+      "hp": 80,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "Combustion",
+          "cost": [
+            {
+              "type": "Fire",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 30
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": 20
       },
       "retreatCost": [
         {
@@ -498,27 +529,38 @@
       ],
       "illustrator": "Kuroimori",
       "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-014",
       "set": "A1a",
-      "number": "014",
+      "number": 14,
       "name": "Volcarona",
-      "pokemonName": "Volcarona",
       "pokemonStage": null,
       "hp": 120,
       "pokemonType": "Fire",
       "attacks": [
         {
-          "name": "120 HP",
-          "cost": []
+          "name": "Volcanic Ash",
+          "cost": [
+            {
+              "type": "Fire",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 2
+            }
+          ],
+          "text": "Discard 2 Fire Energy from this Pokémon. This attack does 80 damage to 1 of your opponent's Pokémon"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Water",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -528,28 +570,34 @@
       ],
       "illustrator": "DOM",
       "raritySymbol": "diamond3",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-025",
       "set": "A1a",
-      "number": "025",
-      "name": "Pikachu",
-      "pokemonName": "Pikachu",
-      "pokemonStage": "Basic",
+      "number": 15,
+      "name": "Salandit",
+      "pokemonStage": null,
       "hp": 60,
-      "pokemonType": "Lightning",
+      "pokemonType": "Fire",
       "attacks": [
         {
-          "name": "60 HP",
-          "cost": [],
-          "damage": "10x"
+          "name": "Venoshock",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "text": "If your opponent's Active Pokémon is Poisoned, this attack does 40 more damage"
         }
       ],
       "abilities": [],
       "weakness": {
-        "type": "Fighting",
-        "value": "+20"
+        "type": "Water",
+        "value": 20
       },
       "retreatCost": [
         {
@@ -557,115 +605,74 @@
           "count": 1
         }
       ],
-      "illustrator": "Naoyo Kimura",
+      "illustrator": "Naoki Saito",
       "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-027",
       "set": "A1a",
-      "number": "027",
-      "name": "Electabuzz",
-      "pokemonName": "Electabuzz",
-      "pokemonStage": "Basic",
-      "hp": 70,
-      "pokemonType": "Lightning",
-      "attacks": [
-        {
-          "name": "70 HP",
-          "cost": []
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fighting",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Naoyo Kimura",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-021",
-      "set": "A1a",
-      "number": "021",
-      "name": "Lumineon",
-      "pokemonName": "Lumineon",
+      "number": 16,
+      "name": "Salazzle",
       "pokemonStage": null,
       "hp": 80,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "Poison Claws",
+          "cost": [
+            {
+              "type": "Fire",
+              "count": 1
+            }
+          ],
+          "damage": 30,
+          "text": "Your opponent's Active Pokémon is now Poisoned"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Mitsuhiro Arita",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 17,
+      "name": "Magikarp",
+      "pokemonStage": "Basic",
+      "hp": 30,
       "pokemonType": "Water",
       "attacks": [
         {
-          "name": "80 HP",
-          "cost": []
+          "name": "Leap Out",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "text": "Switch this Pokémon with 1 of your Benched Pokémon"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Lightning",
-        "value": "+20"
-      },
-      "illustrator": "Sekio",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-022",
-      "set": "A1a",
-      "number": "022",
-      "name": "Chewtle",
-      "pokemonName": "Chewtle",
-      "pokemonStage": null,
-      "hp": 80,
-      "pokemonType": "Water",
-      "attacks": [
-        {
-          "name": "80 HP",
-          "cost": [],
-          "damage": "30"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Lightning",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 2
-        }
-      ],
-      "illustrator": "Taiga Kayama",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-031",
-      "set": "A1a",
-      "number": "031",
-      "name": "Mew",
-      "pokemonName": "Mew",
-      "pokemonStage": "Basic",
-      "hp": 60,
-      "pokemonType": "Psychic",
-      "attacks": [
-        {
-          "name": "60 HP",
-          "cost": [],
-          "damage": "20"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -673,61 +680,41 @@
           "count": 1
         }
       ],
-      "illustrator": "Saya Tsuruta",
-      "raritySymbol": "diamond3",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-030",
-      "set": "A1a",
-      "number": "030",
-      "name": "Dedenne",
-      "pokemonName": "Dedenne",
-      "pokemonStage": null,
-      "hp": 60,
-      "pokemonType": "Lightning",
-      "attacks": [
-        {
-          "name": "60 HP",
-          "cost": [],
-          "damage": "10"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fighting",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Taiga Kayama",
+      "illustrator": "Mitsuhiro Arita",
       "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-018",
       "set": "A1a",
-      "number": "018",
+      "number": 18,
       "name": "Gyarados ex",
-      "pokemonName": "Gyarados",
       "pokemonStage": "Stage 1",
       "hp": 180,
       "pokemonType": "Water",
       "attacks": [
         {
-          "name": "180 HP",
-          "cost": [],
-          "damage": "140"
+          "name": "Rampaging Whirlpool",
+          "cost": [
+            {
+              "type": "Water",
+              "count": 3
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 140,
+          "text": "Discard a random Energy from among the Energy attached to all Pokémon (both yours and your opponent's)"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Lightning",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -737,26 +724,42 @@
       ],
       "illustrator": "PLANETA CG Works",
       "raritySymbol": "diamond4",
-      "exStatus": "ex"
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-019",
       "set": "A1a",
-      "number": "019",
+      "number": 19,
       "name": "Vaporeon",
-      "pokemonName": "Vaporeon",
       "pokemonStage": "Stage 2",
       "hp": 120,
       "pokemonType": "Water",
-      "attacks": [],
+      "attacks": [
+        {
+          "name": "Wave Splash",
+          "cost": [
+            {
+              "type": "Water",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 2
+            }
+          ]
+        }
+      ],
       "abilities": [
         {
-          "name": "120 HP"
+          "name": "Wash Out",
+          "text": "As often as you like during your turn, you may move a Water Energy from 1 of your Benched Water Pokémon to your Active Water Pokémon"
         }
       ],
       "weakness": {
         "type": "Lightning",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -766,90 +769,34 @@
       ],
       "illustrator": "LINNE",
       "raritySymbol": "diamond3",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-034",
       "set": "A1a",
-      "number": "034",
-      "name": "Elgyem",
-      "pokemonName": "Elgyem",
-      "pokemonStage": null,
-      "hp": 60,
-      "pokemonType": "Psychic",
-      "attacks": [
-        {
-          "name": "60 HP",
-          "cost": [],
-          "damage": "20"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Kouki Saitou",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-026",
-      "set": "A1a",
-      "number": "026",
-      "name": "Raichu",
-      "pokemonName": "Raichu",
-      "pokemonStage": "Stage 1",
-      "hp": 120,
-      "pokemonType": "Lightning",
-      "attacks": [
-        {
-          "name": "120 HP",
-          "cost": [],
-          "damage": "60"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fighting",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 2
-        }
-      ],
-      "illustrator": "hncl",
-      "raritySymbol": "diamond3",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-020",
-      "set": "A1a",
-      "number": "020",
+      "number": 20,
       "name": "Finneon",
-      "pokemonName": "Finneon",
       "pokemonStage": null,
       "hp": 60,
       "pokemonType": "Water",
       "attacks": [
         {
-          "name": "60 HP",
-          "cost": [],
-          "damage": "20"
+          "name": "Water Gun",
+          "cost": [
+            {
+              "type": "Water",
+              "count": 1
+            }
+          ],
+          "damage": 20
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Lightning",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -859,28 +806,107 @@
       ],
       "illustrator": "sui",
       "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-023",
       "set": "A1a",
-      "number": "023",
-      "name": "Drednaw",
-      "pokemonName": "Drednaw",
+      "number": 21,
+      "name": "Lumineon",
       "pokemonStage": null,
-      "hp": 130,
+      "hp": 80,
       "pokemonType": "Water",
       "attacks": [
         {
-          "name": "130 HP",
-          "cost": [],
-          "damage": "70"
+          "name": "Aqua Liner",
+          "cost": [
+            {
+              "type": "Water",
+              "count": 2
+            }
+          ],
+          "text": "This attack does 50 damage to 1 of your opponent's Benched Pokémon"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Lightning",
-        "value": "+20"
+        "value": 20
+      },
+      "illustrator": "Sekio",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 22,
+      "name": "Chewtle",
+      "pokemonStage": null,
+      "hp": 80,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "Bite",
+          "cost": [
+            {
+              "type": "Water",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 30
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Taiga Kayama",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 23,
+      "name": "Drednaw",
+      "pokemonStage": null,
+      "hp": 130,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "Crunch",
+          "cost": [
+            {
+              "type": "Water",
+              "count": 3
+            }
+          ],
+          "damage": 70,
+          "text": "Flip a coin. If heads, discard a random Energy from your opponent's Active Pokémon"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
       },
       "retreatCost": [
         {
@@ -890,28 +916,39 @@
       ],
       "illustrator": "nisimono",
       "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-024",
       "set": "A1a",
-      "number": "024",
+      "number": 24,
       "name": "Cramorant",
-      "pokemonName": "Cramorant",
       "pokemonStage": null,
       "hp": 80,
       "pokemonType": "Water",
       "attacks": [
         {
-          "name": "80 HP",
-          "cost": [],
-          "damage": "60"
+          "name": "Dive",
+          "cost": [
+            {
+              "type": "Water",
+              "count": 2
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 60,
+          "text": "Flip a coin. If heads, during your opponent's next turn, prevent all damage from and effects of attacks done to this Pokémon"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Lightning",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -921,618 +958,35 @@
       ],
       "illustrator": "Jerky",
       "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-036",
       "set": "A1a",
-      "number": "036",
-      "name": "Flabébé",
-      "pokemonName": "Flabébé",
-      "pokemonStage": null,
-      "hp": 40,
-      "pokemonType": "Psychic",
-      "attacks": [
-        {
-          "name": "40 HP",
-          "cost": []
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Cona Nitanda",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-037",
-      "set": "A1a",
-      "number": "037",
-      "name": "Floette",
-      "pokemonName": "Floette",
-      "pokemonStage": null,
-      "hp": 70,
-      "pokemonType": "Psychic",
-      "attacks": [
-        {
-          "name": "70 HP",
-          "cost": [],
-          "damage": "40"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Cona Nitanda",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-028",
-      "set": "A1a",
-      "number": "028",
-      "name": "Joltik",
-      "pokemonName": "Joltik",
-      "pokemonStage": null,
-      "hp": 40,
-      "pokemonType": "Lightning",
-      "attacks": [
-        {
-          "name": "40 HP",
-          "cost": [],
-          "damage": "30"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fighting",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "MINAMINAMI Take",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-029",
-      "set": "A1a",
-      "number": "029",
-      "name": "Galvantula",
-      "pokemonName": "Galvantula",
-      "pokemonStage": null,
-      "hp": 80,
-      "pokemonType": "Lightning",
-      "attacks": [
-        {
-          "name": "80 HP",
-          "cost": [],
-          "damage": "70"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fighting",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Mitsuhiro Arita",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-032",
-      "set": "A1a",
-      "number": "032",
-      "name": "Mew ex",
-      "pokemonName": "Mew",
+      "number": 25,
+      "name": "Pikachu",
       "pokemonStage": "Basic",
-      "hp": 130,
-      "pokemonType": "Psychic",
-      "attacks": [
-        {
-          "name": "130 HP",
-          "cost": [],
-          "damage": "20"
-        },
-        {
-          "name": "",
-          "cost": [],
-          "text": "Colorless Colorless Colorless"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "PLANETA CG Works",
-      "raritySymbol": "diamond4",
-      "exStatus": "ex"
-    },
-    {
-      "id": "A1a-039",
-      "set": "A1a",
-      "number": "039",
-      "name": "Swirlix",
-      "pokemonName": "Swirlix",
-      "pokemonStage": null,
       "hp": 60,
-      "pokemonType": "Psychic",
+      "pokemonType": "Lightning",
       "attacks": [
         {
-          "name": "60 HP",
-          "cost": [],
-          "damage": "20"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "5ban Graphics",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-033",
-      "set": "A1a",
-      "number": "033",
-      "name": "Sigilyph",
-      "pokemonName": "Sigilyph",
-      "pokemonStage": null,
-      "hp": 80,
-      "pokemonType": "Psychic",
-      "attacks": [
-        {
-          "name": "80 HP",
-          "cost": [],
-          "damage": "10"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Shigenori Negishi",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-047",
-      "set": "A1a",
-      "number": "047",
-      "name": "Marshadow",
-      "pokemonName": "Marshadow",
-      "pokemonStage": null,
-      "hp": 80,
-      "pokemonType": "Fighting",
-      "attacks": [
-        {
-          "name": "80 HP",
-          "cost": [],
-          "damage": "40+"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Psychic",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "kantaro",
-      "raritySymbol": "diamond3",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-035",
-      "set": "A1a",
-      "number": "035",
-      "name": "Beheeyem",
-      "pokemonName": "Beheeyem",
-      "pokemonStage": null,
-      "hp": 90,
-      "pokemonType": "Psychic",
-      "attacks": [
-        {
-          "name": "90 HP",
-          "cost": [],
-          "damage": "10+"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "sowsow",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-038",
-      "set": "A1a",
-      "number": "038",
-      "name": "Florges",
-      "pokemonName": "Florges",
-      "pokemonStage": null,
-      "hp": 120,
-      "pokemonType": "Psychic",
-      "attacks": [
-        {
-          "name": "120 HP",
-          "cost": [],
-          "damage": "80"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Cona Nitanda",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-041",
-      "set": "A1a",
-      "number": "041",
-      "name": "Mankey",
-      "pokemonName": "Mankey",
-      "pokemonStage": "Basic",
-      "hp": 50,
-      "pokemonType": "Fighting",
-      "attacks": [
-        {
-          "name": "50 HP",
-          "cost": [],
-          "damage": "50"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Psychic",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Akira Komayama",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-042",
-      "set": "A1a",
-      "number": "042",
-      "name": "Primeape",
-      "pokemonName": "Primeape",
-      "pokemonStage": "Stage 1",
-      "hp": 80,
-      "pokemonType": "Fighting",
-      "attacks": [
-        {
-          "name": "80 HP",
-          "cost": [],
-          "damage": "50"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Psychic",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Taiga Kayama",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-043",
-      "set": "A1a",
-      "number": "043",
-      "name": "Geodude",
-      "pokemonName": "Geodude",
-      "pokemonStage": "Basic",
-      "hp": 70,
-      "pokemonType": "Fighting",
-      "attacks": [
-        {
-          "name": "70 HP",
-          "cost": [],
-          "damage": "30"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Grass",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 2
-        }
-      ],
-      "illustrator": "GOSSAN",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-045",
-      "set": "A1a",
-      "number": "045",
-      "name": "Golem",
-      "pokemonName": "Golem",
-      "pokemonStage": "Stage 2",
-      "hp": 160,
-      "pokemonType": "Fighting",
-      "attacks": [
-        {
-          "name": "160 HP",
-          "cost": [],
-          "damage": "120"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Grass",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 3
-        }
-      ],
-      "illustrator": "Masakazu Fukuda",
-      "raritySymbol": "diamond3",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-046",
-      "set": "A1a",
-      "number": "046",
-      "name": "Aerodactyl ex",
-      "pokemonName": "Aerodactyl",
-      "pokemonStage": "Basic",
-      "hp": 140,
-      "pokemonType": "Fighting",
-      "attacks": [],
-      "abilities": [
-        {
-          "name": "140 HP"
-        }
-      ],
-      "weakness": {
-        "type": "Lightning",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "PLANETA CG Works",
-      "raritySymbol": "diamond4",
-      "exStatus": "ex"
-    },
-    {
-      "id": "A1a-044",
-      "set": "A1a",
-      "number": "044",
-      "name": "Graveler",
-      "pokemonName": "Graveler",
-      "pokemonStage": "Stage 1",
-      "hp": 100,
-      "pokemonType": "Fighting",
-      "attacks": [
-        {
-          "name": "100 HP",
-          "cost": [],
-          "damage": "40"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Grass",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 3
-        }
-      ],
-      "illustrator": "Ayaka Yoshida",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-040",
-      "set": "A1a",
-      "number": "040",
-      "name": "Slurpuff",
-      "pokemonName": "Slurpuff",
-      "pokemonStage": null,
-      "hp": 100,
-      "pokemonType": "Psychic",
-      "attacks": [
-        {
-          "name": "100 HP",
-          "cost": [],
-          "damage": "60"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 2
-        }
-      ],
-      "illustrator": "Kagemaru Himeno",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-057",
-      "set": "A1a",
-      "number": "057",
-      "name": "Pidgey",
-      "pokemonName": "Pidgey",
-      "pokemonStage": "Basic",
-      "hp": 50,
-      "pokemonType": "Colorless",
-      "attacks": [
-        {
-          "name": "50 HP",
-          "cost": [],
-          "damage": "20"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Lightning",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Shigenori Negishi",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-058",
-      "set": "A1a",
-      "number": "058",
-      "name": "Pidgeotto",
-      "pokemonName": "Pidgeotto",
-      "pokemonStage": "Stage 1",
-      "hp": 90,
-      "pokemonType": "Colorless",
-      "attacks": [
-        {
-          "name": "90 HP",
-          "cost": [],
-          "damage": "50"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Lightning",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Taiga Kayama",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-049",
-      "set": "A1a",
-      "number": "049",
-      "name": "Koffing",
-      "pokemonName": "Koffing",
-      "pokemonStage": "Basic",
-      "hp": 70,
-      "pokemonType": "Darkness",
-      "attacks": [
-        {
-          "name": "70 HP",
-          "cost": []
+          "name": "Circle Circuit",
+          "cost": [
+            {
+              "type": "Lightning",
+              "count": 1
+            }
+          ],
+          "damage": 10,
+          "text": "This attack does 10 damage for each of your Benched Electric Pokémon"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Fighting",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1542,28 +996,72 @@
       ],
       "illustrator": "Naoyo Kimura",
       "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-053",
       "set": "A1a",
-      "number": "053",
-      "name": "Venipede",
-      "pokemonName": "Venipede",
-      "pokemonStage": null,
-      "hp": 60,
-      "pokemonType": "Darkness",
+      "number": 26,
+      "name": "Raichu",
+      "pokemonStage": "Stage 1",
+      "hp": 120,
+      "pokemonType": "Lightning",
       "attacks": [
         {
-          "name": "60 HP",
-          "cost": [],
-          "damage": "20"
+          "name": "Gigashock",
+          "cost": [
+            {
+              "type": "Lightning",
+              "count": 3
+            }
+          ],
+          "damage": 60,
+          "text": "This attack also does 20 damage to each of your opponent's Benched Pokémon"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Fighting",
-        "value": "+20"
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "hncl",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 27,
+      "name": "Electabuzz",
+      "pokemonStage": "Basic",
+      "hp": 70,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "Thunder Spear",
+          "cost": [
+            {
+              "type": "Lightning",
+              "count": 2
+            }
+          ],
+          "text": "This attack does 40 damage to 1 of your opponent's Pokémon"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1571,30 +1069,824 @@
           "count": 1
         }
       ],
-      "illustrator": "Yukiko Baba",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
+      "illustrator": "Naoyo Kimura",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-048",
       "set": "A1a",
-      "number": "048",
-      "name": "Stonjourner",
-      "pokemonName": "Stonjourner",
+      "number": 28,
+      "name": "Joltik",
+      "pokemonStage": null,
+      "hp": 40,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "Bug Bite",
+          "cost": [
+            {
+              "type": "Lightning",
+              "count": 1
+            }
+          ],
+          "damage": 30
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "MINAMINAMI Take",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 29,
+      "name": "Galvantula",
+      "pokemonStage": null,
+      "hp": 80,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "Electroweb",
+          "cost": [
+            {
+              "type": "Lightning",
+              "count": 2
+            }
+          ],
+          "damage": 70,
+          "text": "During your opponent's next turn, the Defending Pokémon can't retreat"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Mitsuhiro Arita",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 30,
+      "name": "Dedenne",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "Thunder Shock",
+          "cost": [
+            {
+              "type": "Lightning",
+              "count": 1
+            }
+          ],
+          "damage": 10,
+          "text": "Flip a coin. If heads, your opponent's Active Pokémon is now Paralyzed"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Taiga Kayama",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 31,
+      "name": "Mew",
+      "pokemonStage": "Basic",
+      "hp": 60,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Psy Report",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 1
+            }
+          ],
+          "damage": 20,
+          "text": "Your opponent reveals their hand."
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Saya Tsuruta",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 32,
+      "name": "Mew ex",
+      "pokemonStage": "Basic",
+      "hp": 130,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Psyshot",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 1
+            }
+          ],
+          "damage": 20
+        },
+        {
+          "name": "Genome Hacking",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 3
+            }
+          ],
+          "text": "Choose 1 of your opponent's Active Pokémon's attacks and use it as this attack"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA CG Works",
+      "raritySymbol": "diamond4",
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 33,
+      "name": "Sigilyph",
+      "pokemonStage": null,
+      "hp": 80,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Spike Draw",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 1
+            }
+          ],
+          "damage": 10,
+          "text": "Draw a card"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Shigenori Negishi",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 34,
+      "name": "Elgyem",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Headbutt",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 1
+            }
+          ],
+          "damage": 20
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Kouki Saitou",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 35,
+      "name": "Beheeyem",
+      "pokemonStage": null,
+      "hp": 90,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Mind Jack",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 1
+            }
+          ],
+          "damage": 10,
+          "text": "This attack does 20 more damage for each of your opponent's Benched Pokémon"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "sowsow",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 36,
+      "name": "Flabébé",
+      "pokemonStage": null,
+      "hp": 40,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Hypnotic Gaze",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 1
+            }
+          ],
+          "text": "Your opponent's Pokémon is now Asleep"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Cona Nitanda",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 37,
+      "name": "Floette",
+      "pokemonStage": null,
+      "hp": 70,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Leaf Drain",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 1
+            }
+          ],
+          "damage": 40,
+          "text": "Heal 10 damage from this Pokémon"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Cona Nitanda",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 38,
+      "name": "Florges",
       "pokemonStage": null,
       "hp": 120,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Bloomshine",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 2
+            }
+          ],
+          "damage": 80,
+          "text": "Heal 20 damage from each of your Pokémon."
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Cona Nitanda",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 39,
+      "name": "Swirlix",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Fairy Wind",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 1
+            }
+          ],
+          "damage": 20
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "5ban Graphics",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 40,
+      "name": "Slurpuff",
+      "pokemonStage": null,
+      "hp": 100,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Magical Shot",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 60
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "Kagemaru Himeno",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 41,
+      "name": "Mankey",
+      "pokemonStage": "Basic",
+      "hp": 50,
       "pokemonType": "Fighting",
       "attacks": [
         {
-          "name": "120 HP",
-          "cost": [],
-          "damage": "90"
+          "name": "Focus Fist",
+          "cost": [
+            {
+              "type": "Fighting",
+              "count": 1
+            }
+          ],
+          "damage": 50,
+          "text": "Flip a coin. If tails, this attack does nothing"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Akira Komayama",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 42,
+      "name": "Primeape",
+      "pokemonStage": "Stage 1",
+      "hp": 80,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "Punch",
+          "cost": [
+            {
+              "type": "Fighting",
+              "count": 1
+            }
+          ],
+          "damage": 50
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Taiga Kayama",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 43,
+      "name": "Geodude",
+      "pokemonStage": "Basic",
+      "hp": 70,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "Light Punch",
+          "cost": [
+            {
+              "type": "Fighting",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 30
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Grass",
-        "value": "+20"
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "GOSSAN",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 44,
+      "name": "Graveler",
+      "pokemonStage": "Stage 1",
+      "hp": 100,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "Lunge Out",
+          "cost": [
+            {
+              "type": "Fighting",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 40
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Grass",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "Ayaka Yoshida",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 45,
+      "name": "Golem",
+      "pokemonStage": "Stage 2",
+      "hp": 160,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "Guard Press",
+          "cost": [
+            {
+              "type": "Fighting",
+              "count": 3
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 120,
+          "text": "During your opponent's next turn, this Pokémon takes -30 damage from attacks"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Grass",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "Masakazu Fukuda",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 46,
+      "name": "Aerodactyl ex",
+      "pokemonStage": "Basic",
+      "hp": 140,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "Land Crush",
+          "cost": [
+            {
+              "type": "Fighting",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "abilities": [
+        {
+          "name": "Primeval Law",
+          "text": "Your opponent can't play any Pokémon from their hand to evolve their Active Pokémon"
+        }
+      ],
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA CG Works",
+      "raritySymbol": "diamond4",
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 47,
+      "name": "Marshadow",
+      "pokemonStage": null,
+      "hp": 80,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "Revenge",
+          "cost": [
+            {
+              "type": "Fighting",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 40,
+          "text": "If any of your Pokémon were knocked out by damage from an attack during your opponent's last turn, this attack does 60 more damage"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Psychic",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "kantaro",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 48,
+      "name": "Stonjourner",
+      "pokemonStage": null,
+      "hp": 120,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "Mega Kick",
+          "cost": [
+            {
+              "type": "Fighting",
+              "count": 3
+            }
+          ],
+          "damage": 90
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Grass",
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1604,59 +1896,221 @@
       ],
       "illustrator": "Teeziro",
       "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-055",
       "set": "A1a",
-      "number": "055",
-      "name": "Scolipede",
-      "pokemonName": "Scolipede",
-      "pokemonStage": null,
-      "hp": 140,
+      "number": 49,
+      "name": "Koffing",
+      "pokemonStage": "Basic",
+      "hp": 70,
       "pokemonType": "Darkness",
       "attacks": [
         {
-          "name": "140 HP",
-          "cost": [],
-          "damage": "70+"
+          "name": "Division",
+          "cost": [
+            {
+              "type": "Darkness",
+              "count": 1
+            }
+          ],
+          "text": "Put 1 random Koffing from your deck onto your Bench."
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Fighting",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 2
+          "count": 1
         }
       ],
-      "illustrator": "5ban Graphics",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
+      "illustrator": "Naoyo Kimura",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-054",
       "set": "A1a",
-      "number": "054",
-      "name": "Whirlipede",
-      "pokemonName": "Whirlipede",
+      "number": 50,
+      "name": "Weezing",
+      "pokemonStage": "Stage 1",
+      "hp": 110,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "Smokescreen",
+          "cost": [
+            {
+              "type": "Darkness",
+              "count": 2
+            }
+          ],
+          "damage": 50,
+          "text": "During your opponent's next turn, if the Defending Pokémon tries to use an attack, your opponent flips a coin. If tails, that attack doesn't happen"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "Mousho",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 51,
+      "name": "Purrloin",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "Scratch",
+          "cost": [
+            {
+              "type": "Darkness",
+              "count": 1
+            }
+          ],
+          "damage": 20
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Kagemaru Himeno",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 52,
+      "name": "Liepard",
       "pokemonStage": null,
       "hp": 90,
       "pokemonType": "Darkness",
       "attacks": [
         {
-          "name": "90 HP",
-          "cost": [],
-          "damage": "20"
+          "name": "Slash",
+          "cost": [
+            {
+              "type": "Darkness",
+              "count": 1
+            }
+          ],
+          "damage": 40
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Fighting",
-        "value": "+20"
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "GIDORA",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 53,
+      "name": "Venipede",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "Ram",
+          "cost": [
+            {
+              "type": "Darkness",
+              "count": 1
+            }
+          ],
+          "damage": 20
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Yukiko Baba",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 54,
+      "name": "Whirlipede",
+      "pokemonStage": null,
+      "hp": 90,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "Poison Sting",
+          "cost": [
+            {
+              "type": "Darkness",
+              "count": 1
+            }
+          ],
+          "damage": 20,
+          "text": "Your opponent's Active Pokémon is now Poisoned."
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1666,21 +2120,65 @@
       ],
       "illustrator": "Shin Nagasawa",
       "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-056",
       "set": "A1a",
-      "number": "056",
+      "number": 55,
+      "name": "Scolipede",
+      "pokemonStage": null,
+      "hp": 140,
+      "pokemonType": "Darkness",
+      "attacks": [
+        {
+          "name": "Venoshock",
+          "cost": [
+            {
+              "type": "Darkness",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 70,
+          "text": "If your opponent's Active Pokémon is Poisoned, this attack does 50 more damage"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "5ban Graphics",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 56,
       "name": "Druddigon",
-      "pokemonName": "Druddigon",
       "pokemonStage": null,
       "hp": 100,
       "pokemonType": "Dragon",
       "attacks": [],
       "abilities": [
         {
-          "name": "100 HP"
+          "name": "Rough Skin",
+          "text": "If this Pokémon is in the Active Spot and is damaged by an attack from your opponent's Pokémon, do 20 damage to the Attacking Pokémon"
         }
       ],
       "retreatCost": [
@@ -1691,193 +2189,34 @@
       ],
       "illustrator": "Ryota Murayama",
       "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-060",
       "set": "A1a",
-      "number": "060",
-      "name": "Tauros",
-      "pokemonName": "Tauros",
+      "number": 57,
+      "name": "Pidgey",
       "pokemonStage": "Basic",
-      "hp": 100,
+      "hp": 50,
       "pokemonType": "Colorless",
       "attacks": [
         {
-          "name": "100 HP",
-          "cost": [],
-          "damage": "40+"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fighting",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "KEIICHIRO ITO",
-      "raritySymbol": "diamond3",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-050",
-      "set": "A1a",
-      "number": "050",
-      "name": "Weezing",
-      "pokemonName": "Weezing",
-      "pokemonStage": "Stage 1",
-      "hp": 110,
-      "pokemonType": "Darkness",
-      "attacks": [
-        {
-          "name": "110 HP",
-          "cost": [],
-          "damage": "50"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fighting",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 3
-        }
-      ],
-      "illustrator": "Mousho",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-061",
-      "set": "A1a",
-      "number": "061",
-      "name": "Eevee",
-      "pokemonName": "Eevee",
-      "pokemonStage": "Basic",
-      "hp": 60,
-      "pokemonType": "Colorless",
-      "attacks": [
-        {
-          "name": "60 HP",
-          "cost": [],
-          "damage": "20x"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fighting",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Hitoshi Ariga",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-068",
-      "set": "A1a",
-      "number": "068",
-      "name": "Leaf",
-      "pokemonName": "Leaf",
-      "pokemonStage": null,
-      "attacks": [],
-      "abilities": [],
-      "illustrator": "En Morikura",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-069",
-      "set": "A1a",
-      "number": "069",
-      "name": "Exeggutor",
-      "pokemonName": "Exeggutor",
-      "pokemonStage": "Stage 1",
-      "hp": 130,
-      "pokemonType": "Grass",
-      "attacks": [
-        {
-          "name": "130 HP",
-          "cost": [],
-          "damage": "80+"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fire",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 3
-        }
-      ],
-      "illustrator": "Gapao",
-      "raritySymbol": "star1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-070",
-      "set": "A1a",
-      "number": "070",
-      "name": "Serperior",
-      "pokemonName": "Serperior",
-      "pokemonStage": null,
-      "hp": 110,
-      "pokemonType": "Grass",
-      "attacks": [],
-      "abilities": [
-        {
-          "name": "110 HP"
-        }
-      ],
-      "weakness": {
-        "type": "Fire",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 2
-        }
-      ],
-      "illustrator": "rika",
-      "raritySymbol": "star1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-062",
-      "set": "A1a",
-      "number": "062",
-      "name": "Chatot",
-      "pokemonName": "Chatot",
-      "pokemonStage": null,
-      "hp": 60,
-      "pokemonType": "Colorless",
-      "attacks": [
-        {
-          "name": "60 HP",
-          "cost": []
+          "name": "Flap",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 20
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Lightning",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1885,120 +2224,36 @@
           "count": 1
         }
       ],
-      "illustrator": "Masako Tomii",
+      "illustrator": "Shigenori Negishi",
       "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-051",
       "set": "A1a",
-      "number": "051",
-      "name": "Purrloin",
-      "pokemonName": "Purrloin",
-      "pokemonStage": null,
-      "hp": 60,
-      "pokemonType": "Darkness",
-      "attacks": [
-        {
-          "name": "60 HP",
-          "cost": [],
-          "damage": "20"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fighting",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Kagemaru Himeno",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-071",
-      "set": "A1a",
-      "number": "071",
-      "name": "Salandit",
-      "pokemonName": "Salandit",
-      "pokemonStage": null,
-      "hp": 60,
-      "pokemonType": "Fire",
-      "attacks": [
-        {
-          "name": "60 HP",
-          "cost": []
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Water",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "Nurikabe",
-      "raritySymbol": "star1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-072",
-      "set": "A1a",
-      "number": "072",
-      "name": "Vaporeon",
-      "pokemonName": "Vaporeon",
-      "pokemonStage": "Stage 2",
-      "hp": 120,
-      "pokemonType": "Water",
-      "attacks": [],
-      "abilities": [
-        {
-          "name": "120 HP"
-        }
-      ],
-      "weakness": {
-        "type": "Lightning",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 2
-        }
-      ],
-      "illustrator": "aspara",
-      "raritySymbol": "star1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-052",
-      "set": "A1a",
-      "number": "052",
-      "name": "Liepard",
-      "pokemonName": "Liepard",
-      "pokemonStage": null,
+      "number": 58,
+      "name": "Pidgeotto",
+      "pokemonStage": "Stage 1",
       "hp": 90,
-      "pokemonType": "Darkness",
+      "pokemonType": "Colorless",
       "attacks": [
         {
-          "name": "90 HP",
-          "cost": [],
-          "damage": "40"
+          "name": "Wing Attack",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 3
+            }
+          ],
+          "damage": 50
         }
       ],
       "abilities": [],
       "weakness": {
-        "type": "Fighting",
-        "value": "+20"
+        "type": "Lightning",
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2006,30 +2261,37 @@
           "count": 1
         }
       ],
-      "illustrator": "GIDORA",
+      "illustrator": "Taiga Kayama",
       "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-059",
       "set": "A1a",
-      "number": "059",
+      "number": 59,
       "name": "Pidgeot ex",
-      "pokemonName": "Pidgeot",
       "pokemonStage": "Stage 2",
       "hp": 170,
       "pokemonType": "Colorless",
       "attacks": [
         {
-          "name": "170 HP",
-          "cost": [],
-          "damage": "80+"
+          "name": "Scattering Cyclone",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 3
+            }
+          ],
+          "damage": 80,
+          "text": "This attack does 20 more damage for each of your opponent's Benched Pokémon"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Lightning",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2039,28 +2301,402 @@
       ],
       "illustrator": "PLANETA CG Works",
       "raritySymbol": "diamond4",
-      "exStatus": "ex"
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-073",
       "set": "A1a",
-      "number": "073",
-      "name": "Dedenne",
-      "pokemonName": "Dedenne",
-      "pokemonStage": null,
-      "hp": 60,
-      "pokemonType": "Lightning",
+      "number": 60,
+      "name": "Tauros",
+      "pokemonStage": "Basic",
+      "hp": 100,
+      "pokemonType": "Colorless",
       "attacks": [
         {
-          "name": "60 HP",
-          "cost": [],
-          "damage": "10"
+          "name": "Fighting Tackle",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 3
+            }
+          ],
+          "damage": 40,
+          "text": "If your opponent's Active Pokémon is a Pokémon ex, this attack does 80 more damage"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Fighting",
-        "value": "+20"
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "KEIICHIRO ITO",
+      "raritySymbol": "diamond3",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 61,
+      "name": "Eevee",
+      "pokemonStage": "Basic",
+      "hp": 60,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "Continuous Steps",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 20,
+          "text": "Flip a coin until you get a tails. This attack does 20 damage for each heads"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Hitoshi Ariga",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 62,
+      "name": "Chatot",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "Mimic",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "text": "Shuffle your hand into your deck. Draw a card for each card in your opponent's hand"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Masako Tomii",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 63,
+      "name": "Old Amber",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "Toyste Beach",
+      "raritySymbol": "diamond1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 64,
+      "name": "Pokemon Flute",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "Toyste Beach",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 65,
+      "name": "Mythical Slab",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "AYUMI ODASHIMA",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 66,
+      "name": "Budding Expeditioner",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "Yuu Nishida",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 67,
+      "name": "Blue",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "Ryuta Fuse",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 68,
+      "name": "Leaf",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "En Morikura",
+      "raritySymbol": "diamond2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 69,
+      "name": "Exeggutor",
+      "pokemonStage": "Stage 1",
+      "hp": 130,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "Psychic",
+          "cost": [
+            {
+              "type": "Grass",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 3
+            }
+          ],
+          "damage": 80,
+          "text": "This attack does 20 more damage for each Energy attached to your opponent's Active Pokémon"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "Gapao",
+      "raritySymbol": "star1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 70,
+      "name": "Serperior",
+      "pokemonStage": null,
+      "hp": 110,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "Solar Beam",
+          "cost": [
+            {
+              "type": "Grass",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 3
+            }
+          ],
+          "damage": 70
+        }
+      ],
+      "abilities": [
+        {
+          "name": "Jungle Totem",
+          "text": "Each Grass Energy attached to your Grass Pokémon provides 2 Grass Energy. This effect doesn't stack"
+        }
+      ],
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "rika",
+      "raritySymbol": "star1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 71,
+      "name": "Salandit",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Fire",
+      "attacks": [
+        {
+          "name": "Venoshock",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "text": "If your opponent's Active Pokémon is Poisoned, this attack does 40 more damage"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "Nurikabe",
+      "raritySymbol": "star1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 72,
+      "name": "Vaporeon",
+      "pokemonStage": "Stage 2",
+      "hp": 120,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "Wave Splash",
+          "cost": [
+            {
+              "type": "Water",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 2
+            }
+          ]
+        }
+      ],
+      "abilities": [
+        {
+          "name": "Wash Out",
+          "text": "As often as you like during your turn, you may move a Water Energy from 1 of your Benched Water Pokémon to your Active Water Pokémon"
+        }
+      ],
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ],
+      "illustrator": "aspara",
+      "raritySymbol": "star1",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 73,
+      "name": "Dedenne",
+      "pokemonStage": null,
+      "hp": 60,
+      "pokemonType": "Lightning",
+      "attacks": [
+        {
+          "name": "Thunder Shock",
+          "cost": [
+            {
+              "type": "Lightning",
+              "count": 1
+            }
+          ],
+          "damage": 10,
+          "text": "Flip a coin. If heads, your opponent's Active Pokémon is now Paralyzed"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2070,362 +2706,39 @@
       ],
       "illustrator": "Yuu Nishida",
       "raritySymbol": "star1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-079",
       "set": "A1a",
-      "number": "079",
-      "name": "Pidgeot ex",
-      "pokemonName": "Pidgeot",
-      "pokemonStage": "Stage 2",
-      "hp": 170,
-      "pokemonType": "Colorless",
-      "attacks": [
-        {
-          "name": "170 HP",
-          "cost": [],
-          "damage": "80+"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Lightning",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "PLANETA CG Works",
-      "raritySymbol": "star2",
-      "exStatus": "ex"
-    },
-    {
-      "id": "A1a-063",
-      "set": "A1a",
-      "number": "063",
-      "name": "Old Amber",
-      "pokemonName": "Old Amber",
-      "pokemonStage": null,
-      "attacks": [],
-      "abilities": [],
-      "illustrator": "Toyste Beach",
-      "raritySymbol": "diamond1",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-080",
-      "set": "A1a",
-      "number": "080",
-      "name": "Budding Expeditioner",
-      "pokemonName": "Budding Expeditioner",
-      "pokemonStage": null,
-      "attacks": [],
-      "abilities": [],
-      "illustrator": "Yuu Nishida",
-      "raritySymbol": "star2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-064",
-      "set": "A1a",
-      "number": "064",
-      "name": "Pokemon Flute",
-      "pokemonName": "Pokemon Flute",
-      "pokemonStage": null,
-      "attacks": [],
-      "abilities": [],
-      "illustrator": "Toyste Beach",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-065",
-      "set": "A1a",
-      "number": "065",
-      "name": "Mythical Slab",
-      "pokemonName": "Mythical Slab",
-      "pokemonStage": null,
-      "attacks": [],
-      "abilities": [],
-      "illustrator": "AYUMI ODASHIMA",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-066",
-      "set": "A1a",
-      "number": "066",
-      "name": "Budding Expeditioner",
-      "pokemonName": "Budding Expeditioner",
-      "pokemonStage": null,
-      "attacks": [],
-      "abilities": [],
-      "illustrator": "Yuu Nishida",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-076",
-      "set": "A1a",
-      "number": "076",
-      "name": "Gyarados ex",
-      "pokemonName": "Gyarados",
-      "pokemonStage": "Stage 1",
-      "hp": 180,
-      "pokemonType": "Water",
-      "attacks": [
-        {
-          "name": "180 HP",
-          "cost": [],
-          "damage": "140"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Lightning",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 3
-        }
-      ],
-      "illustrator": "PLANETA CG Works",
-      "raritySymbol": "star2",
-      "exStatus": "ex"
-    },
-    {
-      "id": "A1a-077",
-      "set": "A1a",
-      "number": "077",
-      "name": "Mew ex",
-      "pokemonName": "Mew",
-      "pokemonStage": "Basic",
-      "hp": 130,
-      "pokemonType": "Psychic",
-      "attacks": [
-        {
-          "name": "130 HP",
-          "cost": [],
-          "damage": "20"
-        },
-        {
-          "name": "",
-          "cost": [],
-          "text": "Colorless Colorless Colorless"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "PLANETA CG Works",
-      "raritySymbol": "star2",
-      "exStatus": "ex"
-    },
-    {
-      "id": "A1a-067",
-      "set": "A1a",
-      "number": "067",
-      "name": "Blue",
-      "pokemonName": "Blue",
-      "pokemonStage": null,
-      "attacks": [],
-      "abilities": [],
-      "illustrator": "Ryuta Fuse",
-      "raritySymbol": "diamond2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-081",
-      "set": "A1a",
-      "number": "081",
-      "name": "Blue",
-      "pokemonName": "Blue",
-      "pokemonStage": null,
-      "attacks": [],
-      "abilities": [],
-      "illustrator": "Ryuta Fuse",
-      "raritySymbol": "star2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-082",
-      "set": "A1a",
-      "number": "082",
-      "name": "Leaf",
-      "pokemonName": "Leaf",
-      "pokemonStage": null,
-      "attacks": [],
-      "abilities": [],
-      "illustrator": "En Morikura",
-      "raritySymbol": "star2",
-      "exStatus": "non-ex"
-    },
-    {
-      "id": "A1a-084",
-      "set": "A1a",
-      "number": "084",
-      "name": "Aerodactyl ex",
-      "pokemonName": "Aerodactyl",
-      "pokemonStage": "Basic",
-      "hp": 140,
-      "pokemonType": "Fighting",
-      "attacks": [],
-      "abilities": [
-        {
-          "name": "140 HP"
-        }
-      ],
-      "weakness": {
-        "type": "Lightning",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "danciao",
-      "raritySymbol": "star2",
-      "exStatus": "ex"
-    },
-    {
-      "id": "A1a-083",
-      "set": "A1a",
-      "number": "083",
-      "name": "Mew ex",
-      "pokemonName": "Mew",
-      "pokemonStage": "Basic",
-      "hp": 130,
-      "pokemonType": "Psychic",
-      "attacks": [
-        {
-          "name": "130 HP",
-          "cost": [],
-          "damage": "20"
-        },
-        {
-          "name": "",
-          "cost": [],
-          "text": "Colorless Colorless Colorless"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "HYOGONOSUKE",
-      "raritySymbol": "star2",
-      "exStatus": "ex"
-    },
-    {
-      "id": "A1a-085",
-      "set": "A1a",
-      "number": "085",
-      "name": "Celebi ex",
-      "pokemonName": "Celebi",
-      "pokemonStage": null,
-      "hp": 130,
-      "pokemonType": "Grass",
-      "attacks": [
-        {
-          "name": "130 HP",
-          "cost": [],
-          "damage": "50x"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Fire",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "kantaro",
-      "raritySymbol": "star3",
-      "exStatus": "ex"
-    },
-    {
-      "id": "A1a-086",
-      "set": "A1a",
-      "number": "086",
-      "name": "Mew ex",
-      "pokemonName": "Mew",
-      "pokemonStage": "Basic",
-      "hp": 130,
-      "pokemonType": "Psychic",
-      "attacks": [
-        {
-          "name": "130 HP",
-          "cost": [],
-          "damage": "20"
-        },
-        {
-          "name": "",
-          "cost": [],
-          "text": "Colorless Colorless Colorless"
-        }
-      ],
-      "abilities": [],
-      "weakness": {
-        "type": "Darkness",
-        "value": "+20"
-      },
-      "retreatCost": [
-        {
-          "type": "Colorless",
-          "count": 1
-        }
-      ],
-      "illustrator": "PLANETA CG Works",
-      "raritySymbol": "crown",
-      "exStatus": "ex"
-    },
-    {
-      "id": "A1a-074",
-      "set": "A1a",
-      "number": "074",
+      "number": 74,
       "name": "Marshadow",
-      "pokemonName": "Marshadow",
       "pokemonStage": null,
       "hp": 80,
       "pokemonType": "Fighting",
       "attacks": [
         {
-          "name": "80 HP",
-          "cost": [],
-          "damage": "40+"
+          "name": "Revenge",
+          "cost": [
+            {
+              "type": "Fighting",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 40,
+          "text": "If any of your Pokémon were knocked out by damage from an attack during your opponent's last turn, this attack does 60 more damage"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Psychic",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2435,28 +2748,39 @@
       ],
       "illustrator": "OKACHEKE",
       "raritySymbol": "star1",
-      "exStatus": "non-ex"
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-075",
       "set": "A1a",
-      "number": "075",
+      "number": 75,
       "name": "Celebi ex",
-      "pokemonName": "Celebi",
       "pokemonStage": null,
       "hp": 130,
       "pokemonType": "Grass",
       "attacks": [
         {
-          "name": "130 HP",
-          "cost": [],
-          "damage": "50x"
+          "name": "Powerful Bloom",
+          "cost": [
+            {
+              "type": "Grass",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 50,
+          "text": "Flip a coin for each Energy attached to this Pokémon. This attack does 50 damage for each heads"
         }
       ],
       "abilities": [],
       "weakness": {
         "type": "Fire",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2466,26 +2790,131 @@
       ],
       "illustrator": "PLANETA CG Works",
       "raritySymbol": "star2",
-      "exStatus": "ex"
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
     },
     {
-      "id": "A1a-078",
       "set": "A1a",
-      "number": "078",
+      "number": 76,
+      "name": "Gyarados ex",
+      "pokemonStage": "Stage 1",
+      "hp": 180,
+      "pokemonType": "Water",
+      "attacks": [
+        {
+          "name": "Rampaging Whirlpool",
+          "cost": [
+            {
+              "type": "Water",
+              "count": 3
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 140,
+          "text": "Discard a random Energy from among the Energy attached to all Pokémon (both yours and your opponent's)"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ],
+      "illustrator": "PLANETA CG Works",
+      "raritySymbol": "star2",
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 77,
+      "name": "Mew ex",
+      "pokemonStage": "Basic",
+      "hp": 130,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Psyshot",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 1
+            }
+          ],
+          "damage": 20
+        },
+        {
+          "name": "Genome Hacking",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 3
+            }
+          ],
+          "text": "Choose 1 of your opponent's Active Pokémon's attacks and use it as this attack"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA CG Works",
+      "raritySymbol": "star2",
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 78,
       "name": "Aerodactyl ex",
-      "pokemonName": "Aerodactyl",
       "pokemonStage": "Basic",
       "hp": 140,
       "pokemonType": "Fighting",
-      "attacks": [],
+      "attacks": [
+        {
+          "name": "Land Crush",
+          "cost": [
+            {
+              "type": "Fighting",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ]
+        }
+      ],
       "abilities": [
         {
-          "name": "140 HP"
+          "name": "Primeval Law",
+          "text": "Your opponent can't play any Pokémon from their hand to evolve their Active Pokémon"
         }
       ],
       "weakness": {
         "type": "Lightning",
-        "value": "+20"
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2495,7 +2924,271 @@
       ],
       "illustrator": "PLANETA CG Works",
       "raritySymbol": "star2",
-      "exStatus": "ex"
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 79,
+      "name": "Pidgeot ex",
+      "pokemonStage": "Stage 2",
+      "hp": 170,
+      "pokemonType": "Colorless",
+      "attacks": [
+        {
+          "name": "Scattering Cyclone",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 3
+            }
+          ],
+          "damage": 80,
+          "text": "This attack does 20 more damage for each of your opponent's Benched Pokémon"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA CG Works",
+      "raritySymbol": "star2",
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 80,
+      "name": "Budding Expeditioner",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "Yuu Nishida",
+      "raritySymbol": "star2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 81,
+      "name": "Blue",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "Ryuta Fuse",
+      "raritySymbol": "star2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 82,
+      "name": "Leaf",
+      "pokemonStage": null,
+      "attacks": [],
+      "abilities": [],
+      "illustrator": "En Morikura",
+      "raritySymbol": "star2",
+      "exStatus": "non-ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 83,
+      "name": "Mew ex",
+      "pokemonStage": "Basic",
+      "hp": 130,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Psyshot",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 1
+            }
+          ],
+          "damage": 20
+        },
+        {
+          "name": "Genome Hacking",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 3
+            }
+          ],
+          "text": "Choose 1 of your opponent's Active Pokémon's attacks and use it as this attack"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "HYOGONOSUKE",
+      "raritySymbol": "star2",
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 84,
+      "name": "Aerodactyl ex",
+      "pokemonStage": "Basic",
+      "hp": 140,
+      "pokemonType": "Fighting",
+      "attacks": [
+        {
+          "name": "Land Crush",
+          "cost": [
+            {
+              "type": "Fighting",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "abilities": [
+        {
+          "name": "Primeval Law",
+          "text": "Your opponent can't play any Pokémon from their hand to evolve their Active Pokémon"
+        }
+      ],
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "danciao",
+      "raritySymbol": "star2",
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 85,
+      "name": "Celebi ex",
+      "pokemonStage": null,
+      "hp": 130,
+      "pokemonType": "Grass",
+      "attacks": [
+        {
+          "name": "Powerful Bloom",
+          "cost": [
+            {
+              "type": "Grass",
+              "count": 1
+            },
+            {
+              "type": "Colorless",
+              "count": 1
+            }
+          ],
+          "damage": 50,
+          "text": "Flip a coin for each Energy attached to this Pokémon. This attack does 50 damage for each heads"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "kantaro",
+      "raritySymbol": "star3",
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 86,
+      "name": "Mew ex",
+      "pokemonStage": "Basic",
+      "hp": 130,
+      "pokemonType": "Psychic",
+      "attacks": [
+        {
+          "name": "Psyshot",
+          "cost": [
+            {
+              "type": "Psychic",
+              "count": 1
+            }
+          ],
+          "damage": 20
+        },
+        {
+          "name": "Genome Hacking",
+          "cost": [
+            {
+              "type": "Colorless",
+              "count": 3
+            }
+          ],
+          "text": "Choose 1 of your opponent's Active Pokémon's attacks and use it as this attack"
+        }
+      ],
+      "abilities": [],
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ],
+      "illustrator": "PLANETA CG Works",
+      "raritySymbol": "crown",
+      "exStatus": "ex",
+      "boosterPacks": [
+        "mew"
+      ]
     }
   ]
 }

@@ -1,113 +1,187 @@
 {
-  "generatedAt": "2026-01-27T09:31:38.824Z",
+  "generatedAt": "2026-01-27T10:22:24.910Z",
   "source": "https://www.serebii.net/tcgpocket/",
   "sets": [
     {
       "id": "A1",
       "name": "Genetic Apex",
-      "packName": "Genetic Apex",
       "packs": [
-        "Pikachu",
-        "Charizard",
-        "Mewtwo"
+        {
+          "id": "pikachu",
+          "name": "Pikachu"
+        },
+        {
+          "id": "charizard",
+          "name": "Charizard"
+        },
+        {
+          "id": "mewtwo",
+          "name": "Mewtwo"
+        }
       ],
       "totalCards": 286
     },
     {
       "id": "A1a",
       "name": "Mythical Island",
-      "packName": "Mythical Island",
-      "packs": [],
+      "packs": [
+        {
+          "id": "mew",
+          "name": "Mew"
+        }
+      ],
       "totalCards": 86
     },
     {
       "id": "A2",
       "name": "Space-Time Smackdown",
-      "packName": "Space-Time Smackdown",
-      "packs": [],
+      "packs": [
+        {
+          "id": "dialga",
+          "name": "Dialga"
+        },
+        {
+          "id": "palkia",
+          "name": "Palkia"
+        }
+      ],
       "totalCards": 207
     },
     {
       "id": "A2a",
       "name": "Triumphant Light",
-      "packName": "Triumphant Light",
-      "packs": [],
+      "packs": [
+        {
+          "id": "arceus",
+          "name": "Arceus"
+        }
+      ],
       "totalCards": 96
     },
     {
       "id": "A2b",
       "name": "Shining Revelry",
-      "packName": "Shining Revelry",
-      "packs": [],
+      "packs": [
+        {
+          "id": "booster",
+          "name": "Booster"
+        }
+      ],
       "totalCards": 111
     },
     {
       "id": "A3",
       "name": "Celestial Guardians",
-      "packName": "Celestial Guardians",
-      "packs": [],
+      "packs": [
+        {
+          "id": "lunala",
+          "name": "Lunala"
+        },
+        {
+          "id": "solgaleo",
+          "name": "Solgaleo"
+        }
+      ],
       "totalCards": 239
     },
     {
       "id": "A3a",
       "name": "Extradimensional Crisis",
-      "packName": "Extradimensional Crisis",
-      "packs": [],
+      "packs": [
+        {
+          "id": "booster",
+          "name": "Booster"
+        }
+      ],
       "totalCards": 103
     },
     {
       "id": "A3b",
       "name": "Eevee Grove",
-      "packName": "Eevee Grove",
-      "packs": [],
+      "packs": [
+        {
+          "id": "booster",
+          "name": "Booster"
+        }
+      ],
       "totalCards": 107
     },
     {
       "id": "A4",
       "name": "Wisdom of Sea and Sky",
-      "packName": "Wisdom of Sea and Sky",
-      "packs": [],
+      "packs": [
+        {
+          "id": "ho-oh",
+          "name": "Ho-Oh"
+        },
+        {
+          "id": "lugia",
+          "name": "Lugia"
+        }
+      ],
       "totalCards": 241
     },
     {
       "id": "A4a",
       "name": "Secluded Springs",
-      "packName": "Secluded Springs",
-      "packs": [],
+      "packs": [
+        {
+          "id": "booster",
+          "name": "Booster"
+        }
+      ],
       "totalCards": 105
     },
     {
       "id": "A4b",
       "name": "Deluxe Pack ex",
-      "packName": "Deluxe Pack ex",
-      "packs": [],
+      "packs": [
+        {
+          "id": "booster",
+          "name": "Booster"
+        }
+      ],
       "totalCards": 379
     },
     {
       "id": "B1",
       "name": "Mega Rising",
-      "packName": "Mega Rising",
-      "packs": [],
+      "packs": [
+        {
+          "id": "megablaziken",
+          "name": "Mega Blaziken"
+        },
+        {
+          "id": "megagyarados",
+          "name": "Mega Gyarados"
+        },
+        {
+          "id": "megaaltaria",
+          "name": "Mega Altaria"
+        }
+      ],
       "totalCards": 331
     },
     {
       "id": "B1a",
       "name": "Crimson Blaze",
-      "packName": "Crimson Blaze",
-      "packs": [],
+      "packs": [
+        {
+          "id": "booster",
+          "name": "Booster"
+        }
+      ],
       "totalCards": 103
     },
     {
       "id": "PROMO-A",
       "name": "Promo-A",
-      "packName": "Promo-A",
       "packs": [],
       "totalCards": 117
     },
     {
       "id": "PROMO-B",
       "name": "Promo-B",
-      "packName": "Promo-B",
       "packs": [],
       "totalCards": 24
     }
