@@ -34,6 +34,10 @@ To create a production build:
 npm run build
 ```
 
+## GitHub Pages (No Build)
+
+This repo includes a GitHub Pages workflow that deploys the site directly from the repository root on every push to `main`. There is no build step required. In your repo settings, set Pages to deploy from **GitHub Actions**.
+
 ## Features
 
 -   **Track Collection**: Click to add cards, right-click (PC) to remove.
