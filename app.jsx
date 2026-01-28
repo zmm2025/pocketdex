@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "https://esm.sh/react@18.2.0";
+import React, { useState, useEffect, useCallback } from "https://esm.sh/react@18.2.0";
 import { createRoot } from "https://esm.sh/react-dom@18.2.0/client";
 import {
   Library,
@@ -335,9 +335,6 @@ const CardItem = ({
   count,
   onIncrement,
   onDecrement,
-  onDragStart,
-  onDragMove,
-  onDragEnd,
   viewMode = "compact"
 }) => {
   const [imageError, setImageError] = useState(false);
@@ -355,14 +352,18 @@ const CardItem = ({
     return "border-gray-700 shadow-black/40";
   };
 
-  const handlePointerDown = (event) => {
-    let mode = "inc";
-
-    if (event.button === 2 || event.ctrlKey) {
-      mode = "dec";
+  const handleClick = (event) => {
+    if (event.ctrlKey) {
+      event.preventDefault();
+      onDecrement();
+      return;
     }
+    onIncrement();
+  };
 
-    onDragStart(card.id, mode, event);
+  const handleContextMenu = (event) => {
+    event.preventDefault();
+    onDecrement();
   };
 
   return (
@@ -371,11 +372,8 @@ const CardItem = ({
       data-card-id={card.id}
     >
       <div
-        onPointerDown={handlePointerDown}
-        onPointerMove={onDragMove}
-        onPointerUp={onDragEnd}
-        onPointerCancel={onDragEnd}
-        onContextMenu={(event) => event.preventDefault()}
+        onClick={handleClick}
+        onContextMenu={handleContextMenu}
         className={`
           relative w-full aspect-[2.5/3.5] rounded-lg overflow-hidden border-2 transition-all duration-300
           ${getRarityColor(card.rarity)}
@@ -426,7 +424,7 @@ const CardItem = ({
           <button
             onClick={(event) => {
               event.stopPropagation();
-              onDecrement(event);
+              onDecrement();
             }}
             className="ml-2 p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-full"
           >
@@ -446,12 +444,6 @@ const App = () => {
   const [filterOwned, setFilterOwned] = useState("all");
   const [cards, setCards] = useState(FALLBACK_CARDS);
   const [sets, setSets] = useState(FALLBACK_SETS);
-
-  const dragRef = useRef({
-    active: false,
-    mode: "inc",
-    visited: new Set()
-  });
 
   useEffect(() => {
     setCollection(getCollection());
@@ -498,45 +490,6 @@ const App = () => {
   const handleUpdateCount = useCallback((cardId, delta) => {
     setCollection((prev) => updateCardCount(prev, cardId, delta));
   }, []);
-
-  const handleDragStart = (cardId, mode, event) => {
-    dragRef.current = {
-      active: true,
-      mode,
-      visited: new Set([cardId])
-    };
-    handleUpdateCount(cardId, mode === "inc" ? 1 : -1);
-
-    event.target.setPointerCapture(event.pointerId);
-  };
-
-  const handleDragMove = (event) => {
-    if (!dragRef.current.active) return;
-
-    const target = document.elementFromPoint(event.clientX, event.clientY);
-    const cardElement = target ? target.closest("[data-card-id]") : null;
-
-    if (cardElement) {
-      const id = cardElement.getAttribute("data-card-id");
-      if (id && !dragRef.current.visited.has(id)) {
-        dragRef.current.visited.add(id);
-        const delta = dragRef.current.mode === "inc" ? 1 : -1;
-        handleUpdateCount(id, delta);
-      }
-    }
-  };
-
-  const handleDragEnd = (event) => {
-    if (dragRef.current.active) {
-      dragRef.current.active = false;
-      dragRef.current.visited.clear();
-      try {
-        event.target.releasePointerCapture(event.pointerId);
-      } catch (error) {
-        // Ignore if pointer capture was already lost
-      }
-    }
-  };
 
   const renderDashboard = () => (
     <div className="flex flex-col h-full justify-center p-6 space-y-6 max-w-md mx-auto">
@@ -652,9 +605,6 @@ const App = () => {
                 count={collection[card.id] || 0}
                 onIncrement={() => handleUpdateCount(card.id, 1)}
                 onDecrement={() => handleUpdateCount(card.id, -1)}
-                onDragStart={handleDragStart}
-                onDragMove={handleDragMove}
-                onDragEnd={handleDragEnd}
               />
             ))}
             {filteredCards.length === 0 && (

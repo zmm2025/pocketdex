@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, CollectionState } from './types';
 import { getCollection, saveCollection, updateCardCount } from './services/storage';
 import { CARDS, SETS, getSetProgress } from './services/db';
@@ -20,13 +20,6 @@ const App: React.FC = () => {
   const [selectedSetId, setSelectedSetId] = useState<string>('A1');
   const [filterOwned, setFilterOwned] = useState<'all' | 'owned' | 'missing'>('all');
 
-  // Drag State
-  const dragRef = useRef({
-    active: false,
-    mode: 'inc' as 'inc' | 'dec',
-    visited: new Set<string>()
-  });
-
   // Initialize data
   useEffect(() => {
     setCollection(getCollection());
@@ -43,47 +36,6 @@ const App: React.FC = () => {
   const handleUpdateCount = useCallback((cardId: string, delta: number) => {
     setCollection(prev => updateCardCount(prev, cardId, delta));
   }, []);
-
-  const handleDragStart = (cardId: string, mode: 'inc' | 'dec', e: React.PointerEvent) => {
-    dragRef.current = {
-      active: true,
-      mode,
-      visited: new Set([cardId])
-    };
-    handleUpdateCount(cardId, mode === 'inc' ? 1 : -1);
-    
-    // Capture pointer to track movement even if we leave the card
-    (e.target as Element).setPointerCapture(e.pointerId);
-  };
-
-  const handleDragMove = (e: React.PointerEvent) => {
-    if (!dragRef.current.active) return;
-
-    // Find the card element under the pointer coordinates
-    const target = document.elementFromPoint(e.clientX, e.clientY);
-    const cardElement = target?.closest('[data-card-id]');
-    
-    if (cardElement) {
-      const id = cardElement.getAttribute('data-card-id');
-      if (id && !dragRef.current.visited.has(id)) {
-        dragRef.current.visited.add(id);
-        const delta = dragRef.current.mode === 'inc' ? 1 : -1;
-        handleUpdateCount(id, delta);
-      }
-    }
-  };
-
-  const handleDragEnd = (e: React.PointerEvent) => {
-    if (dragRef.current.active) {
-      dragRef.current.active = false;
-      dragRef.current.visited.clear();
-      try {
-        (e.target as Element).releasePointerCapture(e.pointerId);
-      } catch (err) {
-        // Ignore if pointer capture was already lost
-      }
-    }
-  };
 
   // Views
   const renderDashboard = () => (
@@ -190,9 +142,6 @@ const App: React.FC = () => {
                 count={collection[card.id] || 0}
                 onIncrement={() => handleUpdateCount(card.id, 1)}
                 onDecrement={() => handleUpdateCount(card.id, -1)}
-                onDragStart={handleDragStart}
-                onDragMove={handleDragMove}
-                onDragEnd={handleDragEnd}
               />
             ))}
             {filteredCards.length === 0 && (

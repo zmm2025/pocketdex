@@ -5,12 +5,8 @@ import { Minus, ImageOff } from 'lucide-react';
 interface CardItemProps {
   card: Card;
   count: number;
-  onIncrement: (e: React.MouseEvent) => void;
-  onDecrement: (e: React.MouseEvent) => void;
-  // Drag handlers
-  onDragStart: (cardId: string, mode: 'inc' | 'dec', e: React.PointerEvent) => void;
-  onDragMove: (e: React.PointerEvent) => void;
-  onDragEnd: (e: React.PointerEvent) => void;
+  onIncrement: () => void;
+  onDecrement: () => void;
   viewMode?: 'compact' | 'detail';
 }
 
@@ -19,9 +15,6 @@ export const CardItem: React.FC<CardItemProps> = ({
   count, 
   onIncrement, 
   onDecrement,
-  onDragStart,
-  onDragMove,
-  onDragEnd,
   viewMode = 'compact' 
 }) => {
   const [imageError, setImageError] = useState(false);
@@ -39,30 +32,28 @@ export const CardItem: React.FC<CardItemProps> = ({
     return 'border-gray-700 shadow-black/40';
   };
 
-  const handlePointerDown = (e: React.PointerEvent) => {
-    // Determine mode
-    let mode: 'inc' | 'dec' = 'inc';
-    
-    // Right Click or Ctrl+Click triggers decrement
-    if (e.button === 2 || e.ctrlKey) {
-      mode = 'dec';
+  const handleClick = (e: React.MouseEvent) => {
+    if (e.ctrlKey) {
+      e.preventDefault();
+      onDecrement();
+      return;
     }
+    onIncrement();
+  };
 
-    // Pass event to parent handler
-    onDragStart(card.id, mode, e);
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onDecrement();
   };
 
   return (
     <div 
       className="relative group flex flex-col items-center select-none touch-manipulation"
-      data-card-id={card.id} // Critical for elementFromPoint detection
+      data-card-id={card.id}
     >
       <div 
-        onPointerDown={handlePointerDown}
-        onPointerMove={onDragMove}
-        onPointerUp={onDragEnd}
-        onPointerCancel={onDragEnd}
-        onContextMenu={(e) => e.preventDefault()} // Disable native context menu
+        onClick={handleClick}
+        onContextMenu={handleContextMenu}
         className={`
           relative w-full aspect-[2.5/3.5] rounded-lg overflow-hidden border-2 transition-all duration-300
           ${getRarityColor(card.rarity)}
@@ -106,10 +97,10 @@ export const CardItem: React.FC<CardItemProps> = ({
            <p className="text-[10px] text-gray-500">#{card.number}</p>
          </div>
          {isOwned && (
-           <button 
+         <button 
              onClick={(e) => {
                 e.stopPropagation();
-                onDecrement(e);
+                onDecrement();
              }}
              className="ml-2 p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-full"
            >

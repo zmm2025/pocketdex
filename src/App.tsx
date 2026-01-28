@@ -31,13 +31,6 @@ const App: React.FC = () => {
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'saved' | 'error'>('idle');
   const [isDriveReady, setIsDriveReady] = useState(false);
 
-  // Drag State
-  const dragRef = useRef({
-    active: false,
-    mode: 'inc' as 'inc' | 'dec',
-    visited: new Set<string>()
-  });
-
   // Debounce ref for cloud save
   const saveTimeoutRef = useRef<NodeJS.Timeout>();
 
@@ -124,39 +117,6 @@ const App: React.FC = () => {
   const handleUpdateCount = useCallback((cardId: string, delta: number) => {
     setCollection(prev => updateCardCount(prev, cardId, delta));
   }, []);
-
-  const handleDragStart = (cardId: string, mode: 'inc' | 'dec', e: React.PointerEvent) => {
-    dragRef.current = {
-      active: true,
-      mode,
-      visited: new Set([cardId])
-    };
-    handleUpdateCount(cardId, mode === 'inc' ? 1 : -1);
-    (e.target as Element).setPointerCapture(e.pointerId);
-  };
-
-  const handleDragMove = (e: React.PointerEvent) => {
-    if (!dragRef.current.active) return;
-    const target = document.elementFromPoint(e.clientX, e.clientY);
-    const cardElement = target?.closest('[data-card-id]');
-    
-    if (cardElement) {
-      const id = cardElement.getAttribute('data-card-id');
-      if (id && !dragRef.current.visited.has(id)) {
-        dragRef.current.visited.add(id);
-        const delta = dragRef.current.mode === 'inc' ? 1 : -1;
-        handleUpdateCount(id, delta);
-      }
-    }
-  };
-
-  const handleDragEnd = (e: React.PointerEvent) => {
-    if (dragRef.current.active) {
-      dragRef.current.active = false;
-      dragRef.current.visited.clear();
-      try { (e.target as Element).releasePointerCapture(e.pointerId); } catch (err) {}
-    }
-  };
 
   // --- Views ---
 
@@ -311,9 +271,6 @@ const App: React.FC = () => {
                 count={collection[card.id] || 0}
                 onIncrement={() => handleUpdateCount(card.id, 1)}
                 onDecrement={() => handleUpdateCount(card.id, -1)}
-                onDragStart={handleDragStart}
-                onDragMove={handleDragMove}
-                onDragEnd={handleDragEnd}
               />
             ))}
             {filteredCards.length === 0 && (
