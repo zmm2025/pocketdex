@@ -21,7 +21,8 @@
 // See assets/INSTRUCTIONS.md for where to place files.
 
 const ASSET_BASE = '/assets';
-const EXT = 'jpg';
+const EXT = 'webp';
+const WALLPAPER_EXT = 'jpg';
 const padCardNumber = (value: number | string) => String(value).padStart(3, '0');
 
 // -- Path Generators --
@@ -29,11 +30,17 @@ const padCardNumber = (value: number | string) => String(value).padStart(3, '0')
 export const getCardPath = (setId: string, number: number | string) =>
   `${ASSET_BASE}/cards/${setId}/${padCardNumber(number)}.${EXT}`;
 
+export const getCardWallpaperPath = (setId: string, number: number | string) =>
+  `${ASSET_BASE}/cards/${setId}/wallpapers/${padCardNumber(number)}.${WALLPAPER_EXT}`;
+
+export const getCardFullArtPath = (setId: string, number: number | string) =>
+  `${ASSET_BASE}/cards/${setId}/fullart/${padCardNumber(number)}.${EXT}`;
+
 export const getSetLogoPath = (setId: string) =>
   `${ASSET_BASE}/sets/${setId}/logo.png`; // Logos are PNG
 
 export const getPackArtPath = (setId: string, variant: string) =>
-  `${ASSET_BASE}/sets/${setId}/pack_${variant}.jpg`; // Pack art is JPG
+  `${ASSET_BASE}/sets/${setId}/pack_${variant}.png`; // Pack art is PNG
 
 const RARITY_SYMBOLS: RaritySymbol[] = [
   'diamond1',
@@ -67,6 +74,8 @@ const mapRarityToSymbol = (rarity: Rarity): RaritySymbol => {
       return 'star3';
     case Rarity.CROWN_RARE:
       return 'crown';
+    case Rarity.PROMO:
+      return 'diamond1';
     default:
       return 'diamond1';
   }
@@ -98,14 +107,47 @@ const mapSymbolToRarity = (symbol?: RaritySymbol): Rarity => {
   }
 };
 
+const mapRarityLabelToRarity = (label?: string): Rarity | undefined => {
+  if (!label) return undefined;
+  const normalized = label.toLowerCase();
+  if (normalized.includes('promo')) return Rarity.PROMO;
+  if (normalized.includes('common')) return Rarity.COMMON;
+  if (normalized.includes('uncommon')) return Rarity.UNCOMMON;
+  if (normalized.includes('rare') && normalized.includes('double')) return Rarity.DOUBLE_RARE;
+  if (normalized.includes('rare') && normalized.includes('illustration')) return Rarity.ILLUSTRATION_RARE;
+  if (normalized.includes('rare') && normalized.includes('special')) return Rarity.SUPER_RARE;
+  if (normalized.includes('rare') && normalized.includes('art')) return Rarity.ART_RARE;
+  if (normalized.includes('rare') && normalized.includes('crown')) return Rarity.CROWN_RARE;
+  if (normalized.includes('rare')) return Rarity.RARE;
+  return undefined;
+};
+
 export const getRarityDescription = (symbol?: RaritySymbol): RarityDescription | undefined =>
   symbol ? RARITY_DESCRIPTIONS_BY_SYMBOL[symbol] : undefined;
+
+const getRarityIconKey = (symbol: RaritySymbol) => {
+  if (symbol.startsWith('diamond')) return 'diamond';
+  if (symbol.startsWith('star')) return 'star';
+  if (symbol.startsWith('shiny')) return 'shiny';
+  if (symbol === 'crown') return 'crown';
+  return 'diamond';
+};
+
+export const getRarityIconCount = (rarity: Rarity | RaritySymbol) => {
+  const symbol = RARITY_SYMBOL_SET.has(rarity as RaritySymbol)
+    ? (rarity as RaritySymbol)
+    : mapRarityToSymbol(rarity as Rarity);
+  if (symbol.startsWith('diamond')) return Number(symbol.replace('diamond', '')) || 1;
+  if (symbol.startsWith('star')) return Number(symbol.replace('star', '')) || 1;
+  if (symbol.startsWith('shiny')) return Number(symbol.replace('shiny', '')) || 1;
+  return 1;
+};
 
 export const getRarityIconPath = (rarity: Rarity | RaritySymbol) => {
   const symbol = RARITY_SYMBOL_SET.has(rarity as RaritySymbol)
     ? (rarity as RaritySymbol)
     : mapRarityToSymbol(rarity as Rarity);
-  return `${ASSET_BASE}/icons/rarity/${symbol}.png`;
+  return `${ASSET_BASE}/icons/rarity/${getRarityIconKey(symbol)}.png`;
 };
 
 export const getTypeIconPath = (type: string) =>
@@ -120,23 +162,34 @@ type ScrapedSet = {
   name: string;
   totalCards: number;
   slug?: string;
+  releaseDate?: string;
+  packs?: { id: string; name: string }[];
 };
 
 type ScrapedCard = {
   name: string;
   set: string;
   number: number;
+  cardNumber?: number;
+  type?: string;
   hp?: number;
+  health?: number;
   pokemonStage?: PokemonStage | null;
+  stage?: PokemonStage;
   pokemonType?: EnergyType;
+  energyType?: EnergyType;
   attacks?: Attack[];
+  moves?: Attack[];
   abilities?: Ability[];
   weakness?: Weakness;
   retreatCost?: EnergyCost[];
   illustrator?: string;
   raritySymbol?: RaritySymbol;
+  rarityLabel?: string;
+  description?: string;
   exStatus?: ExStatus;
   boosterPacks?: string[];
+  costToCraft?: number;
 };
 
 type ScrapedSetPayload = {
@@ -201,8 +254,11 @@ const generateFallbackCards = (sets: SetData[]): Card[] =>
       return {
         id,
         set: set.id,
-    number: numInt,
-    image: getCardPath(set.id, numInt),
+        number: numInt,
+        cardNumber: numInt,
+        image: getCardPath(set.id, numInt),
+        wallpaper: getCardWallpaperPath(set.id, numInt),
+        fullArt: getCardFullArtPath(set.id, numInt),
         name: known?.name || `${set.name} #${numStr}`,
         rarity: known?.rarity || Rarity.COMMON,
         type: known?.type || CardType.POKEMON,
@@ -213,28 +269,56 @@ const generateFallbackCards = (sets: SetData[]): Card[] =>
   });
 
 const normalizeScrapedCard = (raw: ScrapedCard): Card => {
-  const number = Number(raw.number);
+  const number = Number(raw.number ?? raw.cardNumber);
   const safeNumber = Number.isFinite(number) ? number : 0;
   const id = `${raw.set}-${padCardNumber(safeNumber)}`;
+  const energyType = raw.energyType ?? raw.pokemonType;
+  const health = raw.health ?? raw.hp;
+  const stage = raw.stage ?? raw.pokemonStage ?? null;
+  const attacks = raw.attacks ?? raw.moves ?? [];
+  const moves = raw.moves ?? raw.attacks ?? [];
+  const rarity =
+    (raw.raritySymbol ? mapSymbolToRarity(raw.raritySymbol) : undefined) ||
+    mapRarityLabelToRarity(raw.rarityLabel) ||
+    Rarity.COMMON;
+
+  let type = CardType.POKEMON;
+  if (raw.type) {
+    const normalized = raw.type.toLowerCase();
+    if (normalized === 'item') type = CardType.ITEM;
+    if (normalized === 'supporter') type = CardType.SUPPORTER;
+    if (normalized === 'pokemontool') type = CardType.POKEMON_TOOL;
+  }
+
   return {
     id,
     set: raw.set,
     number: safeNumber,
+    cardNumber: safeNumber,
     image: getCardPath(raw.set, safeNumber),
+    wallpaper: getCardWallpaperPath(raw.set, safeNumber),
+    fullArt: getCardFullArtPath(raw.set, safeNumber),
     name: raw.name,
-    rarity: mapSymbolToRarity(raw.raritySymbol),
+    rarity,
     raritySymbol: raw.raritySymbol,
-    type: CardType.POKEMON,
+    rarityLabel: raw.rarityLabel,
+    type,
     hp: raw.hp,
+    health,
+    description: raw.description,
     pokemonStage: raw.pokemonStage ?? null,
-    pokemonType: raw.pokemonType,
-    attacks: raw.attacks ?? [],
+    stage: stage ?? undefined,
+    pokemonType: raw.pokemonType ?? energyType,
+    energyType,
+    attacks,
+    moves,
     abilities: raw.abilities ?? [],
     weakness: raw.weakness,
     retreatCost: raw.retreatCost,
     illustrator: raw.illustrator,
     exStatus: raw.exStatus ?? 'non-ex',
     boosterPacks: raw.boosterPacks,
+    costToCraft: raw.costToCraft,
   };
 };
 
@@ -255,6 +339,8 @@ export const SETS: SetData[] = hasScrapedCards && Array.isArray(scrapedSets) && 
       name: set.name,
       totalCards: set.totalCards,
       coverImage: getSetLogoPath(set.id),
+      releaseDate: set.releaseDate,
+      packs: set.packs,
     }))
   : DEFAULT_SETS;
 

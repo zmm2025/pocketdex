@@ -7,13 +7,15 @@
   SUPER_RARE = 'Super Rare', // Star 2
   ILLUSTRATION_RARE = 'Illustration Rare', // Star 3 (Immersive)
   CROWN_RARE = 'Crown Rare', // Crown
+  PROMO = 'Promo', // Promo cards (no rarity icon)
 }
 
 export enum CardType {
-  POKEMON = 'PokÃ©mon',
+  POKEMON = 'Pokemon',
   TRAINER = 'Trainer',
   ITEM = 'Item',
   SUPPORTER = 'Supporter',
+  POKEMON_TOOL = 'Pokemon Tool',
 }
 
 export type EnergyType =
@@ -96,21 +98,30 @@ export interface Card {
   name: string;
   set: string;
   number: number;
+  cardNumber?: number;
   image: string;
+  wallpaper?: string;
+  fullArt?: string;
   rarity: Rarity;
   raritySymbol?: RaritySymbol;
+  rarityLabel?: string;
   type: CardType;
   hp?: number;
+  health?: number;
   description?: string;
   pokemonStage?: PokemonStage | null;
+  stage?: PokemonStage;
   pokemonType?: EnergyType;
+  energyType?: EnergyType;
   attacks?: Attack[];
+  moves?: Attack[];
   abilities?: Ability[];
   weakness?: Weakness;
   retreatCost?: EnergyCost[];
   illustrator?: string;
   exStatus?: ExStatus;
   boosterPacks?: string[];
+  costToCraft?: number;
 }
 
 export interface SetData {
@@ -127,3 +138,7 @@ export enum View {
   COLLECTION = 'COLLECTION',
   STATS = 'STATS',
 }
+
+
+
+

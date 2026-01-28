@@ -1,4 +1,4 @@
-export enum Rarity {
+﻿export enum Rarity {
   COMMON = 'Common', // Diamond 1
   UNCOMMON = 'Uncommon', // Diamond 2
   RARE = 'Rare', // Diamond 3
@@ -7,13 +7,15 @@ export enum Rarity {
   SUPER_RARE = 'Super Rare', // Star 2
   ILLUSTRATION_RARE = 'Illustration Rare', // Star 3 (Immersive)
   CROWN_RARE = 'Crown Rare', // Crown
+  PROMO = 'Promo', // Promo cards (no rarity icon)
 }
 
 export enum CardType {
-  POKEMON = 'Pokémon',
+  POKEMON = 'Pokemon',
   TRAINER = 'Trainer',
   ITEM = 'Item',
   SUPPORTER = 'Supporter',
+  POKEMON_TOOL = 'Pokemon Tool',
 }
 
 export type RaritySymbol =
@@ -59,11 +61,30 @@ export interface Card {
   name: string;
   set: string;
   number: number;
+  cardNumber?: number;
   image: string;
+  wallpaper?: string;
+  fullArt?: string;
   rarity: Rarity;
+  raritySymbol?: RaritySymbol;
+  rarityLabel?: string;
   type: CardType;
   hp?: number;
+  health?: number;
   description?: string;
+  pokemonStage?: PokemonStage | null;
+  stage?: PokemonStage;
+  pokemonType?: EnergyType;
+  energyType?: EnergyType;
+  attacks?: Attack[];
+  moves?: Attack[];
+  abilities?: Ability[];
+  weakness?: Weakness;
+  retreatCost?: EnergyCost[];
+  illustrator?: string;
+  exStatus?: ExStatus;
+  boosterPacks?: string[];
+  costToCraft?: number;
 }
 
 export interface Attack {
@@ -95,11 +116,17 @@ export interface Weakness {
   value: number;
 }
 
+export type PokemonStage = 'Basic' | 'Stage 1' | 'Stage 2';
+
+export type ExStatus = 'non-ex' | 'ex' | 'mega-ex';
+
 export interface SetData {
   id: string;
   name: string;
   totalCards: number;
   coverImage: string;
+  releaseDate?: string;
+  packs?: { id: string; name: string }[];
 }
 
 export type CollectionState = Record<string, number>; // CardID -> Count
@@ -115,3 +142,4 @@ export enum View {
   COLLECTION = 'COLLECTION',
   STATS = 'STATS',
 }
+
