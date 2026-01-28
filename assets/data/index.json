@@ -1,73 +1,81 @@
 {
-  "generatedAt": "2026-01-27T10:22:24.910Z",
-  "source": "https://www.serebii.net/tcgpocket/",
+  "generatedAt": "2026-01-28T08:34:14.380Z",
+  "source": "https://pocket.pokemongohub.net/en",
   "sets": [
     {
-      "id": "A1",
-      "name": "Genetic Apex",
+      "id": "B1a",
+      "name": "Crimson Blaze",
+      "packs": [],
+      "slug": "crimson-blaze"
+    },
+    {
+      "id": "B1",
+      "name": "Mega Rising",
       "packs": [
         {
-          "id": "pikachu",
-          "name": "Pikachu"
+          "id": "mega-altaria",
+          "name": "Mega Altaria"
         },
         {
-          "id": "charizard",
-          "name": "Charizard"
+          "id": "mega-gyarados",
+          "name": "Mega Gyarados"
         },
         {
-          "id": "mewtwo",
-          "name": "Mewtwo"
+          "id": "mega",
+          "name": "blaziken"
         }
       ],
-      "totalCards": 286
+      "slug": "mega-rising"
     },
     {
-      "id": "A1a",
-      "name": "Mythical Island",
+      "id": "PROMO-B",
+      "name": "PROMO-B",
       "packs": [
         {
-          "id": "mew",
-          "name": "Mew"
+          "id": "PROMO-B",
+          "name": "PROMO-B"
         }
       ],
-      "totalCards": 86
+      "slug": "promo-b"
     },
     {
-      "id": "A2",
-      "name": "Space-Time Smackdown",
+      "id": "A4b",
+      "name": "Deluxe Pack: ex",
+      "packs": [],
+      "slug": "deluxe-pack-ex"
+    },
+    {
+      "id": "A4a",
+      "name": "Secluded Springs",
+      "packs": [],
+      "slug": "secluded-springs"
+    },
+    {
+      "id": "A4",
+      "name": "Wisdom of Sea and Sky",
       "packs": [
         {
-          "id": "dialga",
-          "name": "Dialga"
+          "id": "lugia",
+          "name": "Luga"
         },
         {
-          "id": "palkia",
-          "name": "Palkia"
+          "id": "ho-oh",
+          "name": "Ho-Oh"
         }
       ],
-      "totalCards": 207
+      "slug": "wisdom-of-sea-and-sky"
     },
     {
-      "id": "A2a",
-      "name": "Triumphant Light",
-      "packs": [
-        {
-          "id": "arceus",
-          "name": "Arceus"
-        }
-      ],
-      "totalCards": 96
+      "id": "A3b",
+      "name": "Eevee Grove",
+      "packs": [],
+      "slug": "eevee-grove"
     },
     {
-      "id": "A2b",
-      "name": "Shining Revelry",
-      "packs": [
-        {
-          "id": "booster",
-          "name": "Booster"
-        }
-      ],
-      "totalCards": 111
+      "id": "A3a",
+      "name": "Extradimensional Crisis",
+      "packs": [],
+      "slug": "extradimensional-crisis"
     },
     {
       "id": "A3",
@@ -82,108 +90,70 @@
           "name": "Solgaleo"
         }
       ],
-      "totalCards": 239
+      "slug": "celestial-guardians"
     },
     {
-      "id": "A3a",
-      "name": "Extradimensional Crisis",
-      "packs": [
-        {
-          "id": "booster",
-          "name": "Booster"
-        }
-      ],
-      "totalCards": 103
+      "id": "A2b",
+      "name": "Shining Revelry",
+      "packs": [],
+      "slug": "shining-revelry"
     },
     {
-      "id": "A3b",
-      "name": "Eevee Grove",
-      "packs": [
-        {
-          "id": "booster",
-          "name": "Booster"
-        }
-      ],
-      "totalCards": 107
+      "id": "A2a",
+      "name": "Triumphant Light",
+      "packs": [],
+      "slug": "triumphant-light"
     },
     {
-      "id": "A4",
-      "name": "Wisdom of Sea and Sky",
+      "id": "A2",
+      "name": "Space-Time Smackdown",
       "packs": [
         {
-          "id": "ho-oh",
-          "name": "Ho-Oh"
+          "id": "dialga",
+          "name": "Dialga"
         },
         {
-          "id": "lugia",
-          "name": "Lugia"
+          "id": "palkia",
+          "name": "Palkia"
         }
       ],
-      "totalCards": 241
+      "slug": "space-time-smackdown"
     },
     {
-      "id": "A4a",
-      "name": "Secluded Springs",
-      "packs": [
-        {
-          "id": "booster",
-          "name": "Booster"
-        }
-      ],
-      "totalCards": 105
-    },
-    {
-      "id": "A4b",
-      "name": "Deluxe Pack ex",
-      "packs": [
-        {
-          "id": "booster",
-          "name": "Booster"
-        }
-      ],
-      "totalCards": 379
-    },
-    {
-      "id": "B1",
-      "name": "Mega Rising",
-      "packs": [
-        {
-          "id": "megablaziken",
-          "name": "Mega Blaziken"
-        },
-        {
-          "id": "megagyarados",
-          "name": "Mega Gyarados"
-        },
-        {
-          "id": "megaaltaria",
-          "name": "Mega Altaria"
-        }
-      ],
-      "totalCards": 331
-    },
-    {
-      "id": "B1a",
-      "name": "Crimson Blaze",
-      "packs": [
-        {
-          "id": "booster",
-          "name": "Booster"
-        }
-      ],
-      "totalCards": 103
+      "id": "A1a",
+      "name": "Mythical Island",
+      "packs": [],
+      "slug": "mythical-island"
     },
     {
       "id": "PROMO-A",
-      "name": "Promo-A",
-      "packs": [],
-      "totalCards": 117
+      "name": "PROMO-A",
+      "packs": [
+        {
+          "id": "PROMO-A",
+          "name": "PROMO-A"
+        }
+      ],
+      "slug": "promo-a"
     },
     {
-      "id": "PROMO-B",
-      "name": "Promo-B",
-      "packs": [],
-      "totalCards": 24
+      "id": "A1",
+      "name": "Genetic Apex",
+      "packs": [
+        {
+          "id": "charizard",
+          "name": "Charizard"
+        },
+        {
+          "id": "pikachu",
+          "name": "Pikachu"
+        },
+        {
+          "id": "mewtwo",
+          "name": "Mewtwo"
+        }
+      ],
+      "slug": "genetic-apex"
     }
   ]
 }
