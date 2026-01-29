@@ -1,6 +1,6 @@
 # PocketDex Tracker
 
-A mobile-first companion app for Pokémon TCG Pocket. Track your collection, view statistics, and get AI-powered deck advice.
+A mobile-first companion app for Pokémon TCG Pocket. Track your collection and view statistics.
 
 ## Prerequisites
 
@@ -50,4 +50,3 @@ This repo includes a GitHub Pages workflow that deploys the site directly from t
 -   **Track Collection**: Click to add cards, right-click (PC) to remove.
 -   **Drag Selection**: Click/Touch and drag across multiple cards to quickly add them. Right-click and drag to remove.
 -   **Stats**: View completion progress for each set.
--   **AI Advice**: Get deck suggestions based on your collection (requires Gemini API Key).

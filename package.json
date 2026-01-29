@@ -10,7 +10,6 @@
     "assets": "node scripts/download-assets.mjs"
   },
   "dependencies": {
-    "@google/genai": "*",
     "follow-redirects": "^1.15.5",
     "lucide-react": "^0.300.0",
     "react": "^18.2.0",
