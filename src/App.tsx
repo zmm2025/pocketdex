@@ -22,7 +22,6 @@ import {
   SignedIn,
   SignedOut,
   SignInButton,
-  SignUpButton,
   UserButton,
   useSession,
   useUser,
@@ -97,15 +96,23 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     };
   }, [clerkUser?.id, supabase]);
 
-  // 2. When user signs out: clear collection (data is only in cloud per Clerk account)
+  // 2. When user signs out: clear collection and leave user-data views (data is only in cloud)
   useEffect(() => {
     if (!clerkUser) {
       hasLoadedFromCloudRef.current = false;
       setCollection({});
+      setCurrentView(v => (v === View.COLLECTION || v === View.STATS ? View.DASHBOARD : v));
     }
   }, [clerkUser]);
 
-  // 3. Auto-save: when signed in, debounce save to Supabase only (no local storage)
+  // 3. Guard: don't allow viewing Collection or Stats when signed out (e.g. direct state / future routing)
+  useEffect(() => {
+    if (!clerkUser && (currentView === View.COLLECTION || currentView === View.STATS)) {
+      setCurrentView(View.DASHBOARD);
+    }
+  }, [clerkUser, currentView]);
+
+  // 4. Auto-save: when signed in, debounce save to Supabase only (no local storage)
   useEffect(() => {
     if (Object.keys(collection).length === 0) return;
     if (!clerkUser || !supabase) return;
@@ -133,19 +140,30 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   const renderDashboard = () => (
     <div className="flex flex-col h-full justify-center p-6 space-y-6 max-w-md mx-auto relative">
-      <header className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-2xl font-bold">Account</h1>
-          <p className="text-xs text-gray-500">Sign in to sync across devices</p>
-        </div>
-        <div className="flex items-center gap-2">
+      {/* Compact header: PocketDex + sync & profile in top right */}
+      <header className="flex items-center justify-between gap-3 mb-2">
+        <h1 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+          PocketDex
+        </h1>
+        <div className="flex items-center gap-2 min-w-0">
           {clerkEnabled ? (
             <>
               <SignedOut>
-                <SignInButton mode="modal" />
-                <SignUpButton mode="modal" />
+                <span className="text-xs text-gray-500 flex items-center gap-1.5 shrink-0">
+                  <Cloud size={14} className="text-gray-500 shrink-0" />
+                  <span className="hidden xs:inline">Sign in to sync</span>
+                </span>
+                <SignInButton mode="modal">
+                  <Button variant="primary" size="sm">Sign in</Button>
+                </SignInButton>
               </SignedOut>
               <SignedIn>
+                <span className="text-xs text-gray-500 flex items-center gap-1.5 shrink-0 min-w-0" title={syncStatus === 'error' ? syncErrorMessage ?? undefined : undefined}>
+                  {syncStatus === 'syncing' && <><Loader2 size={12} className="animate-spin shrink-0"/> <span className="hidden sm:inline truncate">Syncing...</span></>}
+                  {syncStatus === 'saved' && <><CheckCircle2 size={12} className="text-green-500 shrink-0"/> <span className="hidden sm:inline truncate">Saved</span></>}
+                  {syncStatus === 'error' && <><AlertCircle size={12} className="text-red-500 shrink-0"/> <span className="text-red-400 truncate hidden sm:inline">{syncErrorMessage ?? 'Error'}</span></>}
+                  {syncStatus === 'idle' && <><Cloud size={12} className="text-gray-500 shrink-0"/> <span className="hidden sm:inline truncate">Up to date</span></>}
+                </span>
                 <UserButton />
               </SignedIn>
             </>
@@ -156,65 +174,39 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       </header>
 
       <div className="text-center mb-4">
-        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-          PocketDex
-        </h1>
-        <p className="text-gray-400 mt-2">TCG Pocket Companion</p>
+        <p className="text-gray-400">TCG Pocket Companion</p>
       </div>
 
-      {/* Sync Status Card */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {clerkUser ? (
-            <img
-              src={clerkUser.imageUrl}
-              alt=""
-              className="w-10 h-10 rounded-full border border-gray-700"
-            />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700">
-              <Cloud size={20} className="text-gray-400" />
-            </div>
-          )}
-          <div className="flex flex-col">
-            <span className="text-sm font-bold text-gray-200">
-              {clerkUser ? clerkUser.fullName ?? clerkUser.primaryEmailAddress?.emailAddress ?? 'Signed in' : 'Cloud Sync'}
-            </span>
-            <span className="text-xs text-gray-500 flex items-center gap-1">
-              {syncStatus === 'syncing' && <><Loader2 size={10} className="animate-spin"/> Syncing...</>}
-              {syncStatus === 'saved' && <><CheckCircle2 size={10} className="text-green-500"/> Saved</>}
-              {syncStatus === 'error' && (
-                <span className="text-red-400 flex items-center gap-1" title={syncErrorMessage ?? undefined}>
-                  <AlertCircle size={10} className="text-red-500 shrink-0"/>
-                  {syncErrorMessage ?? 'Something went wrong.'}
-                </span>
-              )}
-              {syncStatus === 'idle' && (clerkUser ? 'Up to date' : 'Sign in to sync')}
-            </span>
-          </div>
-        </div>
-      </div>
+      {!clerkUser && (
+        <p className="text-sm text-center text-gray-500">
+          Sign in to view your collection, track cards, and see statistics.
+        </p>
+      )}
 
       <Button
         variant="primary"
         size="lg"
         fullWidth
-        onClick={() => setCurrentView(View.COLLECTION)}
-        className="h-24 flex flex-col items-center justify-center gap-1 group"
+        disabled={!clerkUser}
+        onClick={() => clerkUser && setCurrentView(View.COLLECTION)}
+        className={`h-24 flex flex-col items-center justify-center gap-1 group ${!clerkUser ? 'opacity-60 cursor-not-allowed' : ''}`}
       >
         <Library className="group-hover:scale-110 transition-transform" />
         <span className="text-lg">My Collection</span>
+        {!clerkUser && <span className="text-xs text-gray-400 font-normal">Sign in to view</span>}
       </Button>
 
       <Button
         variant="secondary"
         size="lg"
         fullWidth
-        onClick={() => setCurrentView(View.STATS)}
-        className="h-24 flex flex-col items-center justify-center gap-1 group bg-gray-800 border-gray-700"
+        disabled={!clerkUser}
+        onClick={() => clerkUser && setCurrentView(View.STATS)}
+        className={`h-24 flex flex-col items-center justify-center gap-1 group bg-gray-800 border-gray-700 ${!clerkUser ? 'opacity-60 cursor-not-allowed' : ''}`}
       >
         <BarChart3 className="group-hover:scale-110 transition-transform text-green-400" />
         <span className="text-lg">Statistics</span>
+        {!clerkUser && <span className="text-xs text-gray-400 font-normal">Sign in to view</span>}
       </Button>
 
       {!isSupabaseConfigured && (
