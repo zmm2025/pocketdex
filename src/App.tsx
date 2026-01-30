@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, CollectionState, GoogleUser } from './types';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { View, CollectionState } from './types';
 import { getCollection, saveCollection, updateCardCount } from '../services/storage';
 import { CARDS, SETS, getSetProgress } from '../services/db';
-import { driveService } from './services/googleDriveService';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { loadCollection as loadCollectionFromSupabase, saveCollection as saveCollectionToSupabase } from './services/supabaseService';
 
 import { Button } from '../components/Button';
 import { CardItem } from '../components/CardItem';
@@ -23,24 +24,44 @@ import {
   SignInButton,
   SignUpButton,
   UserButton,
+  useSession,
+  useUser,
 } from '@clerk/clerk-react';
+
+const SUPABASE_URL = (import.meta as any).env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = (import.meta as any).env.VITE_SUPABASE_ANON_KEY;
+
+function mergeCollections(local: CollectionState, cloud: CollectionState | null): CollectionState {
+  if (!cloud) return { ...local };
+  const merged: CollectionState = { ...cloud };
+  Object.entries(local).forEach(([id, count]) => {
+    merged[id] = Math.max(merged[id] ?? 0, count);
+  });
+  return merged;
+}
+
+function getSyncErrorMessage(e: unknown): string {
+  if (e == null) return 'Something went wrong.';
+  if (e instanceof Error) return e.message;
+  if (typeof e === 'object' && e !== null && 'message' in e) return String((e as { message: unknown }).message);
+  return 'Something went wrong. Try again.';
+}
 
 type AppProps = { clerkEnabled?: boolean };
 
 const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
+  const { session } = useSession();
+  const { user: clerkUser } = useUser();
+
   const [currentView, setCurrentView] = useState<View>(View.DASHBOARD);
   const [collection, setCollection] = useState<CollectionState>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSetId, setSelectedSetId] = useState<string>('A1');
   const [filterOwned, setFilterOwned] = useState<'all' | 'owned' | 'missing'>('all');
 
-  // Sync State
-  const [user, setUser] = useState<GoogleUser | null>(null);
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'saved' | 'error'>('idle');
   const [syncErrorMessage, setSyncErrorMessage] = useState<string | null>(null);
-  const [isDriveReady, setIsDriveReady] = useState(false);
-
-  // Debounce ref for cloud save
+  const hasLoadedFromCloudRef = useRef(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout>();
 
   const setSyncError = (message: string) => {
@@ -48,132 +69,87 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     setSyncErrorMessage(message);
   };
 
-  const clearSyncError = () => {
-    setSyncErrorMessage(null);
-  };
+  const clearSyncError = () => setSyncErrorMessage(null);
 
-  const getDriveErrorMessage = (e: unknown): string => {
-    if (e == null) return 'Something went wrong.';
-    if (typeof e === 'string') {
-      if (e === 'Google services not initialized') return e;
-      return e;
-    }
-    if (typeof e === 'object' && e !== null && 'error' in e) {
-      const o = e as { error?: string; message?: string };
-      const code = typeof o.error === 'string' ? o.error : '';
-      const msg = typeof o.message === 'string' ? o.message : '';
-      if (code === 'access_denied') return 'You declined sign-in or closed the window. Try again and approve access to sync.';
-      if (code === 'popup_closed_by_user') return 'Sign-in window was closed. Try again and complete sign-in.';
-      if (code && msg) return `${code}: ${msg}`;
-      if (code) return code;
-      if (msg) return msg;
-    }
-    if (e instanceof Error) return e.message;
-    return 'Something went wrong. Try again.';
-  };
+  const supabase: SupabaseClient | null = useMemo(() => {
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
+    return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: false },
+      accessToken: async () => (await session?.getToken()) ?? null,
+    });
+  }, [session]);
 
-  // 1. Initialize App & Drive
+  const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+
+  // 1. Load from localStorage on mount
   useEffect(() => {
     setCollection(getCollection());
-
-    if (!driveService.isConfigured()) {
-      setIsDriveReady(true); // No client ID: show "Connect Drive" (disabled) instead of "Loading..."
-      return;
-    }
-    driveService.init((err) => {
-      if (err) setSyncError(err.message);
-      setIsDriveReady(true);
-    });
-    // If init never completes, stop showing "Loading..." after 8s
-    const fallback = setTimeout(() => setIsDriveReady(true), 8000);
-    return () => clearTimeout(fallback);
   }, []);
 
-  // 2. Auto-Save Logic (Local + Cloud)
+  // 2. When signed in with Clerk + Supabase ready: load from cloud and merge with local (once per sign-in)
+  useEffect(() => {
+    if (!clerkUser?.id || !supabase) return;
+    if (hasLoadedFromCloudRef.current) return;
+    hasLoadedFromCloudRef.current = true;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        setSyncStatus('syncing');
+        const cloudData = await loadCollectionFromSupabase(supabase);
+        if (cancelled) return;
+        const localData = getCollection();
+        const merged = mergeCollections(localData, cloudData);
+        setCollection(merged);
+        saveCollection(merged);
+        await saveCollectionToSupabase(supabase, clerkUser.id, merged);
+        if (cancelled) return;
+        setSyncStatus('saved');
+        clearSyncError();
+        setTimeout(() => setSyncStatus('idle'), 3000);
+      } catch (e) {
+        if (!cancelled) setSyncError(`Sync failed: ${getSyncErrorMessage(e)}`);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [clerkUser?.id, supabase]);
+
+  // Reset "loaded from cloud" when user signs out so next sign-in merges again
+  useEffect(() => {
+    if (!clerkUser) hasLoadedFromCloudRef.current = false;
+  }, [clerkUser]);
+
+  // 3. Auto-save: always save local; when signed in, debounce save to Supabase
   useEffect(() => {
     if (Object.keys(collection).length === 0) return;
 
-    // Always save local immediately
     saveCollection(collection);
 
-    // If logged in, debounce save to cloud
-    if (user) {
+    if (clerkUser && supabase) {
       setSyncStatus('syncing');
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-      
       saveTimeoutRef.current = setTimeout(async () => {
         try {
-          await driveService.saveData(collection);
+          await saveCollectionToSupabase(supabase, clerkUser.id, collection);
           setSyncStatus('saved');
           clearSyncError();
           setTimeout(() => setSyncStatus('idle'), 3000);
         } catch (e) {
           console.error('Cloud save failed', e);
-          setSyncError(`Cloud save failed: ${getDriveErrorMessage(e)}`);
+          setSyncError(`Cloud save failed: ${getSyncErrorMessage(e)}`);
         }
-      }, 2000); // 2 second delay
+      }, 2000);
     }
-  }, [collection, user]);
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    };
+  }, [collection, clerkUser, supabase]);
 
-  // Auth Handlers
-  const handleGoogleLogin = async () => {
-    if (!isDriveReady) return;
-    clearSyncError();
-    try {
-      const token = await driveService.login();
-      setSyncStatus('syncing');
-
-      const userInfo = await driveService.getUserInfo(token);
-      setUser(userInfo);
-
-      // Merge Logic: Download cloud data and merge with local
-      // We take the MAX count of cards to ensure no data loss on either side
-      const cloudData = await driveService.loadData();
-
-      if (cloudData) {
-        const localData = getCollection();
-        const merged: CollectionState = { ...cloudData };
-
-        Object.entries(localData).forEach(([id, count]) => {
-          merged[id] = Math.max(merged[id] || 0, count as number);
-        });
-
-        setCollection(merged);
-        saveCollection(merged); // Save merged back to local
-        await driveService.saveData(merged); // Save merged back to cloud
-      } else {
-        // No cloud data yet, upload what we have
-        await driveService.saveData(getCollection());
-      }
-      setSyncStatus('saved');
-      clearSyncError();
-    } catch (e) {
-      const msg = getDriveErrorMessage(e);
-      const friendly =
-        msg === 'Google services not initialized'
-          ? 'Google sign-in didn’t load. Reload the page and try again, or check that Google scripts are allowed.'
-          : msg.includes('popup')
-            ? 'Sign-in was closed or blocked. Try again and complete sign-in in the popup.'
-            : msg;
-      console.error('Connect Drive failed', e);
-      setSyncError(friendly);
-    }
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-    setSyncStatus('idle');
-    clearSyncError();
-    // Note: We don't clear local data on logout for this app type,
-    // keeping it "offline accessible".
-  };
-
-  // Card Handlers
   const handleUpdateCount = useCallback((cardId: string, delta: number) => {
     setCollection(prev => updateCardCount(prev, cardId, delta));
   }, []);
-
-  // --- Views ---
 
   const renderDashboard = () => (
     <div className="flex flex-col h-full justify-center p-6 space-y-6 max-w-md mx-auto relative">
@@ -209,17 +185,20 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       {/* Sync Status Card */}
       <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {user ? (
-             <img src={user.picture} alt="User" className="w-10 h-10 rounded-full border border-gray-700" />
+          {clerkUser ? (
+            <img
+              src={clerkUser.imageUrl}
+              alt=""
+              className="w-10 h-10 rounded-full border border-gray-700"
+            />
           ) : (
             <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700">
               <Cloud size={20} className="text-gray-400" />
             </div>
           )}
-          
           <div className="flex flex-col">
             <span className="text-sm font-bold text-gray-200">
-              {user ? user.name : 'Cloud Sync'}
+              {clerkUser ? clerkUser.fullName ?? clerkUser.primaryEmailAddress?.emailAddress ?? 'Signed in' : 'Cloud Sync'}
             </span>
             <span className="text-xs text-gray-500 flex items-center gap-1">
               {syncStatus === 'syncing' && <><Loader2 size={10} className="animate-spin"/> Syncing...</>}
@@ -230,35 +209,16 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   {syncErrorMessage ?? 'Something went wrong.'}
                 </span>
               )}
-              {syncStatus === 'idle' && (user ? 'Up to date' : 'Not connected')}
+              {syncStatus === 'idle' && (clerkUser ? 'Up to date' : 'Sign in to sync')}
             </span>
           </div>
         </div>
-
-        {user ? (
-          <button 
-            onClick={handleLogout}
-            className="text-xs text-red-400 hover:text-red-300 px-3 py-1 bg-red-900/20 rounded-lg border border-red-900/50"
-          >
-            Logout
-          </button>
-        ) : (
-          <Button 
-            size="sm"
-            onClick={handleGoogleLogin} 
-            disabled={!isDriveReady || !driveService.isConfigured()}
-            className="text-xs"
-            title={!driveService.isConfigured() ? "Missing VITE_GOOGLE_CLIENT_ID in .env.local" : ""}
-          >
-            {!driveService.isConfigured() ? 'Connect Drive' : isDriveReady ? 'Connect Drive' : 'Loading...'}
-          </Button>
-        )}
       </div>
 
-      <Button 
-        variant="primary" 
-        size="lg" 
-        fullWidth 
+      <Button
+        variant="primary"
+        size="lg"
+        fullWidth
         onClick={() => setCurrentView(View.COLLECTION)}
         className="h-24 flex flex-col items-center justify-center gap-1 group"
       >
@@ -266,10 +226,10 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         <span className="text-lg">My Collection</span>
       </Button>
 
-      <Button 
-        variant="secondary" 
-        size="lg" 
-        fullWidth 
+      <Button
+        variant="secondary"
+        size="lg"
+        fullWidth
         onClick={() => setCurrentView(View.STATS)}
         className="h-24 flex flex-col items-center justify-center gap-1 group bg-gray-800 border-gray-700"
       >
@@ -277,16 +237,15 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         <span className="text-lg">Statistics</span>
       </Button>
 
-      {!driveService.isConfigured() && (
-        <p className="text-xs text-center text-red-500 mt-4">
-          Development Note: VITE_GOOGLE_CLIENT_ID is missing in .env
+      {!isSupabaseConfigured && (
+        <p className="text-xs text-center text-amber-500 mt-4">
+          Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env.local for cloud sync. See SUPABASE_SETUP.md.
         </p>
       )}
     </div>
   );
 
   const renderCollection = () => {
-    // Filtering logic (same as before)
     const filteredCards = CARDS.filter(card => {
       const matchesSet = selectedSetId === 'ALL' || card.set === selectedSetId;
       const matchesSearch =
@@ -306,9 +265,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
               <ChevronLeft />
             </button>
             <h2 className="text-xl font-bold hidden xs:block">Collection</h2>
-            
-            <select 
-              value={selectedSetId} 
+            <select
+              value={selectedSetId}
               onChange={(e) => setSelectedSetId(e.target.value)}
               className="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg p-2 flex-1 max-w-[200px] outline-none focus:border-blue-500 truncate"
             >
@@ -317,16 +275,14 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
               ))}
               <option value="ALL">All Sets</option>
             </select>
-
             <div className="ml-auto text-xs text-gray-500 font-mono whitespace-nowrap">
               {filteredCards.length} Cards
             </div>
           </div>
-          
           <div className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
-              <input 
+              <input
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
@@ -334,7 +290,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                 className="w-full bg-gray-900 border border-gray-700 rounded-lg pl-9 pr-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
               />
             </div>
-            <button 
+            <button
               className={`p-2 rounded-lg border ${filterOwned === 'owned' ? 'bg-blue-600 border-blue-600 text-white' : 'bg-gray-800 border-gray-700 text-gray-400'}`}
               onClick={() => setFilterOwned(prev => prev === 'owned' ? 'all' : 'owned')}
               title="Show Owned Only"
@@ -343,11 +299,10 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             </button>
           </div>
         </div>
-
         <div className="flex-1 overflow-y-auto p-4 pb-24 touch-pan-y">
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4 select-none">
             {filteredCards.map(card => (
-              <CardItem 
+              <CardItem
                 key={card.id}
                 card={card}
                 count={collection[card.id] || 0}
@@ -366,41 +321,38 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     );
   };
 
-  const renderStats = () => {
-    return (
-      <div className="flex flex-col h-full p-6 overflow-y-auto">
-        <div className="flex items-center gap-3 mb-8">
-           <button onClick={() => setCurrentView(View.DASHBOARD)} className="p-2 -ml-2 text-gray-400 hover:text-white">
-              <ChevronLeft />
-           </button>
-           <h2 className="text-2xl font-bold">Statistics</h2>
-        </div>
-
-        <div className="space-y-6 pb-12">
-          {SETS.map(set => {
-            const stats = getSetProgress(set.id, collection);
-            return (
-              <div key={set.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-white">{set.name}</h3>
-                  <span className="text-sm text-gray-400">{stats.owned} / {stats.total}</span>
-                </div>
-                <div className="w-full bg-gray-800 rounded-full h-4 overflow-hidden">
-                  <div 
-                    className="bg-gradient-to-r from-blue-600 to-purple-500 h-full rounded-full transition-all duration-1000 ease-out" 
-                    style={{ width: `${stats.percentage}%` }}
-                  />
-                </div>
-                <div className="mt-2 text-right">
-                  <span className="text-sm font-medium text-blue-400">{stats.percentage}% Complete</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+  const renderStats = () => (
+    <div className="flex flex-col h-full p-6 overflow-y-auto">
+      <div className="flex items-center gap-3 mb-8">
+        <button onClick={() => setCurrentView(View.DASHBOARD)} className="p-2 -ml-2 text-gray-400 hover:text-white">
+          <ChevronLeft />
+        </button>
+        <h2 className="text-2xl font-bold">Statistics</h2>
       </div>
-    );
-  };
+      <div className="space-y-6 pb-12">
+        {SETS.map(set => {
+          const stats = getSetProgress(set.id, collection);
+          return (
+            <div key={set.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-white">{set.name}</h3>
+                <span className="text-sm text-gray-400">{stats.owned} / {stats.total}</span>
+              </div>
+              <div className="w-full bg-gray-800 rounded-full h-4 overflow-hidden">
+                <div
+                  className="bg-gradient-to-r from-blue-600 to-purple-500 h-full rounded-full transition-all duration-1000 ease-out"
+                  style={{ width: `${stats.percentage}%` }}
+                />
+              </div>
+              <div className="mt-2 text-right">
+                <span className="text-sm font-medium text-blue-400">{stats.percentage}% Complete</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-black text-white font-sans overflow-hidden">

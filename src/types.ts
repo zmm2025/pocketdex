@@ -136,12 +136,6 @@ export interface SetData {
 
 export type CollectionState = Record<string, number>; // CardID -> Count
 
-export interface GoogleUser {
-  name: string;
-  email: string;
-  picture: string;
-}
-
 export enum View {
   DASHBOARD = 'DASHBOARD',
   COLLECTION = 'COLLECTION',
