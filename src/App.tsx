@@ -239,7 +239,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
       {!isSupabaseConfigured && (
         <p className="text-xs text-center text-amber-500 mt-4">
-          Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env.local for cloud sync. See SUPABASE_SETUP.md.
+          Cloud sync is unavailable: add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your environment (e.g. .env.local or deployment secrets).
         </p>
       )}
     </div>
