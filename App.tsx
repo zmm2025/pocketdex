@@ -75,7 +75,9 @@ const App: React.FC = () => {
     // Filtering logic
     const filteredCards = CARDS.filter(card => {
       const matchesSet = selectedSetId === 'ALL' || card.set === selectedSetId;
-      const matchesSearch = card.name.toLowerCase().includes(searchQuery.toLowerCase()) || card.number.includes(searchQuery);
+      const matchesSearch =
+        card.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        String(card.number).includes(searchQuery);
       const isOwned = (collection[card.id] || 0) > 0;
       
       if (filterOwned === 'owned' && !isOwned) return false;

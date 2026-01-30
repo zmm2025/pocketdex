@@ -13,41 +13,71 @@ declare global {
 }
 
 let tokenClient: any;
-let gapiInited = false;
 let gisInited = false;
+
+const waitFor = (fn: () => boolean, timeoutMs: number): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const deadline = Date.now() + timeoutMs;
+    const tick = () => {
+      if (fn()) return resolve();
+      if (Date.now() >= deadline) return reject(new Error('Timeout waiting for Google scripts'));
+      setTimeout(tick, 100);
+    };
+    tick();
+  });
 
 export const driveService = {
   isConfigured: () => !!CLIENT_ID,
 
-  // Initialize GAPI and GIS
-  init: async (onInitComplete: () => void) => {
+  // Initialize GAPI and GIS (requires Google scripts in index.html)
+  init: async (onInitComplete: (err?: Error) => void) => {
     if (!CLIENT_ID) {
       console.warn("Google Client ID not found in environment variables.");
+      onInitComplete();
       return;
     }
 
-    const gapiLoadPromise = new Promise<void>((resolve) => {
-      window.gapi.load('client', async () => {
-        await window.gapi.client.init({
-          discoveryDocs: [DISCOVERY_DOC],
+    try {
+      await waitFor(() => typeof (window as any).gapi !== 'undefined', 8000);
+      await waitFor(() => typeof (window as any).google?.accounts !== 'undefined', 8000);
+    } catch (e) {
+      console.error('Google scripts did not load', e);
+      onInitComplete(new Error('Google sign-in scripts did not load. Reload the page or check your connection and ad blockers.'));
+      return;
+    }
+
+    try {
+      const gapiLoadPromise = new Promise<void>((resolve, reject) => {
+        (window as any).gapi.load('client', async () => {
+          try {
+            await (window as any).gapi.client.init({ discoveryDocs: [DISCOVERY_DOC] });
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
         });
-        gapiInited = true;
-        resolve();
       });
-    });
 
-    const gisLoadPromise = new Promise<void>((resolve) => {
-      tokenClient = window.google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID,
-        scope: SCOPES,
-        callback: '', // Defined at request time
+      const gisLoadPromise = new Promise<void>((resolve, reject) => {
+        try {
+          tokenClient = (window as any).google.accounts.oauth2.initTokenClient({
+            client_id: CLIENT_ID,
+            scope: SCOPES,
+            callback: '',
+          });
+          gisInited = true;
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
       });
-      gisInited = true;
-      resolve();
-    });
 
-    await Promise.all([gapiLoadPromise, gisLoadPromise]);
-    onInitComplete();
+      await Promise.all([gapiLoadPromise, gisLoadPromise]);
+      onInitComplete();
+    } catch (e) {
+      console.error('Google Drive init failed', e);
+      onInitComplete(e instanceof Error ? e : new Error(String(e)));
+    }
   },
 
   // Trigger Login Flow

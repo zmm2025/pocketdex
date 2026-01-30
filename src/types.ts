@@ -1,4 +1,4 @@
-﻿export enum Rarity {
+export enum Rarity {
   COMMON = 'Common', // Diamond 1
   UNCOMMON = 'Uncommon', // Diamond 2
   RARE = 'Rare', // Diamond 3
@@ -85,6 +85,11 @@ export interface Card {
   exStatus?: ExStatus;
   boosterPacks?: string[];
   costToCraft?: number;
+}
+
+export interface Ability {
+  name: string;
+  text?: string;
 }
 
 export interface Attack {

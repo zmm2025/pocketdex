@@ -7,15 +7,13 @@ interface CardItemProps {
   count: number;
   onIncrement: () => void;
   onDecrement: () => void;
-  viewMode?: 'compact' | 'detail';
 }
 
 export const CardItem: React.FC<CardItemProps> = ({ 
   card, 
   count, 
   onIncrement, 
-  onDecrement,
-  viewMode = 'compact' 
+  onDecrement
 }) => {
   const [imageError, setImageError] = useState(false);
   const isOwned = count > 0;

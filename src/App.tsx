@@ -1,23 +1,29 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, CollectionState, GoogleUser } from './types';
-import { getCollection, saveCollection, updateCardCount } from './services/storage';
-import { CARDS, SETS, getSetProgress } from './services/db';
+import { getCollection, saveCollection, updateCardCount } from '../services/storage';
+import { CARDS, SETS, getSetProgress } from '../services/db';
 import { driveService } from './services/googleDriveService';
 
-import { Button } from './components/Button';
-import { CardItem } from './components/CardItem';
-import { 
-  Library, 
-  BarChart3, 
-  ChevronLeft, 
-  Filter, 
+import { Button } from '../components/Button';
+import { CardItem } from '../components/CardItem';
+import {
+  Library,
+  BarChart3,
+  ChevronLeft,
+  Filter,
   Search,
   Cloud,
   CheckCircle2,
   AlertCircle,
   Loader2,
-  LogOut
 } from 'lucide-react';
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from '@clerk/clerk-react';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>(View.DASHBOARD);
@@ -29,20 +35,56 @@ const App: React.FC = () => {
   // Sync State
   const [user, setUser] = useState<GoogleUser | null>(null);
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'saved' | 'error'>('idle');
+  const [syncErrorMessage, setSyncErrorMessage] = useState<string | null>(null);
   const [isDriveReady, setIsDriveReady] = useState(false);
 
   // Debounce ref for cloud save
   const saveTimeoutRef = useRef<NodeJS.Timeout>();
 
+  const setSyncError = (message: string) => {
+    setSyncStatus('error');
+    setSyncErrorMessage(message);
+  };
+
+  const clearSyncError = () => {
+    setSyncErrorMessage(null);
+  };
+
+  const getDriveErrorMessage = (e: unknown): string => {
+    if (e == null) return 'Something went wrong.';
+    if (typeof e === 'string') {
+      if (e === 'Google services not initialized') return e;
+      return e;
+    }
+    if (typeof e === 'object' && e !== null && 'error' in e) {
+      const o = e as { error?: string; message?: string };
+      const code = typeof o.error === 'string' ? o.error : '';
+      const msg = typeof o.message === 'string' ? o.message : '';
+      if (code === 'access_denied') return 'You declined sign-in or closed the window. Try again and approve access to sync.';
+      if (code === 'popup_closed_by_user') return 'Sign-in window was closed. Try again and complete sign-in.';
+      if (code && msg) return `${code}: ${msg}`;
+      if (code) return code;
+      if (msg) return msg;
+    }
+    if (e instanceof Error) return e.message;
+    return 'Something went wrong. Try again.';
+  };
+
   // 1. Initialize App & Drive
   useEffect(() => {
     setCollection(getCollection());
-    
-    if (driveService.isConfigured()) {
-      driveService.init(() => {
-        setIsDriveReady(true);
-      });
+
+    if (!driveService.isConfigured()) {
+      setIsDriveReady(true); // No client ID: show "Connect Drive" (disabled) instead of "Loading..."
+      return;
     }
+    driveService.init((err) => {
+      if (err) setSyncError(err.message);
+      setIsDriveReady(true);
+    });
+    // If init never completes, stop showing "Loading..." after 8s
+    const fallback = setTimeout(() => setIsDriveReady(true), 8000);
+    return () => clearTimeout(fallback);
   }, []);
 
   // 2. Auto-Save Logic (Local + Cloud)
@@ -61,10 +103,11 @@ const App: React.FC = () => {
         try {
           await driveService.saveData(collection);
           setSyncStatus('saved');
+          clearSyncError();
           setTimeout(() => setSyncStatus('idle'), 3000);
         } catch (e) {
-          console.error(e);
-          setSyncStatus('error');
+          console.error('Cloud save failed', e);
+          setSyncError(`Cloud save failed: ${getDriveErrorMessage(e)}`);
         }
       }, 2000); // 2 second delay
     }
@@ -73,21 +116,22 @@ const App: React.FC = () => {
   // Auth Handlers
   const handleGoogleLogin = async () => {
     if (!isDriveReady) return;
+    clearSyncError();
     try {
       const token = await driveService.login();
       setSyncStatus('syncing');
-      
+
       const userInfo = await driveService.getUserInfo(token);
       setUser(userInfo);
 
       // Merge Logic: Download cloud data and merge with local
       // We take the MAX count of cards to ensure no data loss on either side
       const cloudData = await driveService.loadData();
-      
+
       if (cloudData) {
         const localData = getCollection();
         const merged: CollectionState = { ...cloudData };
-        
+
         Object.entries(localData).forEach(([id, count]) => {
           merged[id] = Math.max(merged[id] || 0, count as number);
         });
@@ -100,16 +144,25 @@ const App: React.FC = () => {
         await driveService.saveData(getCollection());
       }
       setSyncStatus('saved');
+      clearSyncError();
     } catch (e) {
-      console.error("Login failed", e);
-      setSyncStatus('error');
+      const msg = getDriveErrorMessage(e);
+      const friendly =
+        msg === 'Google services not initialized'
+          ? 'Google sign-in didn’t load. Reload the page and try again, or check that Google scripts are allowed.'
+          : msg.includes('popup')
+            ? 'Sign-in was closed or blocked. Try again and complete sign-in in the popup.'
+            : msg;
+      console.error('Connect Drive failed', e);
+      setSyncError(friendly);
     }
   };
 
   const handleLogout = () => {
     setUser(null);
     setSyncStatus('idle');
-    // Note: We don't clear local data on logout for this app type, 
+    clearSyncError();
+    // Note: We don't clear local data on logout for this app type,
     // keeping it "offline accessible".
   };
 
@@ -122,6 +175,22 @@ const App: React.FC = () => {
 
   const renderDashboard = () => (
     <div className="flex flex-col h-full justify-center p-6 space-y-6 max-w-md mx-auto relative">
+      <header className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-2xl font-bold">Account</h1>
+          <p className="text-xs text-gray-500">Sign in to sync across devices</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <SignedOut>
+            <SignInButton mode="modal" />
+            <SignUpButton mode="modal" />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </div>
+      </header>
+
       <div className="text-center mb-4">
         <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
           PocketDex
@@ -147,7 +216,12 @@ const App: React.FC = () => {
             <span className="text-xs text-gray-500 flex items-center gap-1">
               {syncStatus === 'syncing' && <><Loader2 size={10} className="animate-spin"/> Syncing...</>}
               {syncStatus === 'saved' && <><CheckCircle2 size={10} className="text-green-500"/> Saved</>}
-              {syncStatus === 'error' && <><AlertCircle size={10} className="text-red-500"/> Error</>}
+              {syncStatus === 'error' && (
+                <span className="text-red-400 flex items-center gap-1" title={syncErrorMessage ?? undefined}>
+                  <AlertCircle size={10} className="text-red-500 shrink-0"/>
+                  {syncErrorMessage ?? 'Something went wrong.'}
+                </span>
+              )}
               {syncStatus === 'idle' && (user ? 'Up to date' : 'Not connected')}
             </span>
           </div>
@@ -164,11 +238,11 @@ const App: React.FC = () => {
           <Button 
             size="sm"
             onClick={handleGoogleLogin} 
-            disabled={!isDriveReady}
+            disabled={!isDriveReady || !driveService.isConfigured()}
             className="text-xs"
-            title={!driveService.isConfigured() ? "Missing Client ID in .env" : ""}
+            title={!driveService.isConfigured() ? "Missing VITE_GOOGLE_CLIENT_ID in .env.local" : ""}
           >
-            {isDriveReady ? 'Connect Drive' : 'Loading...'}
+            {!driveService.isConfigured() ? 'Connect Drive' : isDriveReady ? 'Connect Drive' : 'Loading...'}
           </Button>
         )}
       </div>
