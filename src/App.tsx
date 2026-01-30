@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { View, CollectionState } from './types';
-import { getCollection, saveCollection, updateCardCount } from '../services/storage';
+import { updateCardCount } from '../services/storage';
 import { CARDS, SETS, getSetProgress } from '../services/db';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { loadCollection as loadCollectionFromSupabase, saveCollection as saveCollectionToSupabase } from './services/supabaseService';
@@ -30,15 +30,6 @@ import {
 
 const SUPABASE_URL = (import.meta as any).env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = (import.meta as any).env.VITE_SUPABASE_ANON_KEY;
-
-function mergeCollections(local: CollectionState, cloud: CollectionState | null): CollectionState {
-  if (!cloud) return { ...local };
-  const merged: CollectionState = { ...cloud };
-  Object.entries(local).forEach(([id, count]) => {
-    merged[id] = Math.max(merged[id] ?? 0, count);
-  });
-  return merged;
-}
 
 function getSyncErrorMessage(e: unknown): string {
   if (e == null) return 'Something went wrong.';
@@ -81,12 +72,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 
-  // 1. Load from localStorage on mount
-  useEffect(() => {
-    setCollection(getCollection());
-  }, []);
-
-  // 2. When signed in with Clerk + Supabase ready: load from cloud and merge with local (once per sign-in)
+  // 1. When signed in: load collection only from cloud (once per sign-in)
   useEffect(() => {
     if (!clerkUser?.id || !supabase) return;
     if (hasLoadedFromCloudRef.current) return;
@@ -98,12 +84,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         setSyncStatus('syncing');
         const cloudData = await loadCollectionFromSupabase(supabase);
         if (cancelled) return;
-        const localData = getCollection();
-        const merged = mergeCollections(localData, cloudData);
-        setCollection(merged);
-        saveCollection(merged);
-        await saveCollectionToSupabase(supabase, clerkUser.id, merged);
-        if (cancelled) return;
+        setCollection(cloudData ?? {});
         setSyncStatus('saved');
         clearSyncError();
         setTimeout(() => setSyncStatus('idle'), 3000);
@@ -116,32 +97,31 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     };
   }, [clerkUser?.id, supabase]);
 
-  // Reset "loaded from cloud" when user signs out so next sign-in merges again
+  // 2. When user signs out: clear collection (data is only in cloud per Clerk account)
   useEffect(() => {
-    if (!clerkUser) hasLoadedFromCloudRef.current = false;
+    if (!clerkUser) {
+      hasLoadedFromCloudRef.current = false;
+      setCollection({});
+    }
   }, [clerkUser]);
 
-  // 3. Auto-save: always save local; when signed in, debounce save to Supabase
+  // 3. Auto-save: when signed in, debounce save to Supabase only (no local storage)
   useEffect(() => {
     if (Object.keys(collection).length === 0) return;
-
-    saveCollection(collection);
-
-    if (clerkUser && supabase) {
-      setSyncStatus('syncing');
-      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-      saveTimeoutRef.current = setTimeout(async () => {
-        try {
-          await saveCollectionToSupabase(supabase, clerkUser.id, collection);
-          setSyncStatus('saved');
-          clearSyncError();
-          setTimeout(() => setSyncStatus('idle'), 3000);
-        } catch (e) {
-          console.error('Cloud save failed', e);
-          setSyncError(`Cloud save failed: ${getSyncErrorMessage(e)}`);
-        }
-      }, 2000);
-    }
+    if (!clerkUser || !supabase) return;
+    setSyncStatus('syncing');
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        await saveCollectionToSupabase(supabase, clerkUser.id, collection);
+        setSyncStatus('saved');
+        clearSyncError();
+        setTimeout(() => setSyncStatus('idle'), 3000);
+      } catch (e) {
+        console.error('Cloud save failed', e);
+        setSyncError(`Cloud save failed: ${getSyncErrorMessage(e)}`);
+      }
+    }, 2000);
     return () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     };
