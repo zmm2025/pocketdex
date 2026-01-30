@@ -25,7 +25,9 @@ import {
   UserButton,
 } from '@clerk/clerk-react';
 
-const App: React.FC = () => {
+type AppProps = { clerkEnabled?: boolean };
+
+const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const [currentView, setCurrentView] = useState<View>(View.DASHBOARD);
   const [collection, setCollection] = useState<CollectionState>({});
   const [searchQuery, setSearchQuery] = useState('');
@@ -181,13 +183,19 @@ const App: React.FC = () => {
           <p className="text-xs text-gray-500">Sign in to sync across devices</p>
         </div>
         <div className="flex items-center gap-2">
-          <SignedOut>
-            <SignInButton mode="modal" />
-            <SignUpButton mode="modal" />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
+          {clerkEnabled ? (
+            <>
+              <SignedOut>
+                <SignInButton mode="modal" />
+                <SignUpButton mode="modal" />
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </>
+          ) : (
+            <span className="text-xs text-gray-500">Sign-in not configured</span>
+          )}
         </div>
       </header>
 
