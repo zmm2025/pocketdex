@@ -1,4 +1,4 @@
-﻿/**
+/**
  * PocketDex Asset + Data Sync
  *
  * Downloads card art, set logos, icons, and pack art from pocket.pokemongohub.net
@@ -16,8 +16,14 @@ import followRedirects from 'follow-redirects';
 import { fileURLToPath } from 'url';
 import process from 'process';
 import readline from 'readline';
+import sharp from 'sharp';
 
 const { https } = followRedirects;
+
+// Output format: 'jpg' for photos (smaller), 'png' for icons (transparency)
+const CARD_EXT = 'jpg';
+const WALLPAPER_EXT = 'jpg';
+const FULLART_EXT = 'jpg';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -387,6 +393,47 @@ const fetchMarkdown = async (urlOrPath, delayMs, options = {}) => {
   throw lastError || new Error(`Failed to fetch ${target}`);
 };
 
+const downloadToBuffer = (url, delayMs = 0) => {
+  return new Promise((resolve, reject) => {
+    const startRequest = () => {
+      const request = https.get(
+        url,
+        { headers: { ...SESSION_HEADERS } },
+        (response) => {
+          if (response.statusCode === 200) {
+            const chunks = [];
+            response.on('data', (chunk) => chunks.push(chunk));
+            response.on('end', () => resolve(Buffer.concat(chunks)));
+          } else if (response.statusCode === 404) {
+            resolve(null);
+          } else {
+            const chunks = [];
+            response.on('data', (chunk) => chunks.push(chunk));
+            response.on('end', () => {
+              const body = Buffer.concat(chunks).toString('utf8');
+              const snippet = body.slice(0, 160).replace(/\s+/g, ' ').trim();
+              const hint = snippet ? ` body: ${snippet}` : '';
+              reject(new Error(`Status ${response.statusCode}: ${url}${hint}`));
+            });
+          }
+        }
+      );
+
+      request.setTimeout(REQUEST_TIMEOUT_MS, () => {
+        request.destroy(new Error(`Timeout ${REQUEST_TIMEOUT_MS}ms: ${url}`));
+      });
+
+      request.on('error', (err) => reject(err));
+    };
+
+    if (delayMs > 0) {
+      setTimeout(startRequest, delayMs);
+    } else {
+      startRequest();
+    }
+  });
+};
+
 const downloadFile = (url, dest, delayMs = 0) => {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(dest);
@@ -435,6 +482,65 @@ const downloadFile = (url, dest, delayMs = 0) => {
       startRequest();
     }
   });
+};
+
+/**
+ * Download image, compress with sharp, and save as PNG or JPG (whichever is smaller).
+ * For photos (card art, wallpaper, full art): use JPG.
+ * For icons with transparency: use PNG.
+ */
+const downloadAndCompressImage = async (url, dest, delayMs = 0, options = {}) => {
+  const { format = 'auto', jpegQuality = 82, pngCompression = 9 } = options;
+  const ext = path.extname(dest).toLowerCase();
+
+  if (format === 'png' || ext === '.png') {
+    const buffer = await downloadToBuffer(url, delayMs);
+    if (!buffer) return false;
+    ensureDir(path.dirname(dest));
+    await sharp(buffer)
+      .png({ compressionLevel: pngCompression, adaptiveFiltering: true })
+      .toFile(dest);
+    return true;
+  }
+
+  if (format === 'jpg' || format === 'jpeg' || ext === '.jpg' || ext === '.jpeg') {
+    const buffer = await downloadToBuffer(url, delayMs);
+    if (!buffer) return false;
+    ensureDir(path.dirname(dest));
+    await sharp(buffer)
+      .flatten({ background: { r: 255, g: 255, b: 255 } })
+      .jpeg({ quality: jpegQuality, mozjpeg: true })
+      .toFile(dest);
+    return true;
+  }
+
+  if (format === 'auto') {
+    const buffer = await downloadToBuffer(url, delayMs);
+    if (!buffer) return false;
+    ensureDir(path.dirname(dest));
+    const img = sharp(buffer);
+    const meta = await img.metadata();
+    if (meta.hasAlpha) {
+      const pngDest = dest.replace(/\.(jpg|jpeg|webp)$/i, '.png');
+      await img.png({ compressionLevel: pngCompression, adaptiveFiltering: true }).toFile(pngDest);
+      return true;
+    }
+    const base = dest.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+    const pngPath = `${base}.png`;
+    const jpgPath = `${base}.jpg`;
+    const [pngBuf, jpgBuf] = await Promise.all([
+      img.clone().png({ compressionLevel: pngCompression, adaptiveFiltering: true }).toBuffer(),
+      img.clone().flatten({ background: { r: 255, g: 255, b: 255 } }).jpeg({ quality: jpegQuality, mozjpeg: true }).toBuffer(),
+    ]);
+    if (jpgBuf.length <= pngBuf.length) {
+      fs.writeFileSync(jpgPath, jpgBuf);
+      return true;
+    }
+    fs.writeFileSync(pngPath, pngBuf);
+    return true;
+  }
+
+  throw new Error(`Unknown format: ${format}`);
 };
 
 const runConcurrent = async (items, concurrency, handler) => {
@@ -519,8 +625,11 @@ const downloadBatch = async (
   concurrency,
   progressIntervalMs,
   progressBarWidth,
-  requestDelayMs = 0
+  requestDelayMs = 0,
+  options = {}
 ) => {
+  const { compress = false, format } = options;
+
   console.log(`\nProcessing ${label}...`);
   let success = 0;
   let fail = 0;
@@ -543,7 +652,9 @@ const downloadBatch = async (
       return;
     }
     try {
-      const result = await downloadFile(targetUrl, item.dest, requestDelayMs);
+      const result = compress
+        ? await downloadAndCompressImage(targetUrl, item.dest, requestDelayMs, { format })
+        : await downloadFile(targetUrl, item.dest, requestDelayMs);
       if (result) {
         success += 1;
       } else {
@@ -1751,7 +1862,8 @@ const run = async () => {
       assetConcurrency,
       progressIntervalMs,
       progressBarWidth,
-      assetDelayMs
+      assetDelayMs,
+      { compress: true, format: 'png' }
     );
     const typeResult = await downloadBatch(
       typeTasks,
@@ -1759,7 +1871,8 @@ const run = async () => {
       assetConcurrency,
       progressIntervalMs,
       progressBarWidth,
-      assetDelayMs
+      assetDelayMs,
+      { compress: true, format: 'png' }
     );
     const categoryResult = await downloadBatch(
       categoryTasks,
@@ -1767,7 +1880,8 @@ const run = async () => {
       assetConcurrency,
       progressIntervalMs,
       progressBarWidth,
-      assetDelayMs
+      assetDelayMs,
+      { compress: true, format: 'png' }
     );
 
     summary.assets.downloaded +=
@@ -1788,9 +1902,11 @@ const run = async () => {
       if (!fs.existsSync(logoDest)) {
         const logoUrl = extractDirectUrl(setInfo.imageUrl);
         if (!logoUrl) continue;
-        await downloadFile(logoUrl, logoDest, assetDelayMs).catch((error) => {
+        try {
+          await downloadAndCompressImage(logoUrl, logoDest, assetDelayMs, { format: 'png' });
+        } catch (error) {
           console.warn(`Failed to download logo for ${setId}: ${error.message}`);
-        });
+        }
       }
 
       const packEntries = manual.packs[setId] || [];
@@ -1832,7 +1948,8 @@ const run = async () => {
           assetConcurrency,
           progressIntervalMs,
           progressBarWidth,
-          assetDelayMs
+          assetDelayMs,
+          { compress: true, format: 'png' }
         );
         summary.assets.downloaded += packResult.success;
         summary.assets.failed += packResult.fail;
@@ -1847,7 +1964,8 @@ const run = async () => {
           assetConcurrency,
           progressIntervalMs,
           progressBarWidth,
-          assetDelayMs
+          assetDelayMs,
+          { compress: true, format: 'png' }
         );
         summary.assets.downloaded += inferredResult.success;
         summary.assets.failed += inferredResult.fail;
@@ -1856,26 +1974,23 @@ const run = async () => {
     }
   }
 
-  // Discover card URLs (booster pack pages)
-  const selectedSetNames = new Set(selectedSets.map((setInfo) => normalizeKey(setInfo.name)));
-  const listPages = Array.from(
-    new Set(
-      packs
-        .filter((entry) => selectedSetNames.size === 0 || selectedSetNames.has(normalizeKey(entry.setName)))
-        .map((entry) => entry.url)
-    )
-  ).filter(Boolean);
-  console.log(`\nDiscovering cards from ${listPages.length} booster pack pages...`);
+  // Discover card URLs from set pages (all sets use the same discovery path)
+  const setListPages = selectedSets
+    .filter((setInfo) => manual.setIds[setInfo.slug])
+    .map((setInfo) => setInfo.url)
+    .filter(Boolean);
+
+  console.log(`\nDiscovering cards from ${setListPages.length} set page(s)...`);
 
   const cardUrlSet = new Set();
-  for (const url of listPages) {
+  for (const url of setListPages) {
     const markdown = await fetchMarkdown(url, fetchDelayMs, fetchOptions);
     let urls = [];
     if (markdown && !isCloudflareBlock(markdown)) {
-      urls = extractCardUrlsFromBoosterHtml(markdown);
+      urls = extractCardUrls(markdown);
     }
     if ((urls.length === 0 || isCloudflareBlock(markdown)) && allowBrowserBypass) {
-      const browserUrls = await fetchCardUrlsViaBrowser(url, { mode: 'booster' });
+      const browserUrls = await fetchCardUrlsViaBrowser(url, { mode: 'generic' });
       if (browserUrls.length > 0) {
         urls = browserUrls;
       }
@@ -1894,7 +2009,7 @@ const run = async () => {
     console.warn(`Limiting card processing to first ${limitCards} URLs (--limit-cards).`);
   }
   if (cardUrls.length === 0) {
-    throw new Error('No card URLs discovered. Check booster pack pages and retry.');
+    throw new Error('No card URLs discovered. Check set pages and retry.');
   }
 
   console.log(`\nDiscovered ${cardUrls.length} unique card URLs.`);
@@ -1959,17 +2074,20 @@ const run = async () => {
         ensureDir(wallpaperDir);
         ensureDir(fullArtDir);
 
-        const cardFile = path.join(setCardDir, `${padNumber(parsed.number)}.webp`);
+        const cardFile = path.join(setCardDir, `${padNumber(parsed.number)}.${CARD_EXT}`);
         const wallpaperFile = parsed.images.wallpaperUrl
-          ? path.join(wallpaperDir, `${padNumber(parsed.number)}.jpg`)
+          ? path.join(wallpaperDir, `${padNumber(parsed.number)}.${WALLPAPER_EXT}`)
           : null;
         const fullArtFile = parsed.images.fullArtUrl
-          ? path.join(fullArtDir, `${padNumber(parsed.number)}.webp`)
+          ? path.join(fullArtDir, `${padNumber(parsed.number)}.${FULLART_EXT}`)
           : null;
 
         if (parsed.images.cardUrl && !fs.existsSync(cardFile)) {
           try {
-            const ok = await downloadFile(parsed.images.cardUrl, cardFile, assetDelayMs);
+            const ok = await downloadAndCompressImage(parsed.images.cardUrl, cardFile, assetDelayMs, {
+              format: 'jpg',
+              jpegQuality: 82,
+            });
             summary.assets.downloaded += ok ? 1 : 0;
             summary.assets.failed += ok ? 0 : 1;
             if (!ok) {
@@ -1985,7 +2103,12 @@ const run = async () => {
 
         if (wallpaperFile && parsed.images.wallpaperUrl && !fs.existsSync(wallpaperFile)) {
           try {
-            const ok = await downloadFile(parsed.images.wallpaperUrl, wallpaperFile, assetDelayMs);
+            const ok = await downloadAndCompressImage(
+              parsed.images.wallpaperUrl,
+              wallpaperFile,
+              assetDelayMs,
+              { format: 'jpg', jpegQuality: 82 }
+            );
             summary.assets.downloaded += ok ? 1 : 0;
             summary.assets.failed += ok ? 0 : 1;
             if (!ok) {
@@ -1999,7 +2122,12 @@ const run = async () => {
 
         if (fullArtFile && parsed.images.fullArtUrl && !fs.existsSync(fullArtFile)) {
           try {
-            const ok = await downloadFile(parsed.images.fullArtUrl, fullArtFile, assetDelayMs);
+            const ok = await downloadAndCompressImage(
+              parsed.images.fullArtUrl,
+              fullArtFile,
+              assetDelayMs,
+              { format: 'jpg', jpegQuality: 82 }
+            );
             summary.assets.downloaded += ok ? 1 : 0;
             summary.assets.failed += ok ? 0 : 1;
             if (!ok) {

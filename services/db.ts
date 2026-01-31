@@ -21,7 +21,7 @@ import {
 // See assets/INSTRUCTIONS.md for where to place files.
 // Use Vite's base URL so assets resolve correctly when app is served from a subpath (e.g. /pocketdex/).
 const ASSET_BASE = `${import.meta.env.BASE_URL || '/'}assets`;
-const EXT = 'webp';
+const EXT = 'jpg';
 const WALLPAPER_EXT = 'jpg';
 const padCardNumber = (value: number | string) => String(value).padStart(3, '0');
 
