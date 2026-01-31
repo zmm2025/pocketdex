@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { View, CollectionState } from './types';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { CollectionState } from './types';
 import { updateCardCount } from '../services/storage';
 import { CARDS, SETS, getSetProgress } from '../services/db';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
@@ -41,9 +42,10 @@ type AppProps = { clerkEnabled?: boolean };
 
 const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const { session } = useSession();
-  const { user: clerkUser } = useUser();
+  const { user: clerkUser, isLoaded: isUserLoaded } = useUser();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const [currentView, setCurrentView] = useState<View>(View.DASHBOARD);
   const [collection, setCollection] = useState<CollectionState>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSetId, setSelectedSetId] = useState<string>('A1');
@@ -96,21 +98,33 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     };
   }, [clerkUser?.id, supabase]);
 
-  // 2. When user signs out: clear collection and leave user-data views (data is only in cloud)
+  // 2. When user signs out: clear collection and redirect to home if on protected route
   useEffect(() => {
+    // Skip auth checks if Clerk is not enabled
+    if (!clerkEnabled) return;
+    // Wait for Clerk to finish loading before checking auth
+    if (!isUserLoaded) return;
+    
     if (!clerkUser) {
       hasLoadedFromCloudRef.current = false;
       setCollection({});
-      setCurrentView(v => (v === View.COLLECTION || v === View.STATS ? View.DASHBOARD : v));
+      if (location.pathname === '/collection' || location.pathname === '/statistics') {
+        navigate('/');
+      }
     }
-  }, [clerkUser]);
+  }, [clerkEnabled, clerkUser, isUserLoaded, location.pathname, navigate]);
 
-  // 3. Guard: don't allow viewing Collection or Stats when signed out (e.g. direct state / future routing)
+  // 3. Guard: redirect to home if not signed in and trying to access protected routes
   useEffect(() => {
-    if (!clerkUser && (currentView === View.COLLECTION || currentView === View.STATS)) {
-      setCurrentView(View.DASHBOARD);
+    // Skip auth checks if Clerk is not enabled
+    if (!clerkEnabled) return;
+    // Wait for Clerk to finish loading before checking auth
+    if (!isUserLoaded) return;
+    
+    if (!clerkUser && (location.pathname === '/collection' || location.pathname === '/statistics')) {
+      navigate('/');
     }
-  }, [clerkUser, currentView]);
+  }, [clerkEnabled, clerkUser, isUserLoaded, location.pathname, navigate]);
 
   // 4. Auto-save: when signed in, debounce save to Supabase only (no local storage)
   useEffect(() => {
@@ -188,7 +202,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         size="lg"
         fullWidth
         disabled={!clerkUser}
-        onClick={() => clerkUser && setCurrentView(View.COLLECTION)}
+        onClick={() => clerkUser && navigate('/collection')}
         className={`h-24 flex flex-col items-center justify-center gap-1 group ${!clerkUser ? 'opacity-60 cursor-not-allowed' : ''}`}
       >
         <Library className="group-hover:scale-110 transition-transform" />
@@ -201,7 +215,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         size="lg"
         fullWidth
         disabled={!clerkUser}
-        onClick={() => clerkUser && setCurrentView(View.STATS)}
+        onClick={() => clerkUser && navigate('/statistics')}
         className={`h-24 flex flex-col items-center justify-center gap-1 group bg-gray-800 border-gray-700 ${!clerkUser ? 'opacity-60 cursor-not-allowed' : ''}`}
       >
         <BarChart3 className="group-hover:scale-110 transition-transform text-green-400" />
@@ -233,7 +247,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       <div className="flex flex-col h-full bg-black">
         <div className="sticky top-0 z-30 bg-black/80 backdrop-blur-lg border-b border-gray-800 p-4 space-y-3">
           <div className="flex items-center gap-3">
-            <button onClick={() => setCurrentView(View.DASHBOARD)} className="p-2 -ml-2 text-gray-400 hover:text-white">
+            <button onClick={() => navigate('/')} className="p-2 -ml-2 text-gray-400 hover:text-white">
               <ChevronLeft />
             </button>
             <h2 className="text-xl font-bold hidden xs:block">Collection</h2>
@@ -296,7 +310,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const renderStats = () => (
     <div className="flex flex-col h-full p-6 overflow-y-auto">
       <div className="flex items-center gap-3 mb-8">
-        <button onClick={() => setCurrentView(View.DASHBOARD)} className="p-2 -ml-2 text-gray-400 hover:text-white">
+        <button onClick={() => navigate('/')} className="p-2 -ml-2 text-gray-400 hover:text-white">
           <ChevronLeft />
         </button>
         <h2 className="text-2xl font-bold">Statistics</h2>
@@ -326,11 +340,23 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     </div>
   );
 
+  // Show loading state while Clerk is initializing (only for protected routes)
+  const isProtectedRoute = location.pathname === '/collection' || location.pathname === '/statistics';
+  if (clerkEnabled && !isUserLoaded && isProtectedRoute) {
+    return (
+      <div className="min-h-screen bg-black text-white font-sans flex items-center justify-center">
+        <Loader2 className="animate-spin text-gray-400" size={32} />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-white font-sans overflow-hidden">
-      {currentView === View.DASHBOARD && renderDashboard()}
-      {currentView === View.COLLECTION && renderCollection()}
-      {currentView === View.STATS && renderStats()}
+      <Routes>
+        <Route path="/" element={renderDashboard()} />
+        <Route path="/collection" element={renderCollection()} />
+        <Route path="/statistics" element={renderStats()} />
+      </Routes>
     </div>
   );
 };

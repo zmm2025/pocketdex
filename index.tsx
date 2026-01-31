@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { HashRouter } from 'react-router-dom';
 import './src/index.css';
 import App from './src/App';
 import { ClerkProvider } from '@clerk/clerk-react';
@@ -17,27 +18,29 @@ const root = ReactDOM.createRoot(rootElement);
 
 root.render(
   <React.StrictMode>
-    {PUBLISHABLE_KEY ? (
-      <ClerkProvider
-        publishableKey={PUBLISHABLE_KEY}
-        afterSignOutUrl="/"
-        appearance={{
-          baseTheme: dark,
-          variables: {
-            colorBackground: '#000000',
-            colorInputBackground: '#171717',
-            colorInputText: '#ffffff',
-            borderRadius: '0.5rem',
-            colorPrimary: '#3b82f6',
-            colorText: '#ffffff',
-            colorTextSecondary: '#9ca3af',
-          },
-        }}
-      >
-        <App clerkEnabled />
-      </ClerkProvider>
-    ) : (
-      <App clerkEnabled={false} />
-    )}
+    <HashRouter>
+      {PUBLISHABLE_KEY ? (
+        <ClerkProvider
+          publishableKey={PUBLISHABLE_KEY}
+          afterSignOutUrl="/"
+          appearance={{
+            baseTheme: dark,
+            variables: {
+              colorBackground: '#000000',
+              colorInputBackground: '#171717',
+              colorInputText: '#ffffff',
+              borderRadius: '0.5rem',
+              colorPrimary: '#3b82f6',
+              colorText: '#ffffff',
+              colorTextSecondary: '#9ca3af',
+            },
+          }}
+        >
+          <App clerkEnabled />
+        </ClerkProvider>
+      ) : (
+        <App clerkEnabled={false} />
+      )}
+    </HashRouter>
   </React.StrictMode>
 );
