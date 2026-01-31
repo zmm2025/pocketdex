@@ -28,8 +28,8 @@
         "name": "Mega Gyarados"
       },
       {
-        "id": "mega",
-        "name": "blaziken"
+        "id": "mega-blaziken",
+        "name": "Mega Blaziken"
       }
     ],
     "PROMO-B": [
@@ -43,7 +43,7 @@
     "A4": [
       {
         "id": "lugia",
-        "name": "Luga"
+        "name": "Lugia"
       },
       {
         "id": "ho-oh",

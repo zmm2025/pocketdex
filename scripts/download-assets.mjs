@@ -2185,30 +2185,19 @@ const run = async () => {
       const cards = cardsBySet.get(setId) || [];
       cards.sort((a, b) => a.number - b.number);
       const packEntries = manual.packs[setId] || [];
+      const totalCards = cards.length;
 
-      const payload = {
-        generatedAt: new Date().toISOString(),
-        source: `${SOURCE_BASE}/en`,
-        set: {
-          id: setId,
-          name: setInfo.name,
-          releaseDate: setInfo.releaseDate,
-          totalCards: setInfo.totalCards,
-          packs: packEntries,
-          slug: setInfo.slug,
-        },
-        cards,
-      };
-
+      // Set file: only set id + cards (metadata lives only in index.json)
+      const setPayload = { set: setId, cards };
       const setPath = path.join(DATA_SETS_DIR, `${setId}.json`);
-      fs.writeFileSync(setPath, JSON.stringify(payload, null, 2));
+      fs.writeFileSync(setPath, JSON.stringify(setPayload, null, 2));
       summary.data.setFiles += 1;
 
       setData.push({
         id: setId,
         name: setInfo.name,
         releaseDate: setInfo.releaseDate,
-        totalCards: setInfo.totalCards,
+        totalCards,
         packs: packEntries,
         slug: setInfo.slug,
       });

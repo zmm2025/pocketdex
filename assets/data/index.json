@@ -21,8 +21,8 @@
           "name": "Mega Gyarados"
         },
         {
-          "id": "mega",
-          "name": "blaziken"
+          "id": "mega-blaziken",
+          "name": "Mega Blaziken"
         }
       ],
       "slug": "mega-rising"
@@ -30,12 +30,7 @@
     {
       "id": "PROMO-B",
       "name": "PROMO-B",
-      "packs": [
-        {
-          "id": "PROMO-B",
-          "name": "PROMO-B"
-        }
-      ],
+      "packs": [],
       "slug": "promo-b"
     },
     {
@@ -128,12 +123,7 @@
     {
       "id": "PROMO-A",
       "name": "PROMO-A",
-      "packs": [
-        {
-          "id": "PROMO-A",
-          "name": "PROMO-A"
-        }
-      ],
+      "packs": [],
       "slug": "promo-a"
     },
     {
