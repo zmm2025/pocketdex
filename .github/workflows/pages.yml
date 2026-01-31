@@ -44,6 +44,12 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Verify build output
+        run: |
+          test -f dist/index.html || (echo "Missing dist/index.html" && exit 1)
+          test -n "$(find dist/assets -maxdepth 1 -name 'index-*.js' -print -quit)" || (echo "Missing dist/assets/index-*.js" && exit 1)
+          echo "Build output OK"
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

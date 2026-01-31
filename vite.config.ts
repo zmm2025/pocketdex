@@ -21,11 +21,10 @@ function serveAssetsPlugin(): Plugin {
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         const urlPath = req.url?.split('?')[0] ?? '';
-        const base = urlPath.startsWith('/pocketdex/assets') ? '/pocketdex/assets' : urlPath.startsWith('/assets') ? '/assets' : '';
-        if (!base) return next();
+        if (!urlPath.startsWith('/assets')) return next();
         // Let Vite handle .json (e.g. import.meta.glob) so they are transformed as modules
         if (urlPath.endsWith('.json')) return next();
-        const filePath = join(assetsDir, urlPath.slice(base.length));
+        const filePath = join(assetsDir, urlPath.slice('/assets'.length));
         if (!filePath.startsWith(assetsDir)) return next();
         const stat = statSync(filePath, { throwIfNoEntry: false });
         if (!stat?.isFile()) return next();
@@ -57,10 +56,21 @@ export default defineConfig({
         if (statSync(assetsSrc).isDirectory()) {
           copyDirSync(assetsSrc, assetsDest);
         }
+        // Favicon at dist root (e.g. pocketdex.zain.build/favicon.png)
+        const faviconSrc = join(process.cwd(), 'favicon.png');
+        const faviconDest = join(outDir, 'favicon.png');
+        if (statSync(faviconSrc, { throwIfNoEntry: false })?.isFile()) {
+          copyFileSync(faviconSrc, faviconDest);
+        }
+        // .nojekyll so GitHub Pages serves files as-is (no Jekyll processing)
+        const noJekyll = join(process.cwd(), '.nojekyll');
+        if (statSync(noJekyll, { throwIfNoEntry: false })?.isFile()) {
+          copyFileSync(noJekyll, join(outDir, '.nojekyll'));
+        }
       }
     }
   ],
-  base: '/pocketdex/',
+  base: '/',
   server: {
     port: 3000,
     open: false

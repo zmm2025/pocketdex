@@ -41,9 +41,30 @@ To create a production build:
 npm run build
 ```
 
-## GitHub Pages (No Build)
+## GitHub Pages
 
-This repo includes a GitHub Pages workflow that deploys the site directly from the repository root on every push to `main`. There is no build step required. In your repo settings, set Pages to deploy from **GitHub Actions**.
+This repo includes a GitHub Actions workflow that builds the app and deploys the `dist` folder to GitHub Pages on every push to `main`. In your repo settings, set Pages to deploy from **GitHub Actions**.
+
+### Custom domain (pocketdex.zain.build)
+
+The site is built for **pocketdex.zain.build** (subdomain). Use a **CNAME** for `pocketdex` in Namecheap—do **not** use URL Redirect or Domain Forwarding for that host.
+
+
+| Host       | Type     | Value                |
+|------------|----------|----------------------|
+| `pocketdex`| **CNAME**| `zmm2025.github.io.` (trailing dot) |
+
+
+
+**GitHub:** Repo → **Settings** → **Pages** → **Custom domain** = `pocketdex.zain.build`. Enable **Enforce HTTPS** when offered.
+
+### Deployment troubleshooting (MIME / 404 for JS or favicon)
+
+If you see **"disallowed MIME type (text/html)"** for `index-….js` or **404** for the main script or favicon:
+
+1. **Hard refresh** (Ctrl+Shift+R / Cmd+Shift+R) or try in a private window in case you had a cached `index.html` pointing at an old hashed file.
+2. **Check DNS as above:** In Namecheap Advanced DNS, ensure the host you use for the site uses **A** or **CNAME** to GitHub, not URL Redirect/Forwarding.
+3. After each deploy, the workflow verifies that `dist/index.html` and `dist/assets/index-*.js` exist; if that step fails, fix the build before relying on the live site.
 
 ## Features
 
