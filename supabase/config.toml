@@ -1,0 +1,4 @@
+# Supabase project config (used when deploying Edge Functions).
+# Collection function verifies Clerk JWT itself; disable Supabase JWT check.
+[functions.collection]
+verify_jwt = false

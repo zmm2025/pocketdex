@@ -28,6 +28,7 @@
     "playwright": "^1.50.0",
     "postcss": "^8.4.32",
     "sharp": "^0.34.5",
+    "supabase": "^2.74.5",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.10"

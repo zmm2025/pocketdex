@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { CollectionState } from './types';
 import { updateCardCount } from '../services/storage';
 import { CARDS, SETS, getSetProgress } from '../services/db';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { loadCollection as loadCollectionFromSupabase, saveCollection as saveCollectionToSupabase } from './services/supabaseService';
+import { loadCollection as loadCollectionFromApi, saveCollection as saveCollectionToApi } from './services/collectionApi';
 
 import { Button } from '../components/Button';
 import { CardItem } from '../components/CardItem';
@@ -29,7 +28,7 @@ import {
 } from '@clerk/clerk-react';
 
 const SUPABASE_URL = (import.meta as any).env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = (import.meta as any).env.VITE_SUPABASE_ANON_KEY;
+const COLLECTION_API_BASE = SUPABASE_URL ? `${SUPABASE_URL}/functions/v1` : null;
 
 function getSyncErrorMessage(e: unknown): string {
   if (e == null) return 'Something went wrong.';
@@ -63,27 +62,21 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   const clearSyncError = () => setSyncErrorMessage(null);
 
-  const supabase: SupabaseClient | null = useMemo(() => {
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
-    return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: false },
-      accessToken: async () => (await session?.getToken()) ?? null,
-    });
-  }, [session]);
+  const isSupabaseConfigured = Boolean(COLLECTION_API_BASE);
 
-  const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
-
-  // 1. When signed in: load collection only from cloud (once per sign-in)
+  // 1. When signed in: load collection from Edge Function (Clerk JWT verified there)
   useEffect(() => {
-    if (!clerkUser?.id || !supabase) return;
+    if (!clerkUser?.id || !COLLECTION_API_BASE) return;
     if (hasLoadedFromCloudRef.current) return;
     hasLoadedFromCloudRef.current = true;
 
     let cancelled = false;
     (async () => {
       try {
+        const token = await session?.getToken();
+        if (!token || cancelled) return;
         setSyncStatus('syncing');
-        const cloudData = await loadCollectionFromSupabase(supabase);
+        const cloudData = await loadCollectionFromApi(token, COLLECTION_API_BASE);
         if (cancelled) return;
         setCollection(cloudData ?? {});
         setSyncStatus('saved');
@@ -96,7 +89,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     return () => {
       cancelled = true;
     };
-  }, [clerkUser?.id, supabase]);
+  }, [clerkUser?.id, session, COLLECTION_API_BASE]);
 
   // 2. When user signs out: clear collection and redirect to home if on protected route
   useEffect(() => {
@@ -126,15 +119,17 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     }
   }, [clerkEnabled, clerkUser, isUserLoaded, location.pathname, navigate]);
 
-  // 4. Auto-save: when signed in, debounce save to Supabase only (no local storage)
+  // 4. Auto-save: when signed in, debounce save via Edge Function
   useEffect(() => {
     if (Object.keys(collection).length === 0) return;
-    if (!clerkUser || !supabase) return;
+    if (!clerkUser || !COLLECTION_API_BASE) return;
     setSyncStatus('syncing');
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(async () => {
       try {
-        await saveCollectionToSupabase(supabase, clerkUser.id, collection);
+        const token = await session?.getToken();
+        if (!token) return;
+        await saveCollectionToApi(token, clerkUser.id, collection, COLLECTION_API_BASE);
         setSyncStatus('saved');
         clearSyncError();
         setTimeout(() => setSyncStatus('idle'), 3000);
@@ -146,7 +141,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     return () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     };
-  }, [collection, clerkUser, supabase]);
+  }, [collection, clerkUser, session, COLLECTION_API_BASE]);
 
   const handleUpdateCount = useCallback((cardId: string, delta: number) => {
     setCollection(prev => updateCardCount(prev, cardId, delta));
