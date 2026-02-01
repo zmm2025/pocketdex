@@ -34,12 +34,6 @@ A mobile-first companion app for Pokémon TCG Pocket. Track your collection and 
 
 ## Building for Production
 
-To create a production build:
-
-```bash
-npm run build
-```
-
 ## GitHub Pages
 
 This repo includes a GitHub Actions workflow that builds the app and deploys the `dist` folder to GitHub Pages on every push to `main`. In your repo settings, set Pages to deploy from **GitHub Actions**.
