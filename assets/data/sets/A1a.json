@@ -1,11 +1,2041 @@
 {
-  "generatedAt": "2026-01-28T08:34:14.377Z",
-  "source": "https://pocket.pokemongohub.net/en",
-  "set": {
-    "id": "A1a",
-    "name": "Mythical Island",
-    "packs": [],
-    "slug": "mythical-island"
-  },
-  "cards": []
+  "set": "A1a",
+  "cards": [
+    {
+      "set": "A1a",
+      "number": 1,
+      "cardNumber": 1,
+      "name": "Exeggcute",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 50,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 2,
+      "cardNumber": 2,
+      "name": "Exeggutor",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 130,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 3,
+      "cardNumber": 3,
+      "name": "Celebi ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "diamond4",
+      "rarityLabel": "Double Rare",
+      "health": 130,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 4,
+      "cardNumber": 4,
+      "name": "Snivy",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 70,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 5,
+      "cardNumber": 5,
+      "name": "Servine",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 80,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 6,
+      "cardNumber": 6,
+      "name": "Serperior",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "diamond3",
+      "rarityLabel": "Rare",
+      "health": 110,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 7,
+      "cardNumber": 7,
+      "name": "Morelull",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 8,
+      "cardNumber": 8,
+      "name": "Shiinotic",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 90,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 9,
+      "cardNumber": 9,
+      "name": "Dhelmise",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 100,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 10,
+      "cardNumber": 10,
+      "name": "Ponyta",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fire",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 11,
+      "cardNumber": 11,
+      "name": "Rapidash",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fire",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 100,
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 12,
+      "cardNumber": 12,
+      "name": "Magmar",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fire",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 80,
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 13,
+      "cardNumber": 13,
+      "name": "Larvesta",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fire",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 80,
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 14,
+      "cardNumber": 14,
+      "name": "Volcarona",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fire",
+      "raritySymbol": "diamond3",
+      "rarityLabel": "Rare",
+      "health": 120,
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 15,
+      "cardNumber": 15,
+      "name": "Salandit",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fire",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 16,
+      "cardNumber": 16,
+      "name": "Salazzle",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fire",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 80,
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 17,
+      "cardNumber": 17,
+      "name": "Magikarp",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Water",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 30,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 18,
+      "cardNumber": 18,
+      "name": "Gyarados ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Water",
+      "raritySymbol": "diamond4",
+      "rarityLabel": "Double Rare",
+      "health": 180,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 19,
+      "cardNumber": 19,
+      "name": "Vaporeon",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Water",
+      "raritySymbol": "diamond3",
+      "rarityLabel": "Rare",
+      "health": 120,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 20,
+      "cardNumber": 20,
+      "name": "Finneon",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Water",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 21,
+      "cardNumber": 21,
+      "name": "Lumineon",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Water",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 80,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      }
+    },
+    {
+      "set": "A1a",
+      "number": 22,
+      "cardNumber": 22,
+      "name": "Chewtle",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Water",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 80,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 23,
+      "cardNumber": 23,
+      "name": "Drednaw",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Water",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 130,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 24,
+      "cardNumber": 24,
+      "name": "Cramorant",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Water",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 80,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 25,
+      "cardNumber": 25,
+      "name": "Pikachu",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Lightning",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 26,
+      "cardNumber": 26,
+      "name": "Raichu",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Lightning",
+      "raritySymbol": "diamond3",
+      "rarityLabel": "Rare",
+      "health": 120,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 27,
+      "cardNumber": 27,
+      "name": "Electabuzz",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Lightning",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 70,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 28,
+      "cardNumber": 28,
+      "name": "Joltik",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Lightning",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 40,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 29,
+      "cardNumber": 29,
+      "name": "Galvantula",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Lightning",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 80,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 30,
+      "cardNumber": 30,
+      "name": "Dedenne",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Lightning",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 31,
+      "cardNumber": 31,
+      "name": "Mew",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "diamond3",
+      "rarityLabel": "Rare",
+      "health": 60,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 32,
+      "cardNumber": 32,
+      "name": "Mew ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "diamond4",
+      "rarityLabel": "Double Rare",
+      "health": 130,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 33,
+      "cardNumber": 33,
+      "name": "Sigilyph",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 80,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 34,
+      "cardNumber": 34,
+      "name": "Elgyem",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 35,
+      "cardNumber": 35,
+      "name": "Beheeyem",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 90,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 36,
+      "cardNumber": 36,
+      "name": "Flab&eacute;b&eacute;",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 40,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 37,
+      "cardNumber": 37,
+      "name": "Floette",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 70,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 38,
+      "cardNumber": 38,
+      "name": "Florges",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 120,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 39,
+      "cardNumber": 39,
+      "name": "Swirlix",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 40,
+      "cardNumber": 40,
+      "name": "Slurpuff",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 100,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 41,
+      "cardNumber": 41,
+      "name": "Mankey",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fighting",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 50,
+      "weakness": {
+        "type": "Psychic",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 42,
+      "cardNumber": 42,
+      "name": "Primeape",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fighting",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 80,
+      "weakness": {
+        "type": "Psychic",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 43,
+      "cardNumber": 43,
+      "name": "Geodude",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fighting",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 70,
+      "weakness": {
+        "type": "Grass",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 44,
+      "cardNumber": 44,
+      "name": "Graveler",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fighting",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 100,
+      "weakness": {
+        "type": "Grass",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 45,
+      "cardNumber": 45,
+      "name": "Golem",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fighting",
+      "raritySymbol": "diamond3",
+      "rarityLabel": "Rare",
+      "health": 160,
+      "weakness": {
+        "type": "Grass",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 46,
+      "cardNumber": 46,
+      "name": "Aerodactyl ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fighting",
+      "raritySymbol": "diamond4",
+      "rarityLabel": "Double Rare",
+      "health": 140,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 47,
+      "cardNumber": 47,
+      "name": "Marshadow",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fighting",
+      "raritySymbol": "diamond3",
+      "rarityLabel": "Rare",
+      "health": 80,
+      "weakness": {
+        "type": "Psychic",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 48,
+      "cardNumber": 48,
+      "name": "Stonjourner",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fighting",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 120,
+      "weakness": {
+        "type": "Grass",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 49,
+      "cardNumber": 49,
+      "name": "Koffing",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Darkness",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 70,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 50,
+      "cardNumber": 50,
+      "name": "Weezing",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Darkness",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 110,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 51,
+      "cardNumber": 51,
+      "name": "Purrloin",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Darkness",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 52,
+      "cardNumber": 52,
+      "name": "Liepard",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Darkness",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 90,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 53,
+      "cardNumber": 53,
+      "name": "Venipede",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Darkness",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 54,
+      "cardNumber": 54,
+      "name": "Whirlipede",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Darkness",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 90,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 55,
+      "cardNumber": 55,
+      "name": "Scolipede",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Darkness",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 140,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 56,
+      "cardNumber": 56,
+      "name": "Druddigon",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Dragon",
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon",
+      "health": 100,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 57,
+      "cardNumber": 57,
+      "name": "Pidgey",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 50,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 58,
+      "cardNumber": 58,
+      "name": "Pidgeotto",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 90,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 59,
+      "cardNumber": 59,
+      "name": "Pidgeot ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond4",
+      "rarityLabel": "Double Rare",
+      "health": 170,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 60,
+      "cardNumber": 60,
+      "name": "Tauros",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond3",
+      "rarityLabel": "Rare",
+      "health": 100,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 61,
+      "cardNumber": 61,
+      "name": "Eevee",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 62,
+      "cardNumber": 62,
+      "name": "Chatot",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 63,
+      "cardNumber": 63,
+      "name": "Old Amber",
+      "type": "item",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common"
+    },
+    {
+      "set": "A1a",
+      "number": 64,
+      "cardNumber": 64,
+      "name": "Pokemon Flute",
+      "type": "item",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon"
+    },
+    {
+      "set": "A1a",
+      "number": 65,
+      "cardNumber": 65,
+      "name": "Mythical Slab",
+      "type": "item",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon"
+    },
+    {
+      "set": "A1a",
+      "number": 66,
+      "cardNumber": 66,
+      "name": "Budding Expeditioner",
+      "type": "supporter",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon"
+    },
+    {
+      "set": "A1a",
+      "number": 67,
+      "cardNumber": 67,
+      "name": "Blue",
+      "type": "supporter",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon"
+    },
+    {
+      "set": "A1a",
+      "number": 68,
+      "cardNumber": 68,
+      "name": "Leaf",
+      "type": "supporter",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon"
+    },
+    {
+      "set": "A1a",
+      "number": 69,
+      "cardNumber": 69,
+      "name": "Exeggutor",
+      "type": "supporter",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "star1",
+      "rarityLabel": "Art Rare",
+      "health": 130,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 70,
+      "cardNumber": 70,
+      "name": "Serperior",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "star1",
+      "rarityLabel": "Art Rare",
+      "health": 110,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 71,
+      "cardNumber": 71,
+      "name": "Salandit",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fire",
+      "raritySymbol": "star1",
+      "rarityLabel": "Art Rare",
+      "health": 60,
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 72,
+      "cardNumber": 72,
+      "name": "Vaporeon",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Water",
+      "raritySymbol": "star1",
+      "rarityLabel": "Art Rare",
+      "health": 120,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 73,
+      "cardNumber": 73,
+      "name": "Dedenne",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Lightning",
+      "raritySymbol": "star1",
+      "rarityLabel": "Art Rare",
+      "health": 60,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 74,
+      "cardNumber": 74,
+      "name": "Marshadow",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fighting",
+      "raritySymbol": "star1",
+      "rarityLabel": "Art Rare",
+      "health": 80,
+      "weakness": {
+        "type": "Psychic",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 75,
+      "cardNumber": 75,
+      "name": "Celebi ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
+      "health": 130,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 76,
+      "cardNumber": 76,
+      "name": "Gyarados ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Water",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
+      "health": 180,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 77,
+      "cardNumber": 77,
+      "name": "Mew ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
+      "health": 130,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 78,
+      "cardNumber": 78,
+      "name": "Aerodactyl ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fighting",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
+      "health": 140,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 79,
+      "cardNumber": 79,
+      "name": "Pidgeot ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
+      "health": 170,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 80,
+      "cardNumber": 80,
+      "name": "Budding Expeditioner",
+      "type": "supporter",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare"
+    },
+    {
+      "set": "A1a",
+      "number": 81,
+      "cardNumber": 81,
+      "name": "Blue",
+      "type": "supporter",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare"
+    },
+    {
+      "set": "A1a",
+      "number": 82,
+      "cardNumber": 82,
+      "name": "Leaf",
+      "type": "supporter",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare"
+    },
+    {
+      "set": "A1a",
+      "number": 83,
+      "cardNumber": 83,
+      "name": "Mew ex",
+      "type": "supporter",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
+      "health": 130,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 84,
+      "cardNumber": 84,
+      "name": "Aerodactyl ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fighting",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
+      "health": 140,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 85,
+      "cardNumber": 85,
+      "name": "Celebi ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Grass",
+      "raritySymbol": "star3",
+      "rarityLabel": "Art Rare",
+      "health": 130,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "A1a",
+      "number": 86,
+      "cardNumber": 86,
+      "name": "Mew ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "crown",
+      "rarityLabel": "Crown Rare",
+      "health": 130,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    }
+  ]
 }

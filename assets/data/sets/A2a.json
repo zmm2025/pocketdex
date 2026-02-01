@@ -1,12 +1,5 @@
 {
-  "generatedAt": "2026-01-28T08:34:14.376Z",
-  "source": "https://pocket.pokemongohub.net/en",
-  "set": {
-    "id": "A2a",
-    "name": "Triumphant Light",
-    "packs": [],
-    "slug": "triumphant-light"
-  },
+  "set": "A2a",
   "cards": [
     {
       "set": "A2a",
@@ -18,20 +11,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Grass",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 100,
-      "stage": "Basic",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -45,15 +36,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Grass",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 50,
-      "stage": "Basic",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -72,15 +61,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Grass",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 90,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       }
     },
     {
@@ -93,15 +80,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Grass",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 50,
-      "stage": "Basic",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -120,20 +105,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Grass",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 100,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -147,15 +130,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Grass",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 50,
-      "stage": "Basic",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -174,15 +155,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Grass",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 80,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -201,15 +180,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Grass",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 80,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -225,23 +202,16 @@
       "name": "Carnivine",
       "type": "pokemon",
       "exStatus": "non-ex",
-      "abilities": [
-        {
-          "name": "Power Link",
-          "text": "If you have Arceus or Arceus ex in play, attacks used by this Pokémon do +30 damage to your opponent's Active Pokémon"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Grass",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 80,
-      "stage": "Basic",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -257,23 +227,16 @@
       "name": "Leafeon ex",
       "type": "pokemon",
       "exStatus": "ex",
-      "abilities": [
-        {
-          "name": "Forest Breath",
-          "text": "Once during your turn, if this Pokémon is in the Active Spot, you may take a Energy from your Energy Zone and attach it to 1 of your Pokémon"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 500,
       "energyType": "Grass",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond4",
       "rarityLabel": "Double Rare",
       "health": 140,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -292,15 +255,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Fire",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Water",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -319,20 +280,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Fire",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 100,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Water",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -343,28 +302,21 @@
       "name": "Heatran",
       "type": "pokemon",
       "exStatus": "non-ex",
-      "abilities": [
-        {
-          "name": "Speed Link",
-          "text": "If you have Arceus or Arceus ex in play, this Pokémon has no Retreat Cost"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Fire",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 110,
-      "stage": "Basic",
       "weakness": {
         "type": "Water",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -378,15 +330,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Water",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -405,20 +355,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Water",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 100,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -432,15 +380,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Water",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -459,20 +405,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Water",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 120,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -486,15 +430,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Water",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Metal",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -513,15 +455,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Water",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 90,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Metal",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -540,20 +480,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Water",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 70,
-      "stage": "Basic",
       "weakness": {
         "type": "Metal",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -564,23 +502,16 @@
       "name": "Abomasnow",
       "type": "pokemon",
       "exStatus": "non-ex",
-      "abilities": [
-        {
-          "name": "Vigor Link",
-          "text": "If you have Arceus or Arceus ex in play, attacks used by this Pokémon cost 1 less Energy"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Water",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 120,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Metal",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -596,23 +527,16 @@
       "name": "Glaceon ex",
       "type": "pokemon",
       "exStatus": "ex",
-      "abilities": [
-        {
-          "name": "Snowy Terrain",
-          "text": "During Pokémon Checkup, if this Pokémon is in the Active Spot, do 10 damage to your opponent's Active Pokémon"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 500,
       "energyType": "Water",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond4",
       "rarityLabel": "Double Rare",
       "health": 140,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Metal",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -631,20 +555,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Water",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 120,
-      "stage": "Basic",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -658,15 +580,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Water",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -685,15 +605,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Lightning",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -709,23 +627,16 @@
       "name": "Raichu",
       "type": "pokemon",
       "exStatus": "non-ex",
-      "abilities": [
-        {
-          "name": "Resilience Link",
-          "text": "If you have Arceus or Arceus ex in play, this Pokémon takes -30 damage from attacks"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Lightning",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 90,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -744,15 +655,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Lightning",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -771,15 +680,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Lightning",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 90,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -798,15 +705,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Psychic",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Metal",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -825,20 +730,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Psychic",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 100,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Metal",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -852,15 +755,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Psychic",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 50,
-      "stage": "Basic",
       "weakness": {
         "type": "Darkness",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -879,15 +780,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Psychic",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 80,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Darkness",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -906,15 +805,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Psychic",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 140,
-      "stage": "Stage 2",
       "weakness": {
         "type": "Darkness",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -930,23 +827,16 @@
       "name": "Unown",
       "type": "pokemon",
       "exStatus": "non-ex",
-      "abilities": [
-        {
-          "name": "CHECK",
-          "text": "Once during your turn, you may choose either player. Look at the top card of that player's deck."
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Psychic",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Darkness",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -962,23 +852,16 @@
       "name": "Rotom",
       "type": "pokemon",
       "exStatus": "non-ex",
-      "abilities": [
-        {
-          "name": "Speed Link",
-          "text": "If you have Arceus or Arceus ex in play, this Pokémon has no Retreat Cost"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Psychic",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 70,
-      "stage": "Basic",
       "weakness": {
         "type": "Darkness",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -997,20 +880,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Fighting",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 80,
-      "stage": "Basic",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1024,20 +905,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Fighting",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1051,20 +930,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Fighting",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 120,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -1078,15 +955,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Fighting",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1105,15 +980,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Fighting",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 80,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1129,28 +1002,21 @@
       "name": "Tyranitar",
       "type": "pokemon",
       "exStatus": "non-ex",
-      "abilities": [
-        {
-          "name": "Power Link",
-          "text": "If you have Arceus or Arceus ex in play, attacks used by this Pokémon do +30 damage to your opponent's Active Pokémon"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Fighting",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 160,
-      "stage": "Stage 2",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 4
         }
       ]
     },
@@ -1164,20 +1030,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Fighting",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 80,
-      "stage": "Basic",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -1191,15 +1055,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Fighting",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Psychic",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1218,15 +1080,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Fighting",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 100,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Psychic",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1245,15 +1105,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Fighting",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1272,15 +1130,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Fighting",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 80,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1299,15 +1155,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 500,
       "energyType": "Fighting",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond4",
       "rarityLabel": "Double Rare",
       "health": 170,
-      "stage": "Stage 2",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1326,15 +1180,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Darkness",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 50,
-      "stage": "Basic",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1353,15 +1205,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Darkness",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 80,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1377,23 +1227,16 @@
       "name": "Crobat",
       "type": "pokemon",
       "exStatus": "non-ex",
-      "abilities": [
-        {
-          "name": "Cunning Link",
-          "text": "Once during your turn, if you have Arceus or Arceus ex in play, you may do 30 damage to your opponent's Active Pokémon"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Darkness",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 110,
-      "stage": "Stage 2",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       }
     },
     {
@@ -1406,15 +1249,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Darkness",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1433,15 +1274,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Darkness",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 100,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1460,15 +1299,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Metal",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1487,20 +1324,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Metal",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 90,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1511,28 +1346,21 @@
       "name": "Magnezone",
       "type": "pokemon",
       "exStatus": "non-ex",
-      "abilities": [
-        {
-          "name": "Resilience Link",
-          "text": "If you have Arceus or Arceus ex in play, this Pokémon takes -30 damage from attacks"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Metal",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 140,
-      "stage": "Stage 2",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1546,15 +1374,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Metal",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 70,
-      "stage": "Basic",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1573,20 +1399,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 500,
       "energyType": "Metal",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond4",
       "rarityLabel": "Double Rare",
       "health": 160,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -1600,15 +1424,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Metal",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -1627,20 +1449,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Metal",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 120,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -1654,20 +1474,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Metal",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 120,
-      "stage": "Basic",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1681,16 +1499,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Dragon",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 120,
-      "stage": "Basic",
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -1704,20 +1524,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Colorless",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1731,20 +1549,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Colorless",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 140,
-      "stage": "Basic",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 5
         }
       ]
     },
@@ -1758,20 +1574,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Colorless",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1785,20 +1599,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Colorless",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 100,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1812,20 +1624,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Colorless",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1839,20 +1649,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 35,
       "energyType": "Colorless",
       "raritySymbol": "diamond1",
       "rarityLabel": "Common",
       "health": 80,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1866,20 +1674,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
       "energyType": "Colorless",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond2",
       "rarityLabel": "Uncommon",
       "health": 150,
-      "stage": "Stage 2",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -1890,28 +1696,21 @@
       "name": "Shaymin",
       "type": "pokemon",
       "exStatus": "non-ex",
-      "abilities": [
-        {
-          "name": "Sky Support",
-          "text": "As long as this Pokémon is on your Bench, your Active Basic Pokémon's Retreat Cost is 1 less"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Colorless",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 70,
-      "stage": "Basic",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1925,20 +1724,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 150,
       "energyType": "Colorless",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
       "health": 120,
-      "stage": "Basic",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -1949,28 +1746,21 @@
       "name": "Arceus ex",
       "type": "pokemon",
       "exStatus": "ex",
-      "abilities": [
-        {
-          "name": "Fabled Luster",
-          "text": "This Pokémon can't be affected by any Special Conditions"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 500,
       "energyType": "Colorless",
-      "raritySymbol": "diamond1",
+      "raritySymbol": "diamond4",
       "rarityLabel": "Double Rare",
       "health": 140,
-      "stage": "Basic",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -1984,12 +1774,8 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "description": "Heal 40 damage from each of your Pok&eacute;mon that has any Water Energy attached You may play only 1 Supporter card during your turn.",
-      "costToCraft": 70,
-      "raritySymbol": "diamond1",
-      "rarityLabel": "Uncommon",
-      "health": 0,
-      "stage": "Basic"
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon"
     },
     {
       "set": "A2a",
@@ -2001,12 +1787,8 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "description": "Put 1 random Basic Pok&eacute;mon from your discard pile into your hand You may play only 1 Supporter card during your turn.",
-      "costToCraft": 70,
-      "raritySymbol": "diamond1",
-      "rarityLabel": "Uncommon",
-      "health": 0,
-      "stage": "Basic"
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon"
     },
     {
       "set": "A2a",
@@ -2018,11 +1800,8 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 70,
-      "raritySymbol": "diamond1",
-      "rarityLabel": "Uncommon",
-      "health": 0,
-      "stage": "Basic"
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon"
     },
     {
       "set": "A2a",
@@ -2034,37 +1813,31 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "description": "During your opponent's next turn, all of your Metal Pok&eacute;mon take -20 damage from attacks from your opponent's Pok&eacute;mon You may play only 1 Supporter card during your turn.",
-      "costToCraft": 70,
-      "raritySymbol": "diamond1",
-      "rarityLabel": "Uncommon",
-      "health": 0,
-      "stage": "Basic"
+      "raritySymbol": "diamond2",
+      "rarityLabel": "Uncommon"
     },
     {
       "set": "A2a",
       "number": 76,
       "cardNumber": 76,
       "name": "Houndoom",
-      "type": "pokemon",
+      "type": "supporter",
       "exStatus": "non-ex",
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 400,
       "energyType": "Fire",
       "raritySymbol": "star1",
       "rarityLabel": "Art Rare",
       "health": 100,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Water",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -2078,15 +1851,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 400,
       "energyType": "Water",
       "raritySymbol": "star1",
       "rarityLabel": "Art Rare",
       "health": 60,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2102,23 +1873,16 @@
       "name": "Unown",
       "type": "pokemon",
       "exStatus": "non-ex",
-      "abilities": [
-        {
-          "name": "CHECK",
-          "text": "Once during your turn, you may choose either player. Look at the top card of that player's deck."
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 400,
       "energyType": "Psychic",
       "raritySymbol": "star1",
       "rarityLabel": "Art Rare",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Darkness",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2137,20 +1901,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 400,
       "energyType": "Fighting",
       "raritySymbol": "star1",
       "rarityLabel": "Art Rare",
       "health": 80,
-      "stage": "Basic",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -2164,15 +1926,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 400,
       "energyType": "Metal",
       "raritySymbol": "star1",
       "rarityLabel": "Art Rare",
       "health": 60,
-      "stage": "Basic",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2188,28 +1948,21 @@
       "name": "Shaymin",
       "type": "pokemon",
       "exStatus": "non-ex",
-      "abilities": [
-        {
-          "name": "Sky Support",
-          "text": "As long as this Pokémon is on your Bench, your Active Basic Pokémon's Retreat Cost is 1 less"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 400,
       "energyType": "Colorless",
       "raritySymbol": "star1",
       "rarityLabel": "Art Rare",
       "health": 70,
-      "stage": "Basic",
       "weakness": {
         "type": "Lightning",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -2220,23 +1973,16 @@
       "name": "Leafeon ex",
       "type": "pokemon",
       "exStatus": "ex",
-      "abilities": [
-        {
-          "name": "Forest Breath",
-          "text": "Once during your turn, if this Pokémon is in the Active Spot, you may take a Energy from your Energy Zone and attach it to 1 of your Pokémon"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 1250,
       "energyType": "Grass",
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
       "health": 140,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2252,23 +1998,16 @@
       "name": "Glaceon ex",
       "type": "pokemon",
       "exStatus": "ex",
-      "abilities": [
-        {
-          "name": "Snowy Terrain",
-          "text": "During Pokémon Checkup, if this Pokémon is in the Active Spot, do 10 damage to your opponent's Active Pokémon"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 1250,
       "energyType": "Water",
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
       "health": 140,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Metal",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2287,15 +2026,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 1250,
       "energyType": "Fighting",
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
       "health": 170,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2314,20 +2051,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 1250,
       "energyType": "Metal",
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
       "health": 160,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -2338,28 +2073,21 @@
       "name": "Arceus ex",
       "type": "pokemon",
       "exStatus": "ex",
-      "abilities": [
-        {
-          "name": "Fabled Luster",
-          "text": "This Pokémon can't be affected by any Special Conditions"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 1250,
       "energyType": "Colorless",
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
       "health": 140,
-      "stage": "Basic",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -2373,12 +2101,8 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "description": "Heal 40 damage from each of your Pok&eacute;mon that has any Water Energy attached You may play only 1 Supporter card during your turn.",
-      "costToCraft": 1250,
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
-      "health": 0,
-      "stage": "Basic"
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare"
     },
     {
       "set": "A2a",
@@ -2390,12 +2114,8 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "description": "Put 1 random Basic Pok&eacute;mon from your discard pile into your hand You may play only 1 Supporter card during your turn.",
-      "costToCraft": 1250,
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
-      "health": 0,
-      "stage": "Basic"
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare"
     },
     {
       "set": "A2a",
@@ -2407,12 +2127,8 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "description": "During this turn, attacks used by your Snorlax, Heracross and Staraptor cost 2 less Energy You may play only 1 Supporter card during your turn.",
-      "costToCraft": 1250,
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
-      "health": 0,
-      "stage": "Basic"
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare"
     },
     {
       "set": "A2a",
@@ -2424,37 +2140,26 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "description": "During your opponent's next turn, all of your Metal Pok&eacute;mon take -20 damage from attacks from your opponent's Pok&eacute;mon You may play only 1 Supporter card during your turn.",
-      "costToCraft": 1250,
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
-      "health": 0,
-      "stage": "Basic"
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare"
     },
     {
       "set": "A2a",
       "number": 91,
       "cardNumber": 91,
       "name": "Leafeon ex",
-      "type": "pokemon",
+      "type": "supporter",
       "exStatus": "ex",
-      "abilities": [
-        {
-          "name": "Forest Breath",
-          "text": "Once during your turn, if this Pokémon is in the Active Spot, you may take a Energy from your Energy Zone and attach it to 1 of your Pokémon"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 1250,
       "energyType": "Grass",
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
       "health": 140,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2470,23 +2175,16 @@
       "name": "Glaceon ex",
       "type": "pokemon",
       "exStatus": "ex",
-      "abilities": [
-        {
-          "name": "Snowy Terrain",
-          "text": "During Pokémon Checkup, if this Pokémon is in the Active Spot, do 10 damage to your opponent's Active Pokémon"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 1250,
       "energyType": "Water",
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
       "health": 140,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Metal",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2505,15 +2203,13 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 1250,
       "energyType": "Fighting",
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
       "health": 170,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Grass",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
@@ -2532,20 +2228,18 @@
       "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 1250,
       "energyType": "Metal",
-      "raritySymbol": "star1",
-      "rarityLabel": "Special Art Rare",
+      "raritySymbol": "star2",
+      "rarityLabel": "Art Rare",
       "health": 160,
-      "stage": "Stage 1",
       "weakness": {
         "type": "Fire",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -2556,28 +2250,46 @@
       "name": "Arceus ex",
       "type": "pokemon",
       "exStatus": "ex",
-      "abilities": [
-        {
-          "name": "Fabled Luster",
-          "text": "This Pokémon can't be affected by any Special Conditions"
-        }
-      ],
+      "abilities": [],
       "moves": [],
       "boosterPacks": [],
-      "costToCraft": 1500,
       "energyType": "Colorless",
-      "raritySymbol": "star1",
-      "rarityLabel": "Immersive Rare",
+      "raritySymbol": "star3",
+      "rarityLabel": "Art Rare",
       "health": 140,
-      "stage": "Basic",
       "weakness": {
         "type": "Fighting",
-        "value": -1
+        "value": 20
       },
       "retreatCost": [
         {
           "type": "Colorless",
-          "count": 1
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "A2a",
+      "number": 96,
+      "cardNumber": 96,
+      "name": "Arceus ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "crown",
+      "rarityLabel": "Crown Rare",
+      "health": 140,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
         }
       ]
     }

@@ -63,8 +63,6 @@ export interface Card {
   number: number;
   cardNumber?: number;
   image: string;
-  wallpaper?: string;
-  fullArt?: string;
   rarity: Rarity;
   raritySymbol?: RaritySymbol;
   rarityLabel?: string;

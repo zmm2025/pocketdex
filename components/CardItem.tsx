@@ -9,14 +9,19 @@ interface CardItemProps {
   onDecrement: () => void;
 }
 
-export const CardItem: React.FC<CardItemProps> = ({ 
-  card, 
-  count, 
-  onIncrement, 
+export const CardItem: React.FC<CardItemProps> = ({
+  card,
+  count,
+  onIncrement,
   onDecrement
 }) => {
   const [imageError, setImageError] = useState(false);
   const isOwned = count > 0;
+  // #region agent log
+  if (card.id === 'A1-001') {
+    fetch('http://127.0.0.1:7308/ingest/e2a675be-aace-40d9-9f6f-4eca8610d3c2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'CardItem.tsx:mount',message:'Sample card image URL',data:{cardId:card.id,imageSrc:card.image,hasThPath:card.image.includes('/th/')},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H2'})}).catch(()=>{});
+  }
+  // #endregion
 
   // Reset error state if card changes (e.g. reused component in list)
   useEffect(() => {
@@ -60,12 +65,21 @@ export const CardItem: React.FC<CardItemProps> = ({
         `}
       >
         {!imageError ? (
-          <img 
-            src={card.image} 
-            alt={card.name} 
-            className="w-full h-full object-cover pointer-events-none" // Disable image drag to allow pointer events to bubble
+          <img
+            src={card.image}
+            alt={card.name}
+            className="w-full h-full object-contain pointer-events-none" // Show full card; object-cover cropped landscape thumbnails in portrait slot
             loading="lazy"
             onError={() => setImageError(true)}
+            onLoad={(e) => {
+              // #region agent log
+              const img = e.currentTarget;
+              const nw = img.naturalWidth;
+              const nh = img.naturalHeight;
+              const rect = img.getBoundingClientRect();
+              fetch('http://127.0.0.1:7308/ingest/e2a675be-aace-40d9-9f6f-4eca8610d3c2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'CardItem.tsx:img.onLoad',message:'Card image loaded',data:{cardId:card.id,imageSrc:card.image,naturalWidth:nw,naturalHeight:nh,aspectImage:nw&&nh?(nw/nh).toFixed(3):null,rectW:Math.round(rect.width),rectH:Math.round(rect.height),containerAspect:'2.5/3.5',objectFit:'object-contain'},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'H1,H3,H4'})}).catch(()=>{});
+              // #endregion
+            }}
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center p-2 text-center text-gray-500 bg-gray-800">

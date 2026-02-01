@@ -1,16 +1,805 @@
 {
-  "generatedAt": "2026-01-28T08:34:14.367Z",
-  "source": "https://pocket.pokemongohub.net/en",
-  "set": {
-    "id": "PROMO-B",
-    "name": "PROMO-B",
-    "packs": [
-      {
-        "id": "PROMO-B",
-        "name": "PROMO-B"
-      }
-    ],
-    "slug": "promo-b"
-  },
-  "cards": []
+  "set": "PROMO-B",
+  "cards": [
+    {
+      "set": "PROMO-B",
+      "number": 1,
+      "cardNumber": 1,
+      "name": "Pikachu",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Lightning",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 2,
+      "cardNumber": 2,
+      "name": "Petilil",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 50,
+      "weakness": {
+        "type": "Grass",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 3,
+      "cardNumber": 3,
+      "name": "Froakie",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 4,
+      "cardNumber": 4,
+      "name": "Luxray",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 130,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 5,
+      "cardNumber": 5,
+      "name": "Pidgey",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Fighting",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 6,
+      "cardNumber": 6,
+      "name": "Mega Pidgeot ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 210,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 7,
+      "cardNumber": 7,
+      "name": "Torchic",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 8,
+      "cardNumber": 8,
+      "name": "Psyduck",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 9,
+      "cardNumber": 9,
+      "name": "Mega Absol ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 170,
+      "weakness": {
+        "type": "Darkness",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 10,
+      "cardNumber": 10,
+      "name": "Drifblim",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 100,
+      "weakness": {
+        "type": "Psychic",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 11,
+      "cardNumber": 11,
+      "name": "Eevee",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 50,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 12,
+      "cardNumber": 12,
+      "name": "Ditto",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 13,
+      "cardNumber": 13,
+      "name": "Arcanine",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 120,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 14,
+      "cardNumber": 14,
+      "name": "Magikarp",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 30,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 15,
+      "cardNumber": 15,
+      "name": "Mareep",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 70,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 16,
+      "cardNumber": 16,
+      "name": "Krookodile",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 160,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 17,
+      "cardNumber": 17,
+      "name": "Swablu",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 50,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 18,
+      "cardNumber": 18,
+      "name": "Heliolisk",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 100,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 19,
+      "cardNumber": 19,
+      "name": "Buneary",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 20,
+      "cardNumber": 20,
+      "name": "Charmeleon",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 80,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 21,
+      "cardNumber": 21,
+      "name": "Onix",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 100,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 22,
+      "cardNumber": 22,
+      "name": "Hawlucha",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 70,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 23,
+      "cardNumber": 23,
+      "name": "Genesect",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 110,
+      "weakness": {
+        "type": "Metal",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 24,
+      "cardNumber": 24,
+      "name": "Mega Latios ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 180,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 25,
+      "cardNumber": 25,
+      "name": "Jirachi",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Psychic",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 50,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 26,
+      "cardNumber": 26,
+      "name": "Mudkip",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 27,
+      "cardNumber": 27,
+      "name": "Plusle",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 70,
+      "weakness": {
+        "type": "Lightning",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 28,
+      "cardNumber": 28,
+      "name": "Ralts",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Psychic",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 29,
+      "cardNumber": 29,
+      "name": "Mega Medicham ex",
+      "type": "pokemon",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 180,
+      "weakness": {
+        "type": "Fighting",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 30,
+      "cardNumber": 30,
+      "name": "Tornadus",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 90,
+      "weakness": {
+        "type": "Colorless",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 31,
+      "cardNumber": 31,
+      "name": "Cinderace",
+      "type": "pokemon",
+      "exStatus": "non-ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Colorless",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 130,
+      "weakness": {
+        "type": "Fire",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "set": "PROMO-B",
+      "number": 32,
+      "cardNumber": 32,
+      "name": "Alolan Vulpix",
+      "type": "supporter",
+      "exStatus": "ex",
+      "abilities": [],
+      "moves": [],
+      "boosterPacks": [],
+      "energyType": "Water",
+      "raritySymbol": "diamond1",
+      "rarityLabel": "Common",
+      "health": 60,
+      "weakness": {
+        "type": "Water",
+        "value": 20
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 1
+        }
+      ]
+    }
+  ]
 }

@@ -1,4 +1,4 @@
-﻿export enum Rarity {
+export enum Rarity {
   COMMON = 'Common', // Diamond 1
   UNCOMMON = 'Uncommon', // Diamond 2
   RARE = 'Rare', // Diamond 3
@@ -100,8 +100,6 @@ export interface Card {
   number: number;
   cardNumber?: number;
   image: string;
-  wallpaper?: string;
-  fullArt?: string;
   rarity: Rarity;
   raritySymbol?: RaritySymbol;
   rarityLabel?: string;
