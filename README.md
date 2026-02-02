@@ -61,18 +61,21 @@ If you see **"disallowed MIME type (text/html)"** for `index-….js` or **404** 
 
 ## Cloud sync (Clerk + Supabase Edge Function)
 
-Sign-in and collection sync use Clerk for auth. Collection data is stored in Supabase and accessed via an Edge Function that verifies Clerk’s JWT (so Supabase never needs to validate Clerk tokens).
+Sign-in and collection sync use Clerk for auth. Collection data is stored in Supabase and accessed via an Edge Function that verifies Clerk's JWT (so Supabase never needs to validate Clerk tokens).
 
 1. **Deploy the Edge Function** (Supabase CLI):
    ```bash
    supabase functions deploy collection
    ```
-2. **Set the Clerk JWKS URL** in Supabase:
-   - Dashboard → Project Settings → Edge Functions → Secrets (or Project Settings → API → Edge Function secrets).
-   - Add secret: `CLERK_JWKS_URL` = your Clerk JWKS URL (e.g. `https://clerk.<your-domain>/.well-known/jwks.json`).
-   - Find the exact URL in Clerk Dashboard → Configure → API Keys (or JWT template); it’s the “JWKS URL” or “Issuer” base + `/.well-known/jwks.json`.
+2. **Set Clerk verification** in Supabase Edge Function secrets (Dashboard → Project Settings → Edge Functions → Secrets):
+   - Add `CLERK_ALLOWED_ISSUERS` = a comma-separated list of Clerk **issuer** URLs (no path).
+   - The function derives the JWKS URL from the JWT's `iss` claim, so both dev and prod tokens work with one config (no switching secrets).
+   - Example: `https://clerk.pocketdex.zain.build,https://sweet-fowl-52.clerk.accounts.dev`
+   - Find your issuer URLs in Clerk Dashboard → Configure → Domains (Frontend API domain):
+     - **Development:** e.g. `https://<dev-slug>.clerk.accounts.dev`
+     - **Production:** e.g. `https://clerk.<your-domain>`
 
-After deploying and setting `CLERK_JWKS_URL`, sign in with Google and collection load/save will go through the Edge Function.
+After deploying and setting `CLERK_ALLOWED_ISSUERS`, sign in and collection load/save will go through the Edge Function.
 
 ## Features
 

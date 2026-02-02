@@ -19,8 +19,6 @@ import {
   Loader2,
 } from 'lucide-react';
 import {
-  SignedIn,
-  SignedOut,
   SignInButton,
   UserButton,
   useSession,
@@ -29,6 +27,13 @@ import {
 
 const SUPABASE_URL = (import.meta as any).env.VITE_SUPABASE_URL;
 const COLLECTION_API_BASE = SUPABASE_URL ? `${SUPABASE_URL}/functions/v1` : null;
+
+const CLERK_PUBLISHABLE_KEY = (import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
+const isProductionKeyOnLocalhost =
+  typeof window !== 'undefined' &&
+  window.location?.hostname === 'localhost' &&
+  typeof CLERK_PUBLISHABLE_KEY === 'string' &&
+  CLERK_PUBLISHABLE_KEY.startsWith('pk_live');
 
 function getSyncErrorMessage(e: unknown): string {
   if (e == null) return 'Something went wrong.';
@@ -52,10 +57,21 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'saved' | 'error'>('idle');
   const [syncErrorMessage, setSyncErrorMessage] = useState<string | null>(null);
+  const [clerkLoadTimedOut, setClerkLoadTimedOut] = useState(false);
   const hasLoadedFromCloudRef = useRef(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout>();
   // Track when collection was just loaded from cloud to skip redundant save
   const justLoadedFromCloudRef = useRef(false);
+
+  // After 4s of Clerk loading, show Sign in button anyway so user isn't stuck
+  useEffect(() => {
+    if (isUserLoaded) return;
+    const t = setTimeout(() => setClerkLoadTimedOut(true), 4000);
+    return () => clearTimeout(t);
+  }, [isUserLoaded]);
+  useEffect(() => {
+    if (isUserLoaded) setClerkLoadTimedOut(false);
+  }, [isUserLoaded]);
 
   const setSyncError = (message: string) => {
     setSyncStatus('error');
@@ -166,24 +182,42 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         <div className="flex items-center gap-2 min-w-0">
           {clerkEnabled ? (
             <>
-              <SignedOut>
+              {!isUserLoaded && !clerkLoadTimedOut ? (
                 <span className="text-xs text-gray-500 flex items-center gap-1.5 shrink-0">
-                  <Cloud size={14} className="text-gray-500 shrink-0" />
-                  <span className="hidden xs:inline">Sign in to sync</span>
+                  <Loader2 size={14} className="animate-spin text-gray-500 shrink-0" />
+                  <span className="hidden xs:inline">Loading...</span>
                 </span>
-                <SignInButton mode="modal">
-                  <Button variant="primary" size="sm">Sign in</Button>
-                </SignInButton>
-              </SignedOut>
-              <SignedIn>
-                <span className="text-xs text-gray-500 flex items-center gap-1.5 shrink-0 min-w-0" title={syncStatus === 'error' ? syncErrorMessage ?? undefined : undefined}>
-                  {syncStatus === 'syncing' && <><Loader2 size={12} className="animate-spin shrink-0"/> <span className="hidden sm:inline truncate">Syncing...</span></>}
-                  {syncStatus === 'saved' && <><CheckCircle2 size={12} className="text-green-500 shrink-0"/> <span className="hidden sm:inline truncate">Saved</span></>}
-                  {syncStatus === 'error' && <><AlertCircle size={12} className="text-red-500 shrink-0"/> <span className="text-red-400 truncate hidden sm:inline">{syncErrorMessage ?? 'Error'}</span></>}
-                  {syncStatus === 'idle' && <><Cloud size={12} className="text-gray-500 shrink-0"/> <span className="hidden sm:inline truncate">Up to date</span></>}
-                </span>
-                <UserButton />
-              </SignedIn>
+              ) : clerkUser ? (
+                <>
+                  <span className="text-xs text-gray-500 flex items-center gap-1.5 shrink-0 min-w-0" title={syncStatus === 'error' ? syncErrorMessage ?? undefined : undefined}>
+                    {syncStatus === 'syncing' && <><Loader2 size={12} className="animate-spin shrink-0"/> <span className="hidden sm:inline truncate">Syncing...</span></>}
+                    {syncStatus === 'saved' && <><CheckCircle2 size={12} className="text-green-500 shrink-0"/> <span className="hidden sm:inline truncate">Saved</span></>}
+                    {syncStatus === 'error' && <><AlertCircle size={12} className="text-red-500 shrink-0"/> <span className="text-red-400 truncate hidden sm:inline">{syncErrorMessage ?? 'Error'}</span></>}
+                    {syncStatus === 'idle' && <><Cloud size={12} className="text-gray-500 shrink-0"/> <span className="hidden sm:inline truncate">Up to date</span></>}
+                  </span>
+                  <UserButton />
+                </>
+              ) : (
+                <>
+                  <span className="text-xs text-gray-500 flex items-center gap-1.5 shrink-0">
+                    <Cloud size={14} className="text-gray-500 shrink-0" />
+                    <span className="hidden xs:inline">Sign in to sync</span>
+                  </span>
+                  {clerkLoadTimedOut ? (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => window.location.reload()}
+                    >
+                      Retry sign-in
+                    </Button>
+                  ) : (
+                    <SignInButton mode="modal">
+                      <Button variant="primary" size="sm">Sign in</Button>
+                    </SignInButton>
+                  )}
+                </>
+              )}
             </>
           ) : (
             <span className="text-xs text-gray-500">Sign-in not configured</span>
@@ -196,9 +230,22 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       </div>
 
       {!clerkUser && (
-        <p className="text-sm text-center text-gray-500">
-          Sign in to view your collection, track cards, and see statistics.
-        </p>
+        <div className="text-sm text-center text-gray-500 space-y-1">
+          <p>Sign in to view your collection, track cards, and see statistics.</p>
+          {clerkLoadTimedOut && (
+            <div className="text-xs text-amber-500/90 space-y-2">
+              {isProductionKeyOnLocalhost ? (
+                <p>
+                  <strong>Production key on localhost.</strong> Clerk production keys (<code className="bg-gray-800 px-1 rounded">pk_live_...</code>) do not work on localhost. In Clerk Dashboard, switch to the <strong>Development</strong> instance, copy the publishable key (<code className="bg-gray-800 px-1 rounded">pk_test_...</code>), and set <code className="bg-gray-800 px-1 rounded">VITE_CLERK_PUBLISHABLE_KEY</code> in <code className="bg-gray-800 px-1 rounded">.env.local</code> to that value. Restart the dev server.
+                </p>
+              ) : (
+                <p>
+                  Sign-in is still loading. Click &quot;Retry sign-in&quot; to refresh. If it keeps failing, in Clerk Dashboard (Development) go to Configure → Paths and set <strong>Fallback development host</strong> to <code className="bg-gray-800 px-1 rounded">http://localhost:3000</code> (or your dev port).
+                </p>
+              )}
+            </div>
+          )}
+        </div>
       )}
 
       <Button
@@ -290,22 +337,23 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           </div>
         </div>
         <div className="flex-1 overflow-y-auto p-4 pb-24 touch-pan-y">
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4 select-none">
-            {filteredCards.map(card => (
-              <CardItem
-                key={card.id}
-                card={card}
-                count={collection[card.id] || 0}
-                onIncrement={() => handleUpdateCount(card.id, 1)}
-                onDecrement={() => handleUpdateCount(card.id, -1)}
-              />
-            ))}
-            {filteredCards.length === 0 && (
-              <div className="col-span-full py-20 text-center text-gray-500 flex flex-col items-center">
-                <p>No cards found.</p>
-              </div>
-            )}
-          </div>
+          {filteredCards.length === 0 ? (
+            <div className="py-20 text-center text-gray-500 flex flex-col items-center">
+              <p>No cards found.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4 select-none">
+              {filteredCards.map(card => (
+                <CardItem
+                  key={card.id}
+                  card={card}
+                  count={collection[card.id] || 0}
+                  onIncrement={() => handleUpdateCount(card.id, 1)}
+                  onDecrement={() => handleUpdateCount(card.id, -1)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );

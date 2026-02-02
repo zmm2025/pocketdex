@@ -1,13 +1,20 @@
 // Supabase Edge Function: verify Clerk JWT and proxy collection load/save.
-// Set CLERK_JWKS_URL in Supabase Dashboard → Project Settings → Edge Functions → Secrets.
-// e.g. https://clerk.pocketdex.zain.build/.well-known/jwks.json
+//
+// Set CLERK_ALLOWED_ISSUERS to a comma-separated list of Clerk issuer URLs.
+// The function decodes the JWT to get the issuer (iss), checks it is in the allow-list,
+// then fetches JWKS from iss + "/.well-known/jwks.json" and verifies the token.
+// This allows both dev and prod Clerk tokens with one config (no switching secrets).
+//
+// Example: "https://clerk.pocketdex.zain.build,https://sweet-fowl-52.clerk.accounts.dev"
+//
+// Find issuer URLs in Clerk Dashboard → Configure → Domains (Frontend API domain).
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import * as jose from "jsr:@panva/jose@6";
 
 const TABLE = "user_collections";
-const CLERK_JWKS_URL = Deno.env.get("CLERK_JWKS_URL");
+const CLERK_ALLOWED_ISSUERS = Deno.env.get("CLERK_ALLOWED_ISSUERS");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -19,11 +26,31 @@ function getAuthToken(req: Request): string {
   return token.trim();
 }
 
+function getAllowedIssuers(): Set<string> {
+  if (!CLERK_ALLOWED_ISSUERS || !CLERK_ALLOWED_ISSUERS.trim()) return new Set();
+  return new Set(
+    CLERK_ALLOWED_ISSUERS.split(",").map((u) => u.trim().replace(/\/$/, ""))
+  );
+}
+
 async function verifyClerkJwt(token: string): Promise<string> {
-  if (!CLERK_JWKS_URL) throw new Error("CLERK_JWKS_URL is not set");
-  const jwks = jose.createRemoteJWKSet(new URL(CLERK_JWKS_URL));
-  const { payload } = await jose.jwtVerify(token, jwks);
-  const sub = payload.sub;
+  const allowedIssuers = getAllowedIssuers();
+
+  if (allowedIssuers.size === 0) {
+    throw new Error("CLERK_ALLOWED_ISSUERS is not set");
+  }
+
+  const payload = jose.decodeJwt(token);
+  const iss = payload.iss;
+  if (typeof iss !== "string" || !iss) throw new Error("JWT missing iss");
+  const issuer = iss.replace(/\/$/, "");
+  if (!allowedIssuers.has(issuer)) {
+    throw new Error("Issuer not allowed");
+  }
+  const jwksUrl = `${issuer}/.well-known/jwks.json`;
+  const jwks = jose.createRemoteJWKSet(new URL(jwksUrl));
+  const { payload: verified } = await jose.jwtVerify(token, jwks);
+  const sub = verified.sub;
   if (typeof sub !== "string" || !sub) throw new Error("JWT missing sub");
   return sub;
 }
