@@ -12,7 +12,7 @@ List is subject to change without notice.
 - **Collection**: Long-press to inspect card, filter by card stats, view similar cards, hide card count setting
 - **Statistics**: Best pack to open for new cards, card draw statistics
 - **Blog**: On-website blog with changelog for updates
-- **UX/UI**: Website themes, new press animations, interaction tweaks, Alpha state banner, external links (source code, donations), feedback modal, sticky Collection header
+- **UX/UI**: Website themes, new press animations, interaction tweaks, Alpha state banner, external links (source code, donations), feedback modal, sticky Collection header, new logo and art
 - **Bug fixes**: Deluxe Pack card registration
 - Community Discord
 - Performance improvements
