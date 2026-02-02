@@ -305,8 +305,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     });
 
     return (
-      <div className="flex flex-col h-full bg-black">
-        <div className="sticky top-0 z-30 bg-black/80 backdrop-blur-lg border-b border-gray-800 p-4 space-y-3">
+      <div className="flex flex-col h-screen bg-black overflow-y-auto">
+        <div className="sticky top-0 z-30 bg-black shrink-0 border-b border-gray-800 p-4 space-y-3 backdrop-blur-md">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate('/')} className="p-2 -ml-2 text-gray-400 hover:text-white">
               <ChevronLeft />
@@ -346,7 +346,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             </button>
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto p-4 pb-24 touch-pan-y">
+        <div className="p-4 pb-24 touch-pan-y">
           {filteredCards.length === 0 ? (
             <div className="py-20 text-center text-gray-500 flex flex-col items-center">
               <p>No cards found.</p>
