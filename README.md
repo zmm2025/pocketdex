@@ -1,84 +1,26 @@
-# PocketDex Tracker
+# [**PocketDex**](https://pocketdex.zain.build/)
 
-A mobile-first companion app for Pokémon TCG Pocket. Track your collection and view statistics.
-
-## Prerequisites
-
-- Node.js (v18 or later recommended)
-- npm
-
-## Getting Started
-
-1.  **Install Dependencies**
-    ```bash
-    npm install
-    ```
-
-2.  **Download Assets + Card Data**
-    Data and assets are retrieved from [Serebii.net TCG Pocket](https://www.serebii.net/tcgpocket/). Run with no args for a full sync, or pass flags after `--` so npm forwards them to the script:
-    ```bash
-    npm run assets
-    npm run assets -- --data-only
-    npm run assets -- --assets-only
-    npm run assets -- --limit-cards-per-set N
-    npm run assets -- --set A1,A1a
-    npm run assets -- --keep-cache
-    ```
-    Generated: `assets/data/index.json`, `assets/data/sets/{SET}.json`, card images under `assets/cards/`, set logos and pack art under `assets/sets/`.
-
-3.  **Start Development Server**
-    Runs the app at `http://localhost:3000`.
-    ```bash
-    npm run dev
-    ```
-
-## Building for Production
-
-## GitHub Pages
-
-This repo includes a GitHub Actions workflow that builds the app and deploys the `dist` folder to GitHub Pages on every push to `main`. In your repo settings, set Pages to deploy from **GitHub Actions**.
-
-### Custom domain (pocketdex.zain.build)
-
-The site is built for **pocketdex.zain.build** (subdomain). Use a **CNAME** for `pocketdex` in Namecheap—do **not** use URL Redirect or Domain Forwarding for that host.
-
-
-| Host       | Type     | Value                |
-|------------|----------|----------------------|
-| `pocketdex`| **CNAME**| `zmm2025.github.io.` (trailing dot) |
-
-
-
-**GitHub:** Repo → **Settings** → **Pages** → **Custom domain** = `pocketdex.zain.build`. Enable **Enforce HTTPS** when offered.
-
-### Deployment troubleshooting (MIME / 404 for JS or favicon)
-
-If you see **"disallowed MIME type (text/html)"** for `index-….js` or **404** for the main script or favicon:
-
-1. **Hard refresh** (Ctrl+Shift+R / Cmd+Shift+R) or try in a private window in case you had a cached `index.html` pointing at an old hashed file.
-2. **Check DNS as above:** In Namecheap Advanced DNS, ensure the host you use for the site uses **A** or **CNAME** to GitHub, not URL Redirect/Forwarding.
-3. After each deploy, the workflow verifies that `dist/index.html` and `dist/assets/index-*.js` exist; if that step fails, fix the build before relying on the live site.
-
-## Cloud sync (Clerk + Supabase Edge Function)
-
-Sign-in and collection sync use Clerk for auth. Collection data is stored in Supabase and accessed via an Edge Function that verifies Clerk's JWT (so Supabase never needs to validate Clerk tokens).
-
-1. **Deploy the Edge Function** (Supabase CLI):
-   ```bash
-   supabase functions deploy collection
-   ```
-2. **Set Clerk verification** in Supabase Edge Function secrets (Dashboard → Project Settings → Edge Functions → Secrets):
-   - Add `CLERK_ALLOWED_ISSUERS` = a comma-separated list of Clerk **issuer** URLs (no path).
-   - The function derives the JWKS URL from the JWT's `iss` claim, so both dev and prod tokens work with one config (no switching secrets).
-   - Example: `https://clerk.pocketdex.zain.build,https://sweet-fowl-52.clerk.accounts.dev`
-   - Find your issuer URLs in Clerk Dashboard → Configure → Domains (Frontend API domain):
-     - **Development:** e.g. `https://<dev-slug>.clerk.accounts.dev`
-     - **Production:** e.g. `https://clerk.<your-domain>`
-
-After deploying and setting `CLERK_ALLOWED_ISSUERS`, sign in and collection load/save will go through the Edge Function.
+An open-source, mobile-first companion app for [Pokémon TCG Pocket](https://tcgpocket.pokemon.com/). PocketDex is designed to be **simple**, **powerful**, and **user-friendly**—making it easy to track your collection, view detailed statistics, and manage your cards wherever you are.
 
 ## Features
 
--   **Track Collection**: Click to add cards, right-click (PC) to remove.
--   **Drag Selection**: Click/Touch and drag across multiple cards to quickly add them. Right-click and drag to remove.
--   **Stats**: View completion progress for each set.
+- **[Collection](https://pocketdex.zain.build/#/collection)**: Add or remove cards from your collection.
+- **[Statistics](https://pocketdex.zain.build/#/statistics)**: See your completio**- n progress for each set.
+- **[Account System](https://accounts.pocketdex.zain.build/user)**: Save your collection and access it from any device.
+
+See [CHANGELOG.md](CHANGELOG.md) for version history and planned features.
+
+## Quickstart
+
+1. Open [PocketDex](https://pocketdex.zain.build) on your phone or any other device.
+2. [Create an account](https://accounts.pocketdex.zain.build/sign-up) to save your progress across devices.
+3. Update your collection in the [Collection](https://pocketdex.zain.build/#/collection) tab.
+4. View collection statistics in the [Statistics](https://pocketdex.zain.build/#/statistics) tab.
+
+## Legal Disclaimer
+
+_PocketDex is an independent, fan-made project and is not affiliated with, endorsed by, or associated with [The Pokémon Company](https://www.pokemon.com/), [Nintendo](https://www.nintendo.com/), [Creatures Inc.](https://en.wikipedia.org/wiki/Creatures_Inc.), [GAME FREAK Inc.](https://www.gamefreak.co.jp/), [DeNA](https://dena.com/), or the developers or publishers of [Pokémon TCG Pocket](https://tcgpocket.pokemon.com/). All Pokémon images, set logos, and pack art are sourced from [Serebii.net](https://www.serebii.net/tcgpocket/), and their respective copyright holders retain all rights. This project is intended for personal and educational use only. If you are a copyright holder and have concerns about the materials used in this project, please [contact me](mailto:zmm2025@gmail.com?subject=PocketDex%20Content%20Concern&body=Hello%2C%20I%20am%20a%20copyright%20holder%20with%20a%20request%20regarding%20materials%20used%20in%20PocketDex.%0A%0APlease%20describe%20your%20request%20below%3A%0A) for removal or modification._
+
+---
+
+**Contributors:** See [DEVELOPMENT.md](DEVELOPMENT.md) for setup, build, and deployment details.
