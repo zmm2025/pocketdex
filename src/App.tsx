@@ -54,6 +54,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const [syncErrorMessage, setSyncErrorMessage] = useState<string | null>(null);
   const hasLoadedFromCloudRef = useRef(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout>();
+  // Track when collection was just loaded from cloud to skip redundant save
+  const justLoadedFromCloudRef = useRef(false);
 
   const setSyncError = (message: string) => {
     setSyncStatus('error');
@@ -78,6 +80,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         setSyncStatus('syncing');
         const cloudData = await loadCollectionFromApi(token, COLLECTION_API_BASE);
         if (cancelled) return;
+        // Mark that we just loaded from cloud so auto-save skips this update
+        justLoadedFromCloudRef.current = true;
         setCollection(cloudData ?? {});
         setSyncStatus('saved');
         clearSyncError();
@@ -123,6 +127,11 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   useEffect(() => {
     if (Object.keys(collection).length === 0) return;
     if (!clerkUser || !COLLECTION_API_BASE) return;
+    // Skip save if collection was just loaded from cloud (avoids redundant write)
+    if (justLoadedFromCloudRef.current) {
+      justLoadedFromCloudRef.current = false;
+      return;
+    }
     setSyncStatus('syncing');
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(async () => {
