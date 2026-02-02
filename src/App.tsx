@@ -50,6 +50,16 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Update document title per route
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      '/': 'PocketDex',
+      '/collection': 'Collection - PocketDex',
+      '/statistics': 'Statistics - PocketDex',
+    };
+    document.title = titles[location.pathname] ?? 'PocketDex';
+  }, [location.pathname]);
+
   const [collection, setCollection] = useState<CollectionState>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSetId, setSelectedSetId] = useState<string>('A1');
