@@ -1,22 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, Rarity } from '../types';
 import { Minus, ImageOff } from 'lucide-react';
+
+const LONG_PRESS_MS = 500;
+
+export type CardRect = { left: number; top: number; width: number; height: number };
 
 interface CardItemProps {
   card: Card;
   count: number;
   onIncrement: () => void;
   onDecrement: () => void;
+  onLongPress?: (rect: CardRect) => void;
 }
 
 export const CardItem: React.FC<CardItemProps> = ({
   card,
   count,
   onIncrement,
-  onDecrement
+  onDecrement,
+  onLongPress,
 }) => {
   const [imageError, setImageError] = useState(false);
   const isOwned = count > 0;
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const didLongPressRef = useRef(false);
+  const cardFaceRef = useRef<HTMLDivElement>(null);
 
   // Reset error state if card changes (e.g. reused component in list)
   useEffect(() => {
@@ -30,7 +39,50 @@ export const CardItem: React.FC<CardItemProps> = ({
     return 'border-gray-700 shadow-black/40';
   };
 
+  const clearLongPressTimer = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  };
+
+  const handlePointerDown = () => {
+    if (onLongPress) {
+      didLongPressRef.current = false;
+      clearLongPressTimer();
+      longPressTimerRef.current = setTimeout(() => {
+        longPressTimerRef.current = null;
+        didLongPressRef.current = true;
+        const rect = cardFaceRef.current?.getBoundingClientRect();
+        if (rect) {
+          onLongPress({
+            left: rect.left,
+            top: rect.top,
+            width: rect.width,
+            height: rect.height,
+          });
+        } else {
+          onLongPress({ left: 0, top: 0, width: 100, height: 140 });
+        }
+      }, LONG_PRESS_MS);
+    }
+  };
+
+  const handlePointerUp = () => {
+    clearLongPressTimer();
+  };
+
+  const handlePointerLeave = () => {
+    clearLongPressTimer();
+  };
+
   const handleClick = (e: React.MouseEvent) => {
+    if (didLongPressRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      didLongPressRef.current = false;
+      return;
+    }
     if (e.ctrlKey) {
       e.preventDefault();
       onDecrement();
@@ -49,9 +101,15 @@ export const CardItem: React.FC<CardItemProps> = ({
       className="relative group flex flex-col items-center select-none touch-manipulation"
       data-card-id={card.id}
     >
-      <div 
+      <div
+        ref={cardFaceRef}
+        data-card-rect-id={card.id}
         onClick={handleClick}
         onContextMenu={handleContextMenu}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
+        onPointerCancel={handlePointerUp}
         className={`
           relative w-full aspect-[2.5/3.5] rounded-lg overflow-hidden border-2 transition-all duration-300
           ${getRarityColor(card.rarity)}

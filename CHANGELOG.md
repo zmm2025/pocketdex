@@ -9,7 +9,7 @@ List is subject to change without notice.
 - **Card Registration**: Screenshot to add from pack, screen record to update full dex
 - **Deck Builder**: Deck suggestions from owned cards, deck sharing
 - **Lists**: Wishlists, statistics to get wishlisted cards, custom lists
-- **Collection**: Long-press to inspect card, filter by card stats, view similar cards, hide card count setting
+- **Collection**: Filter by card stats, view similar cards, hide card count setting
 - **Statistics**: Best pack to open for new cards, card draw statistics
 - **Blog**: On-website blog with changelog for updates
 - **UX/UI**: Website themes, new press animations, interaction tweaks, Alpha state banner, external links (source code, donations), feedback modal, new logo and art

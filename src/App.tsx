@@ -6,17 +6,19 @@ import { CARDS, SETS, getSetProgress } from '../services/db';
 import { loadCollection as loadCollectionFromApi, saveCollection as saveCollectionToApi } from './services/collectionApi';
 
 import { Button } from '../components/Button';
-import { CardItem } from '../components/CardItem';
+import { CardItem, type CardRect } from '../components/CardItem';
 import {
   Library,
   BarChart3,
   ChevronLeft,
+  ChevronRight,
   Filter,
   Search,
   Cloud,
   CheckCircle2,
   AlertCircle,
   Loader2,
+  X,
 } from 'lucide-react';
 import {
   SignInButton,
@@ -64,6 +66,21 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSetId, setSelectedSetId] = useState<string>('A1');
   const [filterOwned, setFilterOwned] = useState<'all' | 'owned' | 'missing'>('all');
+  const [inspectView, setInspectView] = useState<{ index: number; maxIndex: number } | null>(null);
+  const [inspectPhase, setInspectPhase] = useState<'entering' | 'idle' | 'exiting'>('idle');
+  const [inspectOriginRect, setInspectOriginRect] = useState<CardRect | null>(null);
+  const [inspectExitRect, setInspectExitRect] = useState<CardRect | null>(null);
+  const inspectCardRef = useRef<HTMLDivElement>(null);
+  const inspectStripRef = useRef<HTMLDivElement>(null);
+  const inspectCloseRef = useRef<() => void>(() => {});
+  const inspectNavigateRef = useRef<{ goPrev: () => void; goNext: () => void }>({ goPrev: () => {}, goNext: () => {} });
+  const INSPECT_ANIM_MS = 280;
+  const INSPECT_SLIDE_MS = 250;
+  // Ease-in-out so card eases into motion and eases to a stop (no abrupt start or end)
+  const INSPECT_EASING = 'cubic-bezier(0.45, 0, 0.55, 1)';
+  const [inspectSliding, setInspectSliding] = useState<{ fromIndex: number; toIndex: number } | null>(null);
+  const [inspectSlideOffset, setInspectSlideOffset] = useState(0);
+  const [inspectSlideTransitionDisabled, setInspectSlideTransitionDisabled] = useState(false);
 
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'saved' | 'error'>('idle');
   const [syncErrorMessage, setSyncErrorMessage] = useState<string | null>(null);
@@ -292,6 +309,86 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     </div>
   );
 
+  // Transition from 'entering' to 'idle' so CSS animates card from origin to center
+  useEffect(() => {
+    if (inspectPhase !== 'entering' || !inspectView) return;
+    const frame = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setInspectPhase('idle'));
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [inspectPhase, inspectView]);
+
+  // Start slide animation after mount. Strip is 200% width so -50% = one panel (next from right, current exits left).
+  // Re-enable transition and set target offset so we get one clean animation (reset to start was instant).
+  useEffect(() => {
+    if (!inspectSliding) return;
+    const goingNext = inspectSliding.toIndex > inspectSliding.fromIndex;
+    const targetOffset = goingNext ? -50 : 0;
+    const frame = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setInspectSlideTransitionDisabled(false);
+        setInspectSlideOffset(targetOffset);
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [inspectSliding]);
+
+  // Close Inspect View when leaving collection or when current index becomes invalid (e.g. filter change)
+  useEffect(() => {
+    if (location.pathname !== '/collection') {
+      setInspectView(null);
+      setInspectPhase('idle');
+      setInspectOriginRect(null);
+      setInspectExitRect(null);
+      setInspectSliding(null);
+      setInspectSlideOffset(0);
+      setInspectSlideTransitionDisabled(false);
+      return;
+    }
+    if (inspectView == null) return;
+    const filtered = CARDS.filter(card => {
+      const matchesSet = selectedSetId === 'ALL' || card.set === selectedSetId;
+      const matchesSearch =
+        card.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        String(card.number).includes(searchQuery);
+      const isOwned = (collection[card.id] || 0) > 0;
+      if (filterOwned === 'owned' && !isOwned) return false;
+      if (filterOwned === 'missing' && isOwned) return false;
+      return matchesSet && matchesSearch;
+    });
+    const maxIndex = filtered.length - 1;
+    if (inspectView.index < 0 || inspectView.index > maxIndex) {
+      setInspectView(null);
+      setInspectPhase('idle');
+      setInspectOriginRect(null);
+      setInspectExitRect(null);
+      setInspectSliding(null);
+      setInspectSlideOffset(0);
+      setInspectSlideTransitionDisabled(false);
+    }
+  }, [location.pathname, inspectView, selectedSetId, searchQuery, filterOwned, collection]);
+
+  // Keyboard: Escape to close Inspect View (animated), Arrow Left/Right to navigate (only on collection when inspect open)
+  useEffect(() => {
+    if (location.pathname !== '/collection' || !inspectView) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        inspectCloseRef.current();
+        return;
+      }
+      if (e.key === 'ArrowLeft') {
+        inspectNavigateRef.current.goPrev();
+        return;
+      }
+      if (e.key === 'ArrowRight') {
+        inspectNavigateRef.current.goNext();
+        return;
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [location.pathname, inspectView]);
+
   const renderCollection = () => {
     const filteredCards = CARDS.filter(card => {
       const matchesSet = selectedSetId === 'ALL' || card.set === selectedSetId;
@@ -304,8 +401,284 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       return matchesSet && matchesSearch;
     });
 
+    const currentInspectCard = inspectView != null ? filteredCards[inspectView.index] ?? null : null;
+    const canGoLeft = inspectView != null && inspectView.index > 0;
+    const canGoRight = inspectView != null && inspectView.index < inspectView.maxIndex;
+
+    const startCloseInspect = () => {
+      if (!currentInspectCard) {
+        finishCloseInspect();
+        return;
+      }
+      const el = document.querySelector(`[data-card-rect-id="${currentInspectCard.id}"]`);
+      const rect = el?.getBoundingClientRect();
+      if (rect) {
+        setInspectExitRect({
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
+        });
+      } else {
+        setInspectExitRect(null);
+      }
+      setInspectPhase('exiting');
+    };
+
+    const finishCloseInspect = () => {
+      setInspectView(null);
+      setInspectPhase('idle');
+      setInspectOriginRect(null);
+      setInspectExitRect(null);
+      setInspectSliding(null);
+      setInspectSlideOffset(0);
+      setInspectSlideTransitionDisabled(false);
+    };
+
+    inspectCloseRef.current = startCloseInspect;
+
+    inspectNavigateRef.current = {
+      goPrev: () => {
+        if (!inspectView || inspectView.index <= 0) return;
+        const nextIndex = inspectView.index - 1;
+        setInspectSlideTransitionDisabled(true);
+        setInspectSlideOffset(-50);
+        setInspectSliding({ fromIndex: nextIndex, toIndex: inspectView.index });
+        setInspectView(v => (v ? { ...v, index: nextIndex } : v));
+      },
+      goNext: () => {
+        if (!inspectView || inspectView.index >= inspectView.maxIndex) return;
+        const nextIndex = inspectView.index + 1;
+        setInspectSlideTransitionDisabled(true);
+        setInspectSlideOffset(0);
+        setInspectSliding({ fromIndex: inspectView.index, toIndex: nextIndex });
+        setInspectView(v => (v ? { ...v, index: nextIndex } : v));
+      },
+    };
+
+    // Grayscale matches grid: unowned cards are grayscale; interpolate to/from color during open/close
+    const inspectCardOwned = currentInspectCard ? (collection[currentInspectCard.id] ?? 0) > 0 : false;
+    const grayscaleAtGrid = inspectCardOwned ? 0 : 1;
+
+    // Card position/size for the three phases (entering: from grid, idle: center large, exiting: back to grid or shrink)
+    // When sliding, outer is viewport-only (no border/shadow) so the sliding strip shows full cards
+    const getInspectCardStyle = (): React.CSSProperties => {
+      const base: React.CSSProperties = {
+        transition: `left ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, top ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, width ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, height ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, transform ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, opacity ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, filter ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}`,
+        position: 'fixed',
+        borderRadius: '0.5rem',
+        overflow: 'hidden',
+        ...(inspectSliding
+          ? {}
+          : {
+              border: '2px solid rgb(55 65 81)',
+              backgroundColor: 'rgb(17 24 39)',
+              boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.5)',
+            }),
+      };
+      if (inspectPhase === 'entering' && inspectOriginRect) {
+        return {
+          ...base,
+          left: inspectOriginRect.left,
+          top: inspectOriginRect.top,
+          width: inspectOriginRect.width,
+          height: inspectOriginRect.height,
+          transform: 'none',
+          filter: `grayscale(${grayscaleAtGrid})`,
+        };
+      }
+      if (inspectPhase === 'exiting') {
+        if (inspectExitRect) {
+          return {
+            ...base,
+            left: inspectExitRect.left,
+            top: inspectExitRect.top,
+            width: inspectExitRect.width,
+            height: inspectExitRect.height,
+            transform: 'none',
+            filter: `grayscale(${grayscaleAtGrid})`,
+          };
+        }
+        return {
+          ...base,
+          left: '50%',
+          top: '50%',
+          width: 320,
+          height: 448,
+          transform: 'translate(-50%, -50%) scale(0)',
+          opacity: 0,
+          filter: `grayscale(${grayscaleAtGrid})`,
+        };
+      }
+      // idle: centered, smaller so card never overlaps side arrows or top/bottom chrome (56px sides, 64px top/bottom)
+      if (typeof window === 'undefined') {
+        return {
+          ...base,
+          left: '50%',
+          top: '50%',
+          width: 280,
+          height: 392,
+          transform: 'translate(-50%, -50%)',
+          filter: 'grayscale(0)',
+        };
+      }
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const maxW = Math.min(280, vw - 112);
+      const w = Math.max(160, maxW);
+      const maxH = vh - 128;
+      const h = Math.min((w * 3.5) / 2.5, maxH);
+      return {
+        ...base,
+        left: '50%',
+        top: '50%',
+        width: w,
+        height: h,
+        transform: 'translate(-50%, -50%)',
+        filter: 'grayscale(0)',
+      };
+    };
+
     return (
       <div className="flex flex-col h-screen bg-black overflow-y-auto">
+        {/* Inspect View overlay */}
+        {inspectView != null && currentInspectCard && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md"
+            onClick={startCloseInspect}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Inspect View"
+          >
+            {/* Preload adjacent card images so sliding doesn't trigger load glitches */}
+            {inspectView.index > 0 && filteredCards[inspectView.index - 1]?.image && (
+              <img
+                src={filteredCards[inspectView.index - 1].image}
+                alt=""
+                aria-hidden
+                className="absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden"
+                loading="eager"
+              />
+            )}
+            {inspectView.index < inspectView.maxIndex && filteredCards[inspectView.index + 1]?.image && (
+              <img
+                src={filteredCards[inspectView.index + 1].image}
+                alt=""
+                aria-hidden
+                className="absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden"
+                loading="eager"
+              />
+            )}
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); startCloseInspect(); }}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+              aria-label="Close"
+            >
+              <X size={24} />
+            </button>
+            {canGoLeft && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!inspectView || inspectView.index <= 0) return;
+                  const nextIndex = inspectView.index - 1;
+                  setInspectSlideTransitionDisabled(true);
+                  setInspectSlideOffset(-50);
+                  setInspectSliding({ fromIndex: nextIndex, toIndex: inspectView.index });
+                  setInspectView(v => v ? { ...v, index: nextIndex } : v);
+                }}
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-white transition-colors touch-manipulation"
+                aria-label="Previous card"
+              >
+                <ChevronLeft size={24} />
+              </button>
+            )}
+            {canGoRight && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!inspectView || inspectView.index >= inspectView.maxIndex) return;
+                  const nextIndex = inspectView.index + 1;
+                  setInspectSlideTransitionDisabled(true);
+                  setInspectSlideOffset(0);
+                  setInspectSliding({ fromIndex: inspectView.index, toIndex: nextIndex });
+                  setInspectView(v => v ? { ...v, index: nextIndex } : v);
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-white transition-colors touch-manipulation"
+                aria-label="Next card"
+              >
+                <ChevronRight size={24} />
+              </button>
+            )}
+            <div
+              ref={inspectCardRef}
+              style={getInspectCardStyle()}
+              onTransitionEnd={(e) => {
+                if (e.target === inspectCardRef.current && inspectPhase === 'exiting') finishCloseInspect();
+                // Do NOT clear inspectSliding here: keeping the strip mounted avoids unmounting
+                // the visible img and remounting a single img (which caused reload/glitch).
+              }}
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center justify-center overflow-hidden"
+            >
+              {inspectSliding ? (
+                <div className="w-full h-full overflow-hidden">
+                  <div
+                    ref={inspectStripRef}
+                    className="h-full flex gap-0"
+                    style={{
+                      width: '200%',
+                      transform: `translateX(${inspectSlideOffset}%)`,
+                      transition: inspectSlideTransitionDisabled
+                        ? 'none'
+                        : `transform ${INSPECT_SLIDE_MS}ms ease-out`,
+                    }}
+                  >
+                    <div key="left" className="w-1/2 flex-shrink-0 flex items-center justify-center rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                      <img
+                        key={filteredCards[inspectSliding.fromIndex]?.id ?? 'from'}
+                        src={filteredCards[inspectSliding.fromIndex]?.image ?? ''}
+                        alt={filteredCards[inspectSliding.fromIndex]?.name ?? ''}
+                        className="w-full h-full object-contain pointer-events-none"
+                        loading="eager"
+                        decoding="async"
+                      />
+                    </div>
+                    <div key="right" className="w-1/2 flex-shrink-0 flex items-center justify-center rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                      <img
+                        key={filteredCards[inspectSliding.toIndex]?.id ?? 'to'}
+                        src={filteredCards[inspectSliding.toIndex]?.image ?? ''}
+                        alt={filteredCards[inspectSliding.toIndex]?.name ?? ''}
+                        className="w-full h-full object-contain pointer-events-none"
+                        loading="eager"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <img
+                  src={currentInspectCard.image}
+                  alt={currentInspectCard.name}
+                  className="w-full h-full object-contain pointer-events-none"
+                  loading="eager"
+                  decoding="async"
+                />
+              )}
+            </div>
+            <div
+              className="absolute bottom-8 left-0 right-0 flex flex-col items-center px-4 pointer-events-none"
+              style={{ transition: `opacity ${INSPECT_ANIM_MS}ms ease-out` }}
+            >
+              <p className="text-lg font-medium text-white truncate max-w-full text-center drop-shadow-lg">{currentInspectCard.name}</p>
+              <p className="text-sm text-gray-500">#{currentInspectCard.number}</p>
+            </div>
+          </div>
+        )}
+
         <div className="sticky top-0 z-30 bg-black shrink-0 border-b border-gray-800 p-4 space-y-3 backdrop-blur-md">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate('/')} className="p-2 -ml-2 text-gray-400 hover:text-white">
@@ -353,13 +726,19 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             </div>
           ) : (
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4 select-none">
-              {filteredCards.map(card => (
+              {filteredCards.map((card, index) => (
                 <CardItem
                   key={card.id}
                   card={card}
                   count={collection[card.id] || 0}
                   onIncrement={() => handleUpdateCount(card.id, 1)}
                   onDecrement={() => handleUpdateCount(card.id, -1)}
+                  onLongPress={(rect) => {
+                  setInspectOriginRect(rect);
+                  setInspectExitRect(null);
+                  setInspectView({ index, maxIndex: filteredCards.length - 1 });
+                  setInspectPhase('entering');
+                }}
                 />
               ))}
             </div>
