@@ -11,6 +11,7 @@ List is subject to change without notice.
 - **Lists**: Wishlists, statistics to get wishlisted cards, custom lists
 - **Collection**: Filter by card stats, view similar cards, hide card count setting
 - **Statistics**: Best pack to open for new cards, card draw statistics
+- **App Settings**: Account-based app settings like theme & UI behavior
 - **Blog**: On-website blog with changelog for updates
 - **UX/UI**: Website themes, new press animations, interaction tweaks, Alpha state banner, external links (source code, donations), feedback modal, new logo and art
 - **Bug fixes**: Deluxe Pack card registration, guides for testing to prevent bugs
