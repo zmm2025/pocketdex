@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { CollectionState } from './types';
 import { updateCardCount } from '../services/storage';
-import { CARDS, SETS, getSetProgress } from '../services/db';
+import { CARDS, SETS, getSetProgress, getCollectionProgress, getSetBySlug, getSetSlug, LONGEST_SET_NAME, LONGEST_SET_ID } from '../services/db';
 import { loadCollection as loadCollectionFromApi, saveCollection as saveCollectionToApi } from './services/collectionApi';
+import { getNextHint, LOADING_HINT_RECENT_COUNT } from './loadingHints';
 
 import { Button } from '../components/Button';
 import { CardItem, type CardRect } from '../components/CardItem';
@@ -12,6 +14,7 @@ import {
   BarChart3,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Filter,
   Search,
   Cloud,
@@ -54,18 +57,207 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   // Update document title per route
   useEffect(() => {
-    const titles: Record<string, string> = {
-      '/': 'PocketDex',
-      '/collection': 'Collection - PocketDex',
-      '/statistics': 'Statistics - PocketDex',
-    };
-    document.title = titles[location.pathname] ?? 'PocketDex';
+    if (location.pathname === '/') {
+      document.title = 'PocketDex';
+      return;
+    }
+    if (location.pathname === '/statistics') {
+      document.title = 'Statistics - PocketDex';
+      return;
+    }
+    if (location.pathname === '/collection') {
+      document.title = 'Collection - PocketDex';
+      return;
+    }
+    if (location.pathname.startsWith('/collection/')) {
+      const slug = location.pathname.replace(/^\/collection\/?/, '');
+      const set = slug ? getSetBySlug(slug) : null;
+      document.title = set ? `${set.name} - PocketDex` : 'Collection - PocketDex';
+      return;
+    }
+    document.title = 'PocketDex';
   }, [location.pathname]);
 
   const [collection, setCollection] = useState<CollectionState>({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSetId, setSelectedSetId] = useState<string>('A1');
+  // Derive slug from pathname (useParams is not available in App, which is parent of Routes)
+  const collectionSlugFromPath = location.pathname.startsWith('/collection')
+    ? location.pathname.replace(/^\/collection\/?/, '')
+    : '';
+  const selectedSetId =
+    location.pathname.startsWith('/collection')
+      ? !collectionSlugFromPath
+        ? 'ALL'
+        : (getSetBySlug(collectionSlugFromPath)?.id ?? 'ALL')
+      : 'ALL';
+
+  const [lastCollectionSetSlug, setLastCollectionSetSlug] = useState<string | null>(null);
+  const [statsFlashTargetId, setStatsFlashTargetId] = useState<string | null>(null);
+  const [loadingHint, setLoadingHint] = useState(() => getNextHint([]));
+  const loadingHintRecentRef = useRef<string[]>([]);
+  useEffect(() => {
+    if (location.pathname.startsWith('/collection')) {
+      setLastCollectionSetSlug(collectionSlugFromPath || null);
+    }
+  }, [location.pathname, collectionSlugFromPath]);
+
+  const [collectionSetDropdownOpen, setCollectionSetDropdownOpen] = useState(false);
+  const [collectionSetDropdownFocusedIndex, setCollectionSetDropdownFocusedIndex] = useState(0);
+  const collectionSetDropdownRef = useRef<HTMLDivElement>(null);
+  const collectionSetListboxRef = useRef<HTMLDivElement>(null);
+  const collectionSearchInputRef = useRef<HTMLInputElement>(null);
+  const collectionScrollRef = useRef<HTMLDivElement>(null);
+  const collectionSetMeasureRef = useRef<HTMLSpanElement>(null);
+  const collectionSetIdMeasureRef = useRef<HTMLSpanElement>(null);
+  const collectionDropdownWidthMeasuredRef = useRef(false);
+  const measurerMountedOnceRef = useRef(false);
+  const [collectionSetDropdownWidth, setCollectionSetDropdownWidth] = useState<number | null>(null);
+  const [measurerMounted, setMeasurerMounted] = useState(0);
+  useEffect(() => {
+    if (collectionDropdownWidthMeasuredRef.current) return;
+    if (!LONGEST_SET_NAME || !collectionSetMeasureRef.current) return;
+    if (!LONGEST_SET_ID || !collectionSetIdMeasureRef.current) return;
+    const nameWidth = collectionSetMeasureRef.current.getBoundingClientRect().width;
+    const idWidth = collectionSetIdMeasureRef.current.getBoundingClientRect().width;
+    const gapChevronPadding = 8 + 24 + 24;
+    const w = Math.ceil(nameWidth) + Math.ceil(idWidth) + gapChevronPadding;
+    collectionDropdownWidthMeasuredRef.current = true;
+    setCollectionSetDropdownWidth(w);
+  }, [measurerMounted]);
+
+  useEffect(() => {
+    if (!location.pathname.startsWith('/collection')) return;
+    collectionScrollRef.current?.scrollTo(0, 0);
+  }, [selectedSetId]);
+
+  // Scroll Statistics to the set card when navigating with hash; position so bottom of set above is at top (with padding). Flash target card after scroll completes.
+  useEffect(() => {
+    if (location.pathname !== '/statistics' || !location.hash) return;
+    const id = location.hash.slice(1);
+    const target = id ? document.getElementById(id) : null;
+    if (!target) return;
+
+    const scrollPadding = 24;
+
+    const runScroll = (scrollContainer: Element) => {
+      const prev = target.previousElementSibling;
+      const containerRect = scrollContainer.getBoundingClientRect();
+      // Treat top of view as below the sticky header so the target isn't hidden (Statistics panel has sticky header as first child)
+      const headerEl = scrollContainer.firstElementChild;
+      const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 0;
+      const effectiveTop = containerRect.top + headerHeight + scrollPadding;
+      let delta: number;
+      if (prev) {
+        const prevRect = prev.getBoundingClientRect();
+        delta = prevRect.bottom - effectiveTop;
+      } else {
+        const targetRect = target.getBoundingClientRect();
+        delta = targetRect.top - effectiveTop;
+      }
+      const scrollTopBefore = scrollContainer.scrollTop;
+      const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+      const newScrollTop = Math.max(0, Math.min(maxScroll, scrollTopBefore + delta));
+      scrollContainer.scrollTo({ top: newScrollTop, behavior: 'smooth' });
+    };
+
+    let scrollContainer: Element | null = target.parentElement;
+    while (scrollContainer && scrollContainer !== document.body) {
+      const overflowY = getComputedStyle(scrollContainer).overflowY;
+      if (overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay') break;
+      scrollContainer = scrollContainer.parentElement;
+    }
+    if (!scrollContainer) return;
+
+    const startFlashMs = 550;
+    const flashDurationMs = 550;
+    const startFlash = setTimeout(() => setStatsFlashTargetId(id), startFlashMs);
+    const clearFlash = setTimeout(() => setStatsFlashTargetId(null), startFlashMs + flashDurationMs);
+
+    const doScrollWhenReady = () => {
+      const maxScroll = scrollContainer!.scrollHeight - scrollContainer!.clientHeight;
+      if (maxScroll > 0) {
+        runScroll(scrollContainer!);
+        return true;
+      }
+      return false;
+    };
+
+    if (doScrollWhenReady()) {
+      return () => {
+        clearTimeout(startFlash);
+        clearTimeout(clearFlash);
+      };
+    }
+
+    let rafId: number;
+    const maxAttempts = 60;
+    let attempts = 0;
+    const tryScroll = () => {
+      attempts += 1;
+      if (doScrollWhenReady()) return;
+      if (attempts < maxAttempts) {
+        rafId = requestAnimationFrame(tryScroll);
+      } else {
+        // Container never became scrollable (e.g. parent has no fixed height). Fall back to window scroll: position so bottom of set above is at top with padding.
+        const prev = target.previousElementSibling;
+        if (prev) {
+          const prevRect = prev.getBoundingClientRect();
+          window.scrollTo({ top: window.scrollY + prevRect.bottom - scrollPadding, behavior: 'smooth' });
+        } else {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    };
+    rafId = requestAnimationFrame(tryScroll);
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(startFlash);
+      clearTimeout(clearFlash);
+    };
+  }, [location.pathname, location.hash]);
+
   const [filterOwned, setFilterOwned] = useState<'all' | 'owned' | 'missing'>('all');
+
+  // Column count for collection grid (matches Tailwind: 3 < sm, 4 sm–md, 6 md+)
+  const [collectionColumnCount, setCollectionColumnCount] = useState(() =>
+    typeof window !== 'undefined' ? (window.innerWidth < 640 ? 3 : window.innerWidth < 768 ? 4 : 6) : 3
+  );
+  useEffect(() => {
+    const onResize = () =>
+      setCollectionColumnCount(window.innerWidth < 640 ? 3 : window.innerWidth < 768 ? 4 : 6);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const isCollectionRoute = location.pathname.startsWith('/collection');
+  const collectionFilteredCards = useMemo(() => {
+    if (!isCollectionRoute) return [];
+    return CARDS.filter((card) => {
+      const matchesSet = selectedSetId === 'ALL' || card.set === selectedSetId;
+      const matchesSearch =
+        card.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        String(card.number).includes(searchQuery);
+      const isOwned = (collection[card.id] || 0) > 0;
+      if (filterOwned === 'owned' && !isOwned) return false;
+      if (filterOwned === 'missing' && isOwned) return false;
+      return matchesSet && matchesSearch;
+    });
+  }, [isCollectionRoute, selectedSetId, searchQuery, filterOwned, collection]);
+
+  const collectionRowCount =
+    isCollectionRoute && collectionFilteredCards.length > 0
+      ? Math.ceil(collectionFilteredCards.length / collectionColumnCount)
+      : 0;
+  // Use a small fixed estimate so row height is driven by content + measureElement; a large value would force a high minHeight and block adaptive padding.
+  const COLLECTION_ROW_ESTIMATE = 180;
+  const collectionVirtualizer = useVirtualizer({
+    count: collectionRowCount,
+    getScrollElement: () => collectionScrollRef.current,
+    estimateSize: () => COLLECTION_ROW_ESTIMATE,
+    gap: 12,
+    overscan: 3,
+  });
+
   const [inspectView, setInspectView] = useState<{ index: number; maxIndex: number } | null>(null);
   const [inspectPhase, setInspectPhase] = useState<'entering' | 'idle' | 'exiting'>('idle');
   const [inspectOriginRect, setInspectOriginRect] = useState<CardRect | null>(null);
@@ -103,6 +295,18 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   useEffect(() => {
     if (isUserLoaded) setClerkLoadTimedOut(false);
   }, [isUserLoaded]);
+
+  // Rotate loading hint text (no recent repetition) while Clerk is loading
+  useEffect(() => {
+    if (!clerkEnabled || isUserLoaded) return;
+    loadingHintRecentRef.current = [loadingHint];
+    const intervalId = setInterval(() => {
+      const next = getNextHint(loadingHintRecentRef.current);
+      setLoadingHint(next);
+      loadingHintRecentRef.current = loadingHintRecentRef.current.slice(-(LOADING_HINT_RECENT_COUNT - 1)).concat(next);
+    }, 2500);
+    return () => clearInterval(intervalId);
+  }, [clerkEnabled, isUserLoaded]);
 
   const setSyncError = (message: string) => {
     setSyncStatus('error');
@@ -152,7 +356,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     if (!clerkUser) {
       hasLoadedFromCloudRef.current = false;
       setCollection({});
-      if (location.pathname === '/collection' || location.pathname === '/statistics') {
+      if (location.pathname.startsWith('/collection') || location.pathname === '/statistics') {
         navigate('/');
       }
     }
@@ -165,7 +369,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     // Wait for Clerk to finish loading before checking auth
     if (!isUserLoaded) return;
     
-    if (!clerkUser && (location.pathname === '/collection' || location.pathname === '/statistics')) {
+    if (!clerkUser && (location.pathname.startsWith('/collection') || location.pathname === '/statistics')) {
       navigate('/');
     }
   }, [clerkEnabled, clerkUser, isUserLoaded, location.pathname, navigate]);
@@ -284,12 +488,16 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         size="lg"
         fullWidth
         disabled={!clerkUser}
-        onClick={() => clerkUser && navigate('/collection')}
-        className={`h-24 flex flex-col items-center justify-center gap-1 group ${!clerkUser ? 'opacity-60 cursor-not-allowed' : ''}`}
+        onClick={() => clerkUser && navigate(lastCollectionSetSlug ? `/collection/${lastCollectionSetSlug}` : '/collection')}
+        className={`h-24 flex flex-col items-center justify-center gap-1 py-5 group ${!clerkUser ? 'opacity-60 cursor-not-allowed' : ''}`}
       >
-        <Library className="group-hover:scale-110 transition-transform" />
+        <Library className="size-8 shrink-0 group-hover:scale-110 transition-transform" />
         <span className="text-lg">My Collection</span>
         {!clerkUser && <span className="text-xs text-gray-400 font-normal">Sign in to view</span>}
+        {clerkUser && lastCollectionSetSlug != null && (() => {
+          const set = getSetBySlug(lastCollectionSetSlug);
+          return set ? <span className="text-[10px] text-gray-200 font-normal leading-tight">{set.name}</span> : null;
+        })()}
       </Button>
 
       <Button
@@ -397,18 +605,99 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     return () => document.removeEventListener('keydown', handler);
   }, [location.pathname, inspectView]);
 
-  const renderCollection = () => {
-    const filteredCards = CARDS.filter(card => {
-      const matchesSet = selectedSetId === 'ALL' || card.set === selectedSetId;
-      const matchesSearch =
-        card.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        String(card.number).includes(searchQuery);
-      const isOwned = (collection[card.id] || 0) > 0;
-      if (filterOwned === 'owned' && !isOwned) return false;
-      if (filterOwned === 'missing' && isOwned) return false;
-      return matchesSet && matchesSearch;
-    });
+  const closeCollectionSetDropdownAndFocusSearch = useCallback(() => {
+    setCollectionSetDropdownOpen(false);
+    setTimeout(() => collectionSearchInputRef.current?.focus(), 0);
+  }, []);
 
+  // When dropdown opens, set focused index to selected option and scroll selected into view
+  useEffect(() => {
+    if (!collectionSetDropdownOpen) return;
+    const selectedIndex = selectedSetId === 'ALL' ? 0 : (SETS.findIndex((s) => s.id === selectedSetId) + 1);
+    if (selectedIndex > SETS.length) setCollectionSetDropdownFocusedIndex(0);
+    else setCollectionSetDropdownFocusedIndex(selectedIndex >= 0 ? selectedIndex : 0);
+    const listbox = collectionSetListboxRef.current;
+    if (listbox) {
+      const scroll = () => {
+        const selected = listbox.querySelector('[aria-selected="true"]');
+        (selected as HTMLElement)?.scrollIntoView({ block: 'nearest' });
+      };
+      requestAnimationFrame(scroll);
+    }
+  }, [collectionSetDropdownOpen, selectedSetId]);
+
+  // When dropdown is open and focused index changes, focus that option
+  useEffect(() => {
+    if (!collectionSetDropdownOpen) return;
+    const option = collectionSetListboxRef.current?.querySelector(`[data-index="${collectionSetDropdownFocusedIndex}"]`) as HTMLElement | null;
+    option?.focus();
+  }, [collectionSetDropdownOpen, collectionSetDropdownFocusedIndex]);
+
+  // Close collection set dropdown on click outside or Escape; keyboard navigation when open
+  useEffect(() => {
+    if (!collectionSetDropdownOpen) return;
+    const handleOutside = (e: MouseEvent | TouchEvent) => {
+      const el = collectionSetDropdownRef.current;
+      if (el && !el.contains(e.target as Node)) closeCollectionSetDropdownAndFocusSearch();
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeCollectionSetDropdownAndFocusSearch();
+        e.preventDefault();
+        return;
+      }
+      const optionCount = SETS.length + 1;
+      if (e.key === 'ArrowDown') {
+        setCollectionSetDropdownFocusedIndex((i) => (i + 1) % optionCount);
+        e.preventDefault();
+        return;
+      }
+      if (e.key === 'ArrowUp') {
+        setCollectionSetDropdownFocusedIndex((i) => (i - 1 + optionCount) % optionCount);
+        e.preventDefault();
+        return;
+      }
+      if (e.key === 'Home') {
+        setCollectionSetDropdownFocusedIndex(0);
+        e.preventDefault();
+        return;
+      }
+      if (e.key === 'End') {
+        setCollectionSetDropdownFocusedIndex(SETS.length);
+        e.preventDefault();
+        return;
+      }
+      if (e.key === 'Enter') {
+        if (collectionSetDropdownFocusedIndex === 0) {
+          navigate('/collection');
+        } else {
+          const set = SETS[collectionSetDropdownFocusedIndex - 1];
+          if (set) {
+            const slug = getSetSlug(set.id);
+            if (slug != null) navigate(`/collection/${slug}`);
+          }
+        }
+        closeCollectionSetDropdownAndFocusSearch();
+        e.preventDefault();
+      }
+    };
+    document.addEventListener('mousedown', handleOutside);
+    document.addEventListener('touchstart', handleOutside, { passive: true });
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleOutside);
+      document.removeEventListener('touchstart', handleOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [collectionSetDropdownOpen, closeCollectionSetDropdownAndFocusSearch, collectionSetDropdownFocusedIndex, navigate]);
+
+  // Close collection set dropdown when leaving collection route
+  useEffect(() => {
+    if (!location.pathname.startsWith('/collection')) setCollectionSetDropdownOpen(false);
+  }, [location.pathname]);
+
+  const renderCollection = () => {
+    const filteredCards = collectionFilteredCards;
     const currentInspectCard = inspectView != null ? filteredCards[inspectView.index] ?? null : null;
     const canGoLeft = inspectView != null && inspectView.index > 0;
     const canGoRight = inspectView != null && inspectView.index < inspectView.maxIndex;
@@ -558,7 +847,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     };
 
     return (
-      <div className="flex flex-col h-screen bg-black overflow-y-auto">
+      <div className="flex flex-col h-screen bg-black">
         {/* Inspect View overlay */}
         {inspectView != null && currentInspectCard && (
           <div
@@ -723,7 +1012,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
               style={{ transition: `opacity ${INSPECT_ANIM_MS}ms ease-out` }}
             >
               <p className="text-lg font-medium text-white truncate max-w-full text-center drop-shadow-lg">{currentInspectCard.name}</p>
-              <p className="text-sm text-gray-500">#{currentInspectCard.number}</p>
+              <p className="text-sm text-gray-500">{selectedSetId === 'ALL' ? `${SETS.find(s => s.id === currentInspectCard.set)?.name ?? currentInspectCard.set} #${currentInspectCard.number}` : `#${currentInspectCard.number}`}</p>
             </div>
           </div>
         )}
@@ -733,29 +1022,119 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             <button onClick={() => navigate('/')} className="p-2 -ml-2 text-gray-400 hover:text-white">
               <ChevronLeft />
             </button>
-            <h2 className="text-xl font-bold hidden xs:block">Collection</h2>
-            <select
-              value={selectedSetId}
-              onChange={(e) => setSelectedSetId(e.target.value)}
-              className="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg p-2 flex-1 max-w-[200px] outline-none focus:border-blue-500 truncate"
+            <h2 className="text-xl font-bold hidden min-[584px]:block">Collection</h2>
+            <div
+              ref={collectionSetDropdownRef}
+              className="relative flex-none min-w-0 shrink max-w-full"
+              style={{ width: collectionSetDropdownWidth ?? 240 }}
             >
-              {SETS.map(set => (
-                <option key={set.id} value={set.id}>{set.name} ({set.id})</option>
-              ))}
-              <option value="ALL">All Sets</option>
-            </select>
-            <div className="ml-auto text-xs text-gray-500 font-mono whitespace-nowrap">
-              {filteredCards.length} Cards
+              <button
+                type="button"
+                onClick={() => setCollectionSetDropdownOpen((o) => !o)}
+                aria-expanded={collectionSetDropdownOpen}
+                aria-haspopup="listbox"
+                aria-label="Select set"
+                className="group/dropdown w-full flex items-center justify-between gap-2 bg-gray-900 border border-gray-700 text-white text-sm rounded-lg px-3 py-2 outline-none transition-colors hover:bg-gray-800 hover:border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 truncate min-h-[40px]"
+              >
+                <span className="truncate">
+                  {selectedSetId === 'ALL' ? 'All Sets' : (SETS.find((s) => s.id === selectedSetId)?.name ?? selectedSetId)}
+                </span>
+                <span className="flex items-center gap-2 shrink-0">
+                  {selectedSetId !== 'ALL' && (
+                    <span className="hidden headerNarrow:inline shrink-0 text-xs font-mono text-gray-400 bg-gray-800 group-hover/dropdown:bg-gray-900 px-2 py-0.5 rounded transition-colors">{SETS.find((s) => s.id === selectedSetId)?.id ?? selectedSetId}</span>
+                  )}
+                  <ChevronDown
+                    size={16}
+                    className={`text-gray-400 transition-transform ${collectionSetDropdownOpen ? 'rotate-180' : ''}`}
+                  />
+                </span>
+              </button>
+              {collectionSetDropdownOpen && (
+                <div
+                  ref={collectionSetListboxRef}
+                  role="listbox"
+                  className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-gray-700 rounded-lg shadow-xl max-h-[min(60vh,320px)] overflow-y-auto py-1 z-50"
+                >
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={selectedSetId === 'ALL'}
+                    data-index={0}
+                    onClick={() => {
+                      navigate('/collection');
+                      closeCollectionSetDropdownAndFocusSearch();
+                    }}
+                    className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 text-left text-sm transition-colors hover:bg-blue-900/40 focus:bg-blue-900/40 focus:outline-none ${selectedSetId === 'ALL' ? 'bg-blue-900/90 text-white' : 'text-gray-200'}`}
+                  >
+                    <span className="truncate">All Sets</span>
+                  </button>
+                  {SETS.map((set, index) => {
+                    const isSelected = selectedSetId === set.id;
+                    return (
+                      <button
+                        key={set.id}
+                        type="button"
+                        role="option"
+                        aria-selected={isSelected}
+                        data-index={index + 1}
+                        onClick={() => {
+                          const slug = getSetSlug(set.id);
+                          if (slug != null) navigate(`/collection/${slug}`);
+                          closeCollectionSetDropdownAndFocusSearch();
+                        }}
+                        className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 text-left text-sm transition-colors hover:bg-blue-900/40 focus:bg-blue-900/40 focus:outline-none ${isSelected ? 'bg-blue-900/90 text-white' : 'text-gray-200'}`}
+                      >
+                        <span className="truncate">{set.name}</span>
+                        <span className="shrink-0 text-xs font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded">{set.id}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
+            {(() => {
+              const progress = getCollectionProgress(collection, selectedSetId);
+              const statsHash = selectedSetId === 'ALL' ? 'allsets' : (getSetSlug(selectedSetId) ?? selectedSetId);
+              return (
+                <>
+                  {/* Progress region: clickable, same height as dropdown, navigates to Statistics and scrolls to this set */}
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/statistics#${statsHash}`)}
+                    className="group/progress flex min-h-[40px] min-w-[3rem] items-center gap-2 px-3 py-2 sm:flex-1 rounded-lg border border-gray-700 bg-gray-900 text-left outline-none transition-colors hover:bg-gray-800 hover:border-gray-600 cursor-pointer focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black focus:border-blue-500"
+                    aria-label={`View ${selectedSetId === 'ALL' ? 'All Sets' : 'set'} in Statistics`}
+                  >
+                    <span className="text-xs font-medium text-blue-400 shrink-0 tabular-nums">{Math.floor(progress.percentage)}%</span>
+                    <div className="hidden sm:block flex-1 min-w-[48px] h-3 bg-gray-800 group-hover/progress:bg-gray-900 rounded-full overflow-hidden transition-colors">
+                      <div
+                        className="bg-gradient-to-r from-blue-600 to-purple-500 h-full rounded-full transition-all duration-1000 ease-out"
+                        style={{ width: `${Math.floor(progress.percentage)}%` }}
+                      />
+                    </div>
+                  </button>
+                  {/* Both labels always visible; no shortening */}
+                  <div className="ml-auto text-right shrink-0">
+                    <div className="text-xs text-gray-500 whitespace-nowrap">
+                      {progress.owned} / {progress.total}
+                    </div>
+                    <div className="text-[10px] text-gray-500 whitespace-nowrap">
+                      {progress.totalCopies} total
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
           </div>
           <div className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
               <input
+                ref={collectionSearchInputRef}
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={(e) => e.target.select()}
                 className="w-full bg-gray-900 border border-gray-700 rounded-lg pl-9 pr-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
               />
             </div>
@@ -768,11 +1147,69 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             </button>
           </div>
         </div>
-        <div className="p-4 pb-24 touch-pan-y">
+        <div
+          ref={collectionScrollRef}
+          className="flex-1 min-h-0 overflow-y-auto"
+        >
+        <div className="p-4 pb-24 touch-pan-y relative">
           {filteredCards.length === 0 ? (
             <div className="py-20 text-center text-gray-500 flex flex-col items-center">
               <p>No cards found.</p>
             </div>
+          ) : filteredCards.length > 50 ? (
+            <>
+              <div
+                style={{
+                  height: collectionVirtualizer.getTotalSize(),
+                  position: 'relative',
+                  width: '100%',
+                  marginTop: 16,
+                  marginBottom: 96,
+                }}
+              >
+              {collectionVirtualizer.getVirtualItems().map((virtualRow) => (
+                <div
+                  key={virtualRow.key}
+                  ref={collectionVirtualizer.measureElement}
+                  data-index={virtualRow.index}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}
+                  className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4 select-none"
+                >
+                  {filteredCards
+                    .slice(
+                      virtualRow.index * collectionColumnCount,
+                      (virtualRow.index + 1) * collectionColumnCount
+                    )
+                    .map((card, i) => {
+                      const index = virtualRow.index * collectionColumnCount + i;
+                      return (
+                        <CardItem
+                          key={card.id}
+                          card={card}
+                          count={collection[card.id] || 0}
+                          showSetInNumber={selectedSetId === 'ALL'}
+                          setName={selectedSetId === 'ALL' ? SETS.find(s => s.id === card.set)?.name : undefined}
+                          onIncrement={() => handleUpdateCount(card.id, 1)}
+                          onDecrement={() => handleUpdateCount(card.id, -1)}
+                          onLongPress={(rect) => {
+                            setInspectOriginRect(rect);
+                            setInspectExitRect(null);
+                            setInspectView({ index, maxIndex: filteredCards.length - 1 });
+                            setInspectPhase('entering');
+                          }}
+                        />
+                      );
+                    })}
+                </div>
+              ))}
+              </div>
+            </>
           ) : (
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4 select-none">
               {filteredCards.map((card, index) => (
@@ -780,6 +1217,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   key={card.id}
                   card={card}
                   count={collection[card.id] || 0}
+                  showSetInNumber={selectedSetId === 'ALL'}
+                  setName={selectedSetId === 'ALL' ? SETS.find(s => s.id === card.set)?.name : undefined}
                   onIncrement={() => handleUpdateCount(card.id, 1)}
                   onDecrement={() => handleUpdateCount(card.id, -1)}
                   onLongPress={(rect) => {
@@ -793,58 +1232,128 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             </div>
           )}
         </div>
+        </div>
       </div>
     );
   };
 
   const renderStats = () => (
-    <div className="flex flex-col h-full p-6 overflow-y-auto">
-      <div className="flex items-center gap-3 mb-8">
-        <button onClick={() => navigate('/')} className="p-2 -ml-2 text-gray-400 hover:text-white">
-          <ChevronLeft />
-        </button>
-        <h2 className="text-2xl font-bold">Statistics</h2>
+    <div className="flex flex-col h-screen min-h-0 overflow-y-auto">
+      <div className="sticky top-0 z-30 bg-black shrink-0 border-b border-gray-800 p-4 space-y-3 backdrop-blur-md">
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate('/')} className="p-2 -ml-2 text-gray-400 hover:text-white">
+            <ChevronLeft />
+          </button>
+          <h2 className="text-xl font-bold">Statistics</h2>
+        </div>
       </div>
-      <div className="space-y-6 pb-12">
-        {SETS.map(set => {
-          const stats = getSetProgress(set.id, collection);
+      <div className="p-6 space-y-6 pb-12">
+        {/* All Sets: always first, links to /collection. Percentile rounded down to hundredths, two decimal places. */}
+        {(() => {
+          const allStats = getCollectionProgress(collection, 'ALL');
+          const allPct = Math.floor(allStats.percentage * 100) / 100;
           return (
-            <div key={set.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-white">{set.name}</h3>
-                <span className="text-sm text-gray-400">{stats.owned} / {stats.total}</span>
+            <button
+              type="button"
+              id="allsets"
+              onClick={() => navigate('/collection')}
+              className={`scroll-mt-24 w-full text-left bg-gray-900 border rounded-xl p-5 shadow-lg transition-colors hover:bg-gray-700 hover:border-gray-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${statsFlashTargetId === 'allsets' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-gray-800'}`}
+            >
+              <div className="flex items-center justify-between mb-4 gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <h3 className="text-lg font-bold text-white truncate">All Sets</h3>
+                </div>
+                <div className="text-right shrink-0">
+                  <div className="text-xs text-gray-500 whitespace-nowrap">{allStats.owned} / {allStats.total}</div>
+                  <div className="text-[10px] text-gray-500 whitespace-nowrap">{allStats.totalCopies} total</div>
+                </div>
               </div>
               <div className="w-full bg-gray-800 rounded-full h-4 overflow-hidden">
                 <div
                   className="bg-gradient-to-r from-blue-600 to-purple-500 h-full rounded-full transition-all duration-1000 ease-out"
-                  style={{ width: `${stats.percentage}%` }}
+                  style={{ width: `${allPct}%` }}
                 />
               </div>
               <div className="mt-2 text-right">
-                <span className="text-sm font-medium text-blue-400">{stats.percentage}% Complete</span>
+                <span className="text-sm font-medium text-blue-400">{allPct.toFixed(2)}% Complete</span>
               </div>
-            </div>
+            </button>
+          );
+        })()}
+        {SETS.map(set => {
+          const stats = getSetProgress(set.id, collection);
+          const slug = getSetSlug(set.id);
+          const pct = Math.floor(stats.percentage * 100) / 100;
+          return (
+            <button
+              key={set.id}
+              type="button"
+              id={slug ?? set.id}
+              onClick={() => slug != null && navigate(`/collection/${slug}`)}
+              className={`scroll-mt-24 w-full text-left bg-gray-900 border rounded-xl p-5 shadow-lg transition-colors hover:bg-gray-700 hover:border-gray-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${statsFlashTargetId === (slug ?? set.id) ? 'ring-2 ring-blue-500 border-blue-500' : 'border-gray-800'}`}
+            >
+              <div className="flex items-center justify-between mb-4 gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="shrink-0 text-xs font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded">
+                    {set.id}
+                  </span>
+                  <h3 className="text-lg font-bold text-white truncate">{set.name}</h3>
+                </div>
+                <div className="text-right shrink-0">
+                  <div className="text-xs text-gray-500 whitespace-nowrap">{stats.owned} / {stats.total}</div>
+                  <div className="text-[10px] text-gray-500 whitespace-nowrap">{stats.totalCopies} total</div>
+                </div>
+              </div>
+              <div className="w-full bg-gray-800 rounded-full h-4 overflow-hidden">
+                <div
+                  className="bg-gradient-to-r from-blue-600 to-purple-500 h-full rounded-full transition-all duration-1000 ease-out"
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+              <div className="mt-2 text-right">
+                <span className="text-sm font-medium text-blue-400">{pct.toFixed(2)}% Complete</span>
+              </div>
+            </button>
           );
         })}
       </div>
     </div>
   );
 
-  // Show loading state while Clerk is initializing (only for protected routes)
-  const isProtectedRoute = location.pathname === '/collection' || location.pathname === '/statistics';
-  if (clerkEnabled && !isUserLoaded && isProtectedRoute) {
+  // Full-screen loading animation until app is ready (Clerk loaded when enabled)
+  if (clerkEnabled && !isUserLoaded) {
     return (
-      <div className="min-h-screen bg-black text-white font-sans flex items-center justify-center">
-        <Loader2 className="animate-spin text-gray-400" size={32} />
+      <div
+        className="min-h-screen bg-black text-white font-sans flex flex-col items-center justify-center gap-6"
+        aria-busy="true"
+        aria-label="Loading"
+      >
+        <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+          PocketDex
+        </span>
+        <div
+          className="w-8 h-8 rounded-full border-2 border-white/15 border-t-purple-400 animate-spin"
+          aria-hidden="true"
+        />
+        <span className="text-sm text-gray-500">{loadingHint}</span>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-black text-white font-sans overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="absolute -left-[9999px] opacity-0 pointer-events-none text-sm whitespace-nowrap flex items-center gap-2"
+        ref={(el) => { if (el && !measurerMountedOnceRef.current) { measurerMountedOnceRef.current = true; setMeasurerMounted(1); } }}
+      >
+        <span ref={collectionSetMeasureRef}>{LONGEST_SET_NAME}</span>
+        <span ref={collectionSetIdMeasureRef} className="shrink-0 text-xs font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded">{LONGEST_SET_ID}</span>
+      </div>
       <Routes>
         <Route path="/" element={renderDashboard()} />
         <Route path="/collection" element={renderCollection()} />
+        <Route path="/collection/:slug" element={renderCollection()} />
         <Route path="/statistics" element={renderStats()} />
       </Routes>
     </div>

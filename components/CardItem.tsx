@@ -12,6 +12,10 @@ interface CardItemProps {
   onIncrement: () => void;
   onDecrement: () => void;
   onLongPress?: (rect: CardRect) => void;
+  /** When true, show number with set (e.g. "Genetic Apex #1"); when false, just "#1" */
+  showSetInNumber?: boolean;
+  /** Set name for the label when showSetInNumber is true (e.g. "Genetic Apex") */
+  setName?: string;
 }
 
 export const CardItem: React.FC<CardItemProps> = ({
@@ -20,16 +24,23 @@ export const CardItem: React.FC<CardItemProps> = ({
   onIncrement,
   onDecrement,
   onLongPress,
+  showSetInNumber = false,
+  setName,
 }) => {
+  const numberLabel = showSetInNumber
+    ? `${setName ?? card.set} #${card.number}`
+    : `#${card.number}`;
   const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const isOwned = count > 0;
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didLongPressRef = useRef(false);
   const cardFaceRef = useRef<HTMLDivElement>(null);
 
-  // Reset error state if card changes (e.g. reused component in list)
+  // Reset error/loaded state if card changes (e.g. reused component in list)
   useEffect(() => {
     setImageError(false);
+    setImageLoaded(false);
   }, [card.image]);
 
   // Visual cues for rarity
@@ -118,17 +129,28 @@ export const CardItem: React.FC<CardItemProps> = ({
         `}
       >
         {!imageError ? (
-          <img
-            src={card.image}
-            alt={card.name}
-            className="w-full h-full object-contain pointer-events-none" // Show full card; object-cover cropped landscape thumbnails in portrait slot
-            loading="lazy"
-            onError={() => setImageError(true)}
-          />
+          <>
+            {/* Centered placeholder until image loads */}
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center p-2 bg-gray-800">
+                <span className="text-sm font-mono text-gray-500 text-center leading-tight">
+                  {card.name}
+                </span>
+              </div>
+            )}
+            <img
+              src={card.image}
+              alt={card.name}
+              className="w-full h-full object-contain pointer-events-none" // Show full card; object-cover cropped landscape thumbnails in portrait slot
+              loading="lazy"
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageError(true)}
+            />
+          </>
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center p-2 text-center text-gray-500 bg-gray-800">
             <ImageOff size={24} className="mb-2 opacity-50" />
-            <span className="text-[10px] font-mono">{card.set}-{card.number}</span>
+            <span className="text-[10px] font-mono">{numberLabel}</span>
           </div>
         )}
         
@@ -150,7 +172,7 @@ export const CardItem: React.FC<CardItemProps> = ({
       <div className="mt-2 w-full flex items-center justify-between px-1">
          <div className="flex-1 min-w-0">
            <p className="text-xs font-medium text-gray-200 truncate">{card.name}</p>
-           <p className="text-[10px] text-gray-500">#{card.number}</p>
+           <p className="text-[10px] text-gray-500">{numberLabel}</p>
          </div>
          {isOwned && (
          <button 

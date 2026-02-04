@@ -127,16 +127,8 @@ export interface SetData {
   name: string;
   totalCards: number;
   coverImage: string;
+  slug?: string;
 }
 
 export type CollectionState = Record<string, number>; // CardID -> Count
-
-export enum View {
-  DASHBOARD = 'DASHBOARD',
-  COLLECTION = 'COLLECTION',
-  STATS = 'STATS',
-}
-
-
-
 

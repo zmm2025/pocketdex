@@ -9,6 +9,13 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      screens: {
+        // Viewport width breakpoints (industry standard)
+        xs: '375px',           // phone portrait
+        headerNarrow: '360px', // set ID in dropdown (last to hide)
+        headerMid: '480px',    // percentile visible (progress bar hidden below headerWide)
+        headerWide: '640px',   // progress bar visible (phone landscape / small tablet)
+      },
       colors: {
         gray: {
           900: '#121212',

@@ -4,6 +4,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/inject-loading-hints.mjs",
+    "prebuild": "node scripts/inject-loading-hints.mjs",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
@@ -13,6 +15,7 @@
     "@clerk/clerk-react": "latest",
     "@clerk/themes": "^2.4.51",
     "@supabase/supabase-js": "^2.93.3",
+    "@tanstack/react-virtual": "^3.13.18",
     "follow-redirects": "^1.15.5",
     "lucide-react": "^0.300.0",
     "react": "^18.2.0",

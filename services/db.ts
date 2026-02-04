@@ -9,8 +9,6 @@ import {
   PokemonStage,
   Rarity,
   RaritySymbol,
-  RARITY_DESCRIPTIONS_BY_SYMBOL,
-  RarityDescription,
   SetData,
   Weakness,
 } from '../types';
@@ -36,45 +34,6 @@ export const getSetLogoPath = (setId: string) =>
 /** Pack art: from Serebii set page Booster Pack List (e.g. https://www.serebii.net/tcgpocket/geneticapex/) */
 export const getPackArtPath = (setId: string, variant: string) =>
   `${ASSET_BASE}/sets/${setId}/pack_${variant}.png`;
-
-const RARITY_SYMBOLS: RaritySymbol[] = [
-  'diamond1',
-  'diamond2',
-  'diamond3',
-  'diamond4',
-  'star1',
-  'star2',
-  'star3',
-  'shiny1',
-  'shiny2',
-  'crown',
-];
-
-const RARITY_SYMBOL_SET = new Set<RaritySymbol>(RARITY_SYMBOLS);
-
-const mapRarityToSymbol = (rarity: Rarity): RaritySymbol => {
-  switch (rarity) {
-    case Rarity.COMMON:
-      return 'diamond1';
-    case Rarity.UNCOMMON:
-      return 'diamond2';
-    case Rarity.RARE:
-      return 'diamond3';
-    case Rarity.DOUBLE_RARE:
-    case Rarity.ART_RARE:
-      return 'star1';
-    case Rarity.SUPER_RARE:
-      return 'star2';
-    case Rarity.ILLUSTRATION_RARE:
-      return 'star3';
-    case Rarity.CROWN_RARE:
-      return 'crown';
-    case Rarity.PROMO:
-      return 'diamond1';
-    default:
-      return 'diamond1';
-  }
-};
 
 const mapSymbolToRarity = (symbol?: RaritySymbol): Rarity => {
   switch (symbol) {
@@ -116,37 +75,6 @@ const mapRarityLabelToRarity = (label?: string): Rarity | undefined => {
   if (normalized.includes('rare')) return Rarity.RARE;
   return undefined;
 };
-
-export const getRarityDescription = (symbol?: RaritySymbol): RarityDescription | undefined =>
-  symbol ? RARITY_DESCRIPTIONS_BY_SYMBOL[symbol] : undefined;
-
-const getRarityIconKey = (symbol: RaritySymbol) => {
-  if (symbol.startsWith('diamond')) return 'diamond';
-  if (symbol.startsWith('star')) return 'star';
-  if (symbol.startsWith('shiny')) return 'shiny';
-  if (symbol === 'crown') return 'crown';
-  return 'diamond';
-};
-
-export const getRarityIconCount = (rarity: Rarity | RaritySymbol) => {
-  const symbol = RARITY_SYMBOL_SET.has(rarity as RaritySymbol)
-    ? (rarity as RaritySymbol)
-    : mapRarityToSymbol(rarity as Rarity);
-  if (symbol.startsWith('diamond')) return Number(symbol.replace('diamond', '')) || 1;
-  if (symbol.startsWith('star')) return Number(symbol.replace('star', '')) || 1;
-  if (symbol.startsWith('shiny')) return Number(symbol.replace('shiny', '')) || 1;
-  return 1;
-};
-
-export const getRarityIconPath = (rarity: Rarity | RaritySymbol) => {
-  const symbol = RARITY_SYMBOL_SET.has(rarity as RaritySymbol)
-    ? (rarity as RaritySymbol)
-    : mapRarityToSymbol(rarity as Rarity);
-  return `${ASSET_BASE}/icons/rarity/${getRarityIconKey(symbol)}.png`;
-};
-
-export const getTypeIconPath = (type: string) =>
-  `${ASSET_BASE}/icons/types/${type.toLowerCase()}.png`;
 
 // ============================================================================
 // DATA
@@ -208,25 +136,25 @@ type IndexData = {
 
 const DEFAULT_SETS: SetData[] = [
   // Block A
-  { id: 'A1', name: 'Genetic Apex', totalCards: 286, coverImage: getSetLogoPath('A1') },
-  { id: 'A1a', name: 'Mythical Island', totalCards: 86, coverImage: getSetLogoPath('A1a') },
-  { id: 'A2', name: 'Space-Time Smackdown', totalCards: 207, coverImage: getSetLogoPath('A2') },
-  { id: 'A2a', name: 'Triumphant Light', totalCards: 96, coverImage: getSetLogoPath('A2a') },
-  { id: 'A2b', name: 'Shining Revelry', totalCards: 112, coverImage: getSetLogoPath('A2b') },
-  { id: 'A3', name: 'Celestial Guardians', totalCards: 239, coverImage: getSetLogoPath('A3') },
-  { id: 'A3a', name: 'Extradimensional Crisis', totalCards: 103, coverImage: getSetLogoPath('A3a') },
-  { id: 'A3b', name: 'Eevee Grove', totalCards: 107, coverImage: getSetLogoPath('A3b') },
-  { id: 'A4', name: 'Wisdom of Sea and Sky', totalCards: 241, coverImage: getSetLogoPath('A4') },
-  { id: 'A4a', name: 'Secluded Springs', totalCards: 105, coverImage: getSetLogoPath('A4a') },
-  { id: 'A4b', name: 'Deluxe Pack ex', totalCards: 379, coverImage: getSetLogoPath('A4b') },
+  { id: 'A1', name: 'Genetic Apex', totalCards: 286, coverImage: getSetLogoPath('A1'), slug: 'geneticapex' },
+  { id: 'A1a', name: 'Mythical Island', totalCards: 86, coverImage: getSetLogoPath('A1a'), slug: 'mythicalisland' },
+  { id: 'A2', name: 'Space-Time Smackdown', totalCards: 207, coverImage: getSetLogoPath('A2'), slug: 'space-timesmackdown' },
+  { id: 'A2a', name: 'Triumphant Light', totalCards: 96, coverImage: getSetLogoPath('A2a'), slug: 'triumphantlight' },
+  { id: 'A2b', name: 'Shining Revelry', totalCards: 112, coverImage: getSetLogoPath('A2b'), slug: 'shiningrevelry' },
+  { id: 'A3', name: 'Celestial Guardians', totalCards: 239, coverImage: getSetLogoPath('A3'), slug: 'celestialguardians' },
+  { id: 'A3a', name: 'Extradimensional Crisis', totalCards: 103, coverImage: getSetLogoPath('A3a'), slug: 'extradimensionalcrisis' },
+  { id: 'A3b', name: 'Eevee Grove', totalCards: 107, coverImage: getSetLogoPath('A3b'), slug: 'eeveegrove' },
+  { id: 'A4', name: 'Wisdom of Sea and Sky', totalCards: 241, coverImage: getSetLogoPath('A4'), slug: 'wisdomofseaandsky' },
+  { id: 'A4a', name: 'Secluded Springs', totalCards: 105, coverImage: getSetLogoPath('A4a'), slug: 'secludedsprings' },
+  { id: 'A4b', name: 'Deluxe Pack ex', totalCards: 379, coverImage: getSetLogoPath('A4b'), slug: 'deluxepackex' },
 
   // Block B
-  { id: 'B1', name: 'Mega Rising', totalCards: 331, coverImage: getSetLogoPath('B1') },
-  { id: 'B1a', name: 'Crimson Blaze', totalCards: 103, coverImage: getSetLogoPath('B1a') },
+  { id: 'B1', name: 'Mega Rising', totalCards: 331, coverImage: getSetLogoPath('B1'), slug: 'megarising' },
+  { id: 'B1a', name: 'Crimson Blaze', totalCards: 103, coverImage: getSetLogoPath('B1a'), slug: 'crimsonblaze' },
 
   // Promos
-  { id: 'PROMO-A', name: 'Promo-A', totalCards: 24, coverImage: getSetLogoPath('PROMO-A') },
-  { id: 'PROMO-B', name: 'Promo-B', totalCards: 10, coverImage: getSetLogoPath('PROMO-B') },
+  { id: 'PROMO-A', name: 'Promo-A', totalCards: 24, coverImage: getSetLogoPath('PROMO-A'), slug: 'promo-a' },
+  { id: 'PROMO-B', name: 'Promo-B', totalCards: 10, coverImage: getSetLogoPath('PROMO-B'), slug: 'promo-b' },
 ];
 
 // Metadata override for known cards to provide better UX than generic generated names
@@ -379,6 +307,7 @@ const setsFromIndex: SetData[] =
         name: s.name,
         totalCards: dedupedCardCountBySet[s.id] ?? s.totalCards ?? cardCountBySet[s.id] ?? 0,
         coverImage: getSetLogoPath(s.id),
+        slug: s.slug,
         releaseDate: s.releaseDate,
         packs: s.packs,
       })) as SetData[])
@@ -393,25 +322,56 @@ export const SETS: SetData[] =
           name: set.name,
           totalCards: dedupedCardCountBySet[set.id] ?? set.totalCards,
           coverImage: getSetLogoPath(set.id),
+          slug: set.slug ?? set.name.toLowerCase().replace(/\s+/g, ''),
           releaseDate: set.releaseDate,
           packs: set.packs,
         }))
       : DEFAULT_SETS;
 
+/** Longest set name by character length (for dropdown width measurement). Pre-calculated once at module load. */
+export const LONGEST_SET_NAME: string =
+  SETS.length > 0 ? SETS.reduce((a, b) => (a.name.length >= b.name.length ? a : b)).name : '';
+
+/** Longest set ID by character length (for dropdown badge width). Pre-calculated once at module load. */
+export const LONGEST_SET_ID: string =
+  SETS.length > 0 ? SETS.reduce((a, b) => (a.id.length >= b.id.length ? a : b)).id : '';
+
 export const CARDS: Card[] = hasScrapedCards
   ? dedupedCards
   : generateFallbackCards(DEFAULT_SETS);
 
-// Get all cards
-export const getAllCards = () => CARDS;
-
-// Get card by ID
-export const getCardById = (id: string) => CARDS.find((c) => c.id === id);
-
-// Get Set Progress
+// Get Set Progress (used by Statistics and Collection)
 export const getSetProgress = (setId: string, collection: Record<string, number>) => {
   const setCards = CARDS.filter((c) => c.set === setId);
   const total = setCards.length;
   const owned = setCards.filter((c) => (collection[c.id] || 0) > 0).length;
-  return { total, owned, percentage: total === 0 ? 0 : Math.round((owned / total) * 100) };
+  const totalCopies = setCards.reduce((sum, c) => sum + (collection[c.id] || 0), 0);
+  return { total, owned, totalCopies, percentage: total === 0 ? 0 : (owned / total) * 100 };
+};
+
+/** Progress for the selected set or all sets: unique owned count, total cards, total copies, percentage. */
+export const getCollectionProgress = (
+  collection: Record<string, number>,
+  selectedSetId: string
+): { total: number; owned: number; totalCopies: number; percentage: number } => {
+  const cards =
+    selectedSetId === 'ALL' ? CARDS : CARDS.filter((c) => c.set === selectedSetId);
+  const total = cards.length;
+  const owned = cards.filter((c) => (collection[c.id] || 0) > 0).length;
+  const totalCopies = cards.reduce((sum, c) => sum + (collection[c.id] || 0), 0);
+  const percentage = total === 0 ? 0 : (owned / total) * 100;
+  return { total, owned, totalCopies, percentage };
+};
+
+/** Get set by URL slug (e.g. "promo-b", "space-timesmackdown"). Case-insensitive. */
+export const getSetBySlug = (slug: string): SetData | undefined => {
+  const lower = slug.toLowerCase();
+  return SETS.find((s) => (s.slug ?? s.name.toLowerCase().replace(/\s+/g, '')).toLowerCase() === lower);
+};
+
+/** Get URL slug for a set id (for navigation). Returns undefined for "ALL". */
+export const getSetSlug = (setId: string): string | undefined => {
+  if (setId === 'ALL') return undefined;
+  const set = SETS.find((s) => s.id === setId);
+  return set?.slug ?? set?.name.toLowerCase().replace(/\s+/g, '');
 };

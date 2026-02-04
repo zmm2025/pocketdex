@@ -69,11 +69,63 @@
           color-scheme: light;
         }
       }
+      /* Initial loading splash (replaced by React when app mounts) */
+      #root .app-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        gap: 1.5rem;
+      }
+      #root .app-loading__brand {
+        font-family: Inter, system-ui, sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, #60a5fa, #a78bfa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      #root .app-loading__spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid rgba(255, 255, 255, 0.15);
+        border-top-color: #a78bfa;
+        border-radius: 50%;
+        animation: app-loading-spin 0.8s linear infinite;
+      }
+      #root .app-loading__hint {
+        font-family: Inter, system-ui, sans-serif;
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.5);
+      }
+      @media (prefers-color-scheme: light) {
+        #root .app-loading__spinner {
+          border-color: rgba(0, 0, 0, 0.1);
+          border-top-color: #7c3aed;
+        }
+        #root .app-loading__hint {
+          color: rgba(0, 0, 0, 0.5);
+        }
+      }
+      @keyframes app-loading-spin {
+        to { transform: rotate(360deg); }
+      }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="app-loading" aria-busy="true" aria-label="Loading">
+        <span class="app-loading__brand">PocketDex</span>
+        <div class="app-loading__spinner"></div>
+        <!-- INJECT_LOADING_HINTS -->
+        <span class="app-loading__hint" id="loading-hint-text">Training Pokémon...</span>
+        <script>(function(){var h=["Training Pokémon...","Hunting shinies...","Breeding Pokémon...","Catching Pokémon...","Evolving Pokémon...","Leveling up...","Hatching eggs...","Restoring PP...","Restoring PeePee...","Opening booster packs..."];for(var i=h.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=h[i];h[i]=h[j];h[j]=t;}var i=0;var e=document.getElementById("loading-hint-text");if(e&&h.length){e.textContent=h[0];setInterval(function(){e.textContent=h[++i%h.length];},2500);}})();</script>
+      <!-- /INJECT_LOADING_HINTS -->
+      </div>
+    </div>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
