@@ -72,6 +72,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const [inspectExitRect, setInspectExitRect] = useState<CardRect | null>(null);
   const inspectCardRef = useRef<HTMLDivElement>(null);
   const inspectCloseRef = useRef<() => void>(() => {});
+  const inspectFinishCloseRef = useRef<() => void>(() => {});
+  const inspectPhaseRef = useRef<'entering' | 'idle' | 'exiting'>('idle');
   const inspectNavigateRef = useRef<{ goPrev: () => void; goNext: () => void }>({ goPrev: () => {}, goNext: () => {} });
   const INSPECT_ANIM_MS = 280;
   const INSPECT_SLIDE_MS = 250;
@@ -79,6 +81,10 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const INSPECT_EASING = 'cubic-bezier(0.45, 0, 0.55, 1)';
   const [inspectSliding, setInspectSliding] = useState<{ fromIndex: number; toIndex: number } | null>(null);
   const [inspectSlidePhase, setInspectSlidePhase] = useState<'start' | 'end'>('start');
+
+  useEffect(() => {
+    inspectPhaseRef.current = inspectPhase;
+  }, [inspectPhase]);
 
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'saved' | 'error'>('idle');
   const [syncErrorMessage, setSyncErrorMessage] = useState<string | null>(null);
@@ -326,6 +332,10 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     const done = setTimeout(() => {
       setInspectSliding(null);
       setInspectSlidePhase('start');
+      // If user started close while sliding, we just cleared sliding; finish close so overlay doesn't stick.
+      if (inspectPhaseRef.current === 'exiting') {
+        inspectFinishCloseRef.current();
+      }
     }, INSPECT_SLIDE_MS);
     return () => {
       cancelAnimationFrame(frame);
@@ -408,6 +418,9 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         finishCloseInspect();
         return;
       }
+      // If we're mid-slide, clear sliding state so we render the single card and run the exit animation (avoids stuck overlay).
+      setInspectSliding(null);
+      setInspectSlidePhase('start');
       const el = document.querySelector(`[data-card-rect-id="${currentInspectCard.id}"]`);
       const rect = el?.getBoundingClientRect();
       if (rect) {
@@ -417,10 +430,12 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           width: rect.width,
           height: rect.height,
         });
+        // Defer 'exiting' so the single card paints at center first, then animates to grid (otherwise no transition runs).
+        requestAnimationFrame(() => setInspectPhase('exiting'));
       } else {
         setInspectExitRect(null);
+        setInspectPhase('exiting');
       }
-      setInspectPhase('exiting');
     };
 
     const finishCloseInspect = () => {
@@ -433,6 +448,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     };
 
     inspectCloseRef.current = startCloseInspect;
+    inspectFinishCloseRef.current = finishCloseInspect;
 
     inspectNavigateRef.current = {
       goPrev: () => {
