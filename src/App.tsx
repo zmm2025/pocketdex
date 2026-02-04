@@ -71,7 +71,6 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const [inspectOriginRect, setInspectOriginRect] = useState<CardRect | null>(null);
   const [inspectExitRect, setInspectExitRect] = useState<CardRect | null>(null);
   const inspectCardRef = useRef<HTMLDivElement>(null);
-  const inspectStripRef = useRef<HTMLDivElement>(null);
   const inspectCloseRef = useRef<() => void>(() => {});
   const inspectNavigateRef = useRef<{ goPrev: () => void; goNext: () => void }>({ goPrev: () => {}, goNext: () => {} });
   const INSPECT_ANIM_MS = 280;
@@ -79,8 +78,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   // Ease-in-out so card eases into motion and eases to a stop (no abrupt start or end)
   const INSPECT_EASING = 'cubic-bezier(0.45, 0, 0.55, 1)';
   const [inspectSliding, setInspectSliding] = useState<{ fromIndex: number; toIndex: number } | null>(null);
-  const [inspectSlideOffset, setInspectSlideOffset] = useState(0);
-  const [inspectSlideTransitionDisabled, setInspectSlideTransitionDisabled] = useState(false);
+  const [inspectSlidePhase, setInspectSlidePhase] = useState<'start' | 'end'>('start');
 
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'saved' | 'error'>('idle');
   const [syncErrorMessage, setSyncErrorMessage] = useState<string | null>(null);
@@ -318,19 +316,21 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     return () => cancelAnimationFrame(frame);
   }, [inspectPhase, inspectView]);
 
-  // Start slide animation after mount. Strip is 200% width so -50% = one panel (next from right, current exits left).
-  // Re-enable transition and set target offset so we get one clean animation (reset to start was instant).
+  // Trigger slide animation: start at "start" positions, then set "end" so cards animate (outgoing slides out + fade, incoming slides in + fade). Clear sliding state when done.
   useEffect(() => {
     if (!inspectSliding) return;
-    // Direction from current offset: prev set -50 (show current=right), next set 0 (show current=left). Target: prev -> 0, next -> -50.
-    const targetOffset = inspectSlideOffset === -50 ? 0 : -50;
+    setInspectSlidePhase('start');
     const frame = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setInspectSlideTransitionDisabled(false);
-        setInspectSlideOffset(targetOffset);
-      });
+      requestAnimationFrame(() => setInspectSlidePhase('end'));
     });
-    return () => cancelAnimationFrame(frame);
+    const done = setTimeout(() => {
+      setInspectSliding(null);
+      setInspectSlidePhase('start');
+    }, INSPECT_SLIDE_MS);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(done);
+    };
   }, [inspectSliding]);
 
   // Close Inspect View when leaving collection or when current index becomes invalid (e.g. filter change)
@@ -341,8 +341,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       setInspectOriginRect(null);
       setInspectExitRect(null);
       setInspectSliding(null);
-      setInspectSlideOffset(0);
-      setInspectSlideTransitionDisabled(false);
+      setInspectSlidePhase('start');
       return;
     }
     if (inspectView == null) return;
@@ -363,8 +362,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       setInspectOriginRect(null);
       setInspectExitRect(null);
       setInspectSliding(null);
-      setInspectSlideOffset(0);
-      setInspectSlideTransitionDisabled(false);
+      setInspectSlidePhase('start');
     }
   }, [location.pathname, inspectView, selectedSetId, searchQuery, filterOwned, collection]);
 
@@ -431,8 +429,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       setInspectOriginRect(null);
       setInspectExitRect(null);
       setInspectSliding(null);
-      setInspectSlideOffset(0);
-      setInspectSlideTransitionDisabled(false);
+      setInspectSlidePhase('start');
     };
 
     inspectCloseRef.current = startCloseInspect;
@@ -441,16 +438,14 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       goPrev: () => {
         if (!inspectView || inspectView.index <= 0) return;
         const nextIndex = inspectView.index - 1;
-        setInspectSlideTransitionDisabled(true);
-        setInspectSlideOffset(-50);
-        setInspectSliding({ fromIndex: nextIndex, toIndex: inspectView.index });
+        setInspectSlidePhase('start');
+        setInspectSliding({ fromIndex: inspectView.index, toIndex: nextIndex });
         setInspectView(v => (v ? { ...v, index: nextIndex } : v));
       },
       goNext: () => {
         if (!inspectView || inspectView.index >= inspectView.maxIndex) return;
         const nextIndex = inspectView.index + 1;
-        setInspectSlideTransitionDisabled(true);
-        setInspectSlideOffset(0);
+        setInspectSlidePhase('start');
         setInspectSliding({ fromIndex: inspectView.index, toIndex: nextIndex });
         setInspectView(v => (v ? { ...v, index: nextIndex } : v));
       },
@@ -460,21 +455,28 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     const inspectCardOwned = currentInspectCard ? (collection[currentInspectCard.id] ?? 0) > 0 : false;
     const grayscaleAtGrid = inspectCardOwned ? 0 : 1;
 
+    // Card dimensions for idle and for sliding cards (same as idle branch)
+    const getInspectCardDimensions = (): { w: number; h: number } => {
+      if (typeof window === 'undefined') return { w: 280, h: 392 };
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const maxW = Math.min(280, vw - 112);
+      const w = Math.max(160, maxW);
+      const maxH = vh - 128;
+      const h = Math.min((w * 3.5) / 2.5, maxH);
+      return { w, h };
+    };
+
     // Card position/size for the three phases (entering: from grid, idle: center large, exiting: back to grid or shrink)
-    // When sliding, outer is viewport-only (no border/shadow) so the sliding strip shows full cards
     const getInspectCardStyle = (): React.CSSProperties => {
       const base: React.CSSProperties = {
         transition: `left ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, top ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, width ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, height ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, transform ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, opacity ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, filter ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}`,
         position: 'fixed',
         borderRadius: '0.5rem',
         overflow: 'hidden',
-        ...(inspectSliding
-          ? {}
-          : {
-              border: '2px solid rgb(55 65 81)',
-              backgroundColor: 'rgb(17 24 39)',
-              boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.5)',
-            }),
+        border: '2px solid rgb(55 65 81)',
+        backgroundColor: 'rgb(17 24 39)',
+        boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.5)',
       };
       if (inspectPhase === 'entering' && inspectOriginRect) {
         return {
@@ -584,9 +586,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   e.stopPropagation();
                   if (!inspectView || inspectView.index <= 0) return;
                   const nextIndex = inspectView.index - 1;
-                  setInspectSlideTransitionDisabled(true);
-                  setInspectSlideOffset(-50);
-                  setInspectSliding({ fromIndex: nextIndex, toIndex: inspectView.index });
+                  setInspectSlidePhase('start');
+                  setInspectSliding({ fromIndex: inspectView.index, toIndex: nextIndex });
                   setInspectView(v => v ? { ...v, index: nextIndex } : v);
                 }}
                 className="absolute left-3 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-white transition-colors touch-manipulation"
@@ -602,8 +603,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   e.stopPropagation();
                   if (!inspectView || inspectView.index >= inspectView.maxIndex) return;
                   const nextIndex = inspectView.index + 1;
-                  setInspectSlideTransitionDisabled(true);
-                  setInspectSlideOffset(0);
+                  setInspectSlidePhase('start');
                   setInspectSliding({ fromIndex: inspectView.index, toIndex: nextIndex });
                   setInspectView(v => v ? { ...v, index: nextIndex } : v);
                 }}
@@ -613,53 +613,86 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                 <ChevronRight size={24} />
               </button>
             )}
-            <div
-              ref={inspectCardRef}
-              style={getInspectCardStyle()}
-              onTransitionEnd={(e) => {
-                if (e.target === inspectCardRef.current && inspectPhase === 'exiting') finishCloseInspect();
-                // Do NOT clear inspectSliding here: keeping the strip mounted avoids unmounting
-                // the visible img and remounting a single img (which caused reload/glitch).
-              }}
-              onClick={(e) => e.stopPropagation()}
-              className="flex items-center justify-center overflow-hidden"
-            >
-              {inspectSliding ? (
-                <div className="w-full h-full overflow-hidden">
-                  <div
-                    ref={inspectStripRef}
-                    className="h-full flex gap-0"
-                    style={{
-                      width: '200%',
-                      transform: `translateX(${inspectSlideOffset}%)`,
-                      transition: inspectSlideTransitionDisabled
-                        ? 'none'
-                        : `transform ${INSPECT_SLIDE_MS}ms ease-out`,
-                    }}
-                  >
-                    <div key="left" className="w-1/2 flex-shrink-0 flex items-center justify-center rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+            {inspectSliding ? (
+              (() => {
+                const dims = getInspectCardDimensions();
+                const goingNext = inspectSliding.toIndex > inspectSliding.fromIndex;
+                // fromIndex = index we're leaving, toIndex = index we're going to (same for both next and prev).
+                const outgoingCardIndex = inspectSliding.fromIndex;
+                const incomingCardIndex = inspectSliding.toIndex;
+                const baseCardStyle: React.CSSProperties = {
+                  position: 'fixed',
+                  left: '50%',
+                  top: '50%',
+                  width: dims.w,
+                  height: dims.h,
+                  marginLeft: -dims.w / 2,
+                  marginTop: -dims.h / 2,
+                  borderRadius: '0.5rem',
+                  overflow: 'hidden',
+                  border: '2px solid rgb(55 65 81)',
+                  backgroundColor: 'rgb(17 24 39)',
+                  boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.5)',
+                  transition: inspectSlidePhase === 'start'
+                    ? 'none'
+                    : `transform ${INSPECT_SLIDE_MS}ms ease-out, opacity ${INSPECT_SLIDE_MS}ms ease-out`,
+                  pointerEvents: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                };
+                const atEnd = inspectSlidePhase === 'end';
+                const outgoingStyle: React.CSSProperties = {
+                  ...baseCardStyle,
+                  transform: atEnd
+                    ? (goingNext ? 'translate(-100%, 0)' : 'translate(100%, 0)')
+                    : 'translate(0, 0)',
+                  opacity: atEnd ? 0 : 1,
+                };
+                const incomingStyle: React.CSSProperties = {
+                  ...baseCardStyle,
+                  transform: atEnd
+                    ? 'translate(0, 0)'
+                    : goingNext
+                      ? 'translate(100%, 0)'
+                      : 'translate(-100%, 0)',
+                  opacity: atEnd ? 1 : 0,
+                };
+                return (
+                  <>
+                    <div style={outgoingStyle}>
                       <img
-                        key={filteredCards[inspectSliding.fromIndex]?.id ?? 'from'}
-                        src={filteredCards[inspectSliding.fromIndex]?.image ?? ''}
-                        alt={filteredCards[inspectSliding.fromIndex]?.name ?? ''}
+                        key={filteredCards[outgoingCardIndex]?.id ?? 'out'}
+                        src={filteredCards[outgoingCardIndex]?.image ?? ''}
+                        alt={filteredCards[outgoingCardIndex]?.name ?? ''}
                         className="w-full h-full object-contain pointer-events-none"
                         loading="eager"
                         decoding="async"
                       />
                     </div>
-                    <div key="right" className="w-1/2 flex-shrink-0 flex items-center justify-center rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                    <div style={incomingStyle}>
                       <img
-                        key={filteredCards[inspectSliding.toIndex]?.id ?? 'to'}
-                        src={filteredCards[inspectSliding.toIndex]?.image ?? ''}
-                        alt={filteredCards[inspectSliding.toIndex]?.name ?? ''}
+                        key={filteredCards[incomingCardIndex]?.id ?? 'in'}
+                        src={filteredCards[incomingCardIndex]?.image ?? ''}
+                        alt={filteredCards[incomingCardIndex]?.name ?? ''}
                         className="w-full h-full object-contain pointer-events-none"
                         loading="eager"
                         decoding="async"
                       />
                     </div>
-                  </div>
-                </div>
-              ) : (
+                  </>
+                );
+              })()
+            ) : (
+              <div
+                ref={inspectCardRef}
+                style={getInspectCardStyle()}
+                onTransitionEnd={(e) => {
+                  if (e.target === inspectCardRef.current && inspectPhase === 'exiting') finishCloseInspect();
+                }}
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center justify-center overflow-hidden"
+              >
                 <img
                   src={currentInspectCard.image}
                   alt={currentInspectCard.name}
@@ -667,8 +700,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   loading="eager"
                   decoding="async"
                 />
-              )}
-            </div>
+              </div>
+            )}
             <div
               className="absolute bottom-8 left-0 right-0 flex flex-col items-center px-4 pointer-events-none"
               style={{ transition: `opacity ${INSPECT_ANIM_MS}ms ease-out` }}
