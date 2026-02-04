@@ -322,8 +322,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   // Re-enable transition and set target offset so we get one clean animation (reset to start was instant).
   useEffect(() => {
     if (!inspectSliding) return;
-    const goingNext = inspectSliding.toIndex > inspectSliding.fromIndex;
-    const targetOffset = goingNext ? -50 : 0;
+    // Direction from current offset: prev set -50 (show current=right), next set 0 (show current=left). Target: prev -> 0, next -> -50.
+    const targetOffset = inspectSlideOffset === -50 ? 0 : -50;
     const frame = requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setInspectSlideTransitionDisabled(false);
