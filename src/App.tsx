@@ -553,7 +553,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   // Close Inspect View when leaving collection or when current index becomes invalid (e.g. filter change)
   useEffect(() => {
-    if (location.pathname !== '/collection') {
+    if (!location.pathname.startsWith('/collection')) {
       setInspectView(null);
       setInspectPhase('idle');
       setInspectOriginRect(null);
