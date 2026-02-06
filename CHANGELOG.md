@@ -17,6 +17,7 @@ List is subject to change without notice.
 - **Bug fixes**: Deluxe Pack card registration, guides for testing to prevent bugs
 - Community Discord
 - Performance improvements
+- README data privacy disclosure
 
 ## Version History
 
