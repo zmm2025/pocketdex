@@ -5,7 +5,7 @@ An open-source, mobile-first companion app for [Pokémon TCG Pocket](https://tcg
 ## Features
 
 - **[Collection](https://pocketdex.zain.build/#/collection)**: Add or remove cards from your collection.
-- **[Statistics](https://pocketdex.zain.build/#/statistics)**: See your completio**- n progress for each set.
+- **[Statistics](https://pocketdex.zain.build/#/statistics)**: See your completion progress for each set.
 - **[Account System](https://accounts.pocketdex.zain.build/user)**: Save your collection and access it from any device.
 
 See [CHANGELOG.md](CHANGELOG.md) for version history and planned features.
