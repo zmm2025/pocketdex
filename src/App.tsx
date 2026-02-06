@@ -610,6 +610,16 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     setTimeout(() => collectionSearchInputRef.current?.focus(), 0);
   }, []);
 
+  const focusSearchAndSelectAll = useCallback(() => {
+    setTimeout(() => {
+      const input = collectionSearchInputRef.current;
+      if (input) {
+        input.focus();
+        input.select();
+      }
+    }, 0);
+  }, []);
+
   // When dropdown opens, set focused index to selected option and scroll selected into view
   useEffect(() => {
     if (!collectionSetDropdownOpen) return;
@@ -1195,8 +1205,14 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                           count={collection[card.id] || 0}
                           showSetInNumber={selectedSetId === 'ALL'}
                           setName={selectedSetId === 'ALL' ? SETS.find(s => s.id === card.set)?.name : undefined}
-                          onIncrement={() => handleUpdateCount(card.id, 1)}
-                          onDecrement={() => handleUpdateCount(card.id, -1)}
+                          onIncrement={() => {
+                            handleUpdateCount(card.id, 1);
+                            focusSearchAndSelectAll();
+                          }}
+                          onDecrement={() => {
+                            handleUpdateCount(card.id, -1);
+                            focusSearchAndSelectAll();
+                          }}
                           onLongPress={(rect) => {
                             setInspectOriginRect(rect);
                             setInspectExitRect(null);
@@ -1219,8 +1235,14 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   count={collection[card.id] || 0}
                   showSetInNumber={selectedSetId === 'ALL'}
                   setName={selectedSetId === 'ALL' ? SETS.find(s => s.id === card.set)?.name : undefined}
-                  onIncrement={() => handleUpdateCount(card.id, 1)}
-                  onDecrement={() => handleUpdateCount(card.id, -1)}
+                  onIncrement={() => {
+                    handleUpdateCount(card.id, 1);
+                    focusSearchAndSelectAll();
+                  }}
+                  onDecrement={() => {
+                    handleUpdateCount(card.id, -1);
+                    focusSearchAndSelectAll();
+                  }}
                   onLongPress={(rect) => {
                   setInspectOriginRect(rect);
                   setInspectExitRect(null);
