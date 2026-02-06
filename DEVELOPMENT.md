@@ -77,9 +77,9 @@ Sign-in and collection sync use [Clerk](https://clerk.com/) for authentication. 
 
 After deploying and setting `CLERK_ALLOWED_ISSUERS`, sign in and collection load/save will go through the Edge Function.
 
-## Testing guest mode
+## Testing demo mode
 
-Guest mode lets users explore Collection and Statistics without an account; data is stored in `localStorage`. When they sign in, they are prompted to **Merge into account**, **Use cloud only**, or **Cancel** (stay in demo mode). Use the steps below to verify every behavior.
+Demo mode lets users explore Collection and Statistics without an account; data is stored in `localStorage`. When they sign in, they are prompted to **Merge into account**, **Use cloud only**, or **Cancel** (stay in demo mode). Use the steps below to verify every behavior.
 
 ### Prerequisites
 
@@ -171,7 +171,7 @@ When the user has on-device (guest) collection data and signs in (new or existin
 ### 9. Clerk disabled (no key): guest still works
 
 - **Steps:** Run the app without `VITE_CLERK_PUBLISHABLE_KEY` (or with Clerk provider disabled) so “Sign-in not configured” or equivalent appears. If the app still mounts without Clerk, open Collection and add cards.
-- **Check:** When there is no user, collection is loaded from and saved to `localStorage` (guest mode). No redirect from Collection/Statistics.
+- **Check:** When there is no user, collection is loaded from and saved to `localStorage` (demo mode). No redirect from Collection/Statistics.
 - **Note:** If the app does not mount without a Clerk key, this test is N/A; the implementation still loads guest collection whenever `!clerkUser` after Clerk has loaded.
 
 ### Quick checklist
