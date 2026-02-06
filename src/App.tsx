@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { CollectionState } from './types';
@@ -35,6 +35,10 @@ import {
 const SUPABASE_URL = (import.meta as any).env.VITE_SUPABASE_URL;
 const COLLECTION_API_BASE = SUPABASE_URL ? `${SUPABASE_URL}/functions/v1` : null;
 
+/** Background-matching overlay color for unowned card darkening (inspect transition); customizable later for theming */
+const CARD_GRID_DARKEN_OVERLAY_COLOR = 'rgb(0, 0, 0)';
+const CARD_GRID_DARKEN_OVERLAY_OPACITY = 0.6;
+
 const CLERK_PUBLISHABLE_KEY = (import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
 const DEMO_BANNER_DONT_SHOW_KEY = 'pocketdex_demo_banner_dont_show';
 const DISMISSED_TOAST_DURATION_SEC = 5;
@@ -70,6 +74,9 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     return window.localStorage.getItem(DEMO_BANNER_DONT_SHOW_KEY) === '1';
   });
   const [showDismissedToast, setShowDismissedToast] = useState(false);
+  const [toastExiting, setToastExiting] = useState(false);
+  const [toastRevealed, setToastRevealed] = useState(false);
+  const [demoBannerDismissing, setDemoBannerDismissing] = useState(false);
 
   // Update document title per route
   useEffect(() => {
@@ -96,6 +103,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   const [collection, setCollection] = useState<CollectionState>({});
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResultsRevealed, setSearchResultsRevealed] = useState(true);
+  const prevSearchQueryRef = useRef<string | null>(null);
   // Derive slug from pathname (useParams is not available in App, which is parent of Routes)
   const collectionSlugFromPath = location.pathname.startsWith('/collection')
     ? location.pathname.replace(/^\/collection\/?/, '')
@@ -118,6 +127,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   }, [location.pathname, collectionSlugFromPath]);
 
   const [collectionSetDropdownOpen, setCollectionSetDropdownOpen] = useState(false);
+  const [collectionSetDropdownClosing, setCollectionSetDropdownClosing] = useState(false);
+  const [collectionSetDropdownRevealed, setCollectionSetDropdownRevealed] = useState(false);
   const [collectionSetDropdownFocusedIndex, setCollectionSetDropdownFocusedIndex] = useState(0);
   const collectionSetDropdownRef = useRef<HTMLDivElement>(null);
   const collectionSetListboxRef = useRef<HTMLDivElement>(null);
@@ -145,6 +156,27 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     if (!location.pathname.startsWith('/collection')) return;
     collectionScrollRef.current?.scrollTo(0, 0);
   }, [selectedSetId]);
+
+  // #region agent log
+  useEffect(() => {
+    if (!location.pathname.startsWith('/collection')) return;
+    fetch('http://127.0.0.1:7308/ingest/e2a675be-aace-40d9-9f6f-4eca8610d3c2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.tsx:searchQuery-effect',message:'searchQuery changed',data:{searchQuery:searchQuery.slice(0,30),len:searchQuery.length},hypothesisId:'H2',timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix'})}).catch(()=>{});
+  }, [searchQuery, location.pathname]);
+  // #endregion
+
+  // Search results: set revealed false before paint when search changes, then reveal after rAF so transition runs (skip on first load)
+  useLayoutEffect(() => {
+    if (!location.pathname.startsWith('/collection')) return;
+    const prev = prevSearchQueryRef.current;
+    prevSearchQueryRef.current = searchQuery;
+    if (prev === null) return; // first load: no transition
+    if (prev === searchQuery) return;
+    setSearchResultsRevealed(false);
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setSearchResultsRevealed(true));
+    });
+    return () => cancelAnimationFrame(id);
+  }, [searchQuery, location.pathname]);
 
   // Scroll Statistics to the set card when navigating with hash; position so bottom of set above is at top (with padding). Flash target card after scroll completes.
   useEffect(() => {
@@ -289,10 +321,25 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const INSPECT_EASING = 'cubic-bezier(0.45, 0, 0.55, 1)';
   const [inspectSliding, setInspectSliding] = useState<{ fromIndex: number; toIndex: number } | null>(null);
   const [inspectSlidePhase, setInspectSlidePhase] = useState<'start' | 'end'>('start');
+  const [inspectOverlayRevealed, setInspectOverlayRevealed] = useState(false);
 
   useEffect(() => {
     inspectPhaseRef.current = inspectPhase;
   }, [inspectPhase]);
+
+  // Gradual darken + blur: reveal backdrop one frame after open, fade backdrop on exit. Backdrop is a separate layer from the card so only the dim/blur fades.
+  useEffect(() => {
+    if (inspectView != null && inspectPhase === 'entering') {
+      setInspectOverlayRevealed(false);
+      const id = requestAnimationFrame(() => {
+        requestAnimationFrame(() => setInspectOverlayRevealed(true));
+      });
+      return () => cancelAnimationFrame(id);
+    }
+    if (inspectView == null || inspectPhase === 'exiting') {
+      setInspectOverlayRevealed(false);
+    }
+  }, [inspectView, inspectPhase]);
 
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'saved' | 'error'>('idle');
   const [syncErrorMessage, setSyncErrorMessage] = useState<string | null>(null);
@@ -475,7 +522,12 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   }, []);
 
   const handleDismissDemoBanner = useCallback(() => {
+    setDemoBannerDismissing(true);
+  }, []);
+
+  const finishDemoBannerDismiss = useCallback(() => {
     setDemoBannerDismissed(true);
+    setDemoBannerDismissing(false);
     setShowDismissedToast(true);
   }, []);
 
@@ -486,20 +538,40 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       // ignore
     }
     setDemoBannerDontShow(true);
-    setShowDismissedToast(false);
-  }, []);
+    if (showDismissedToast) setToastExiting(true);
+  }, [showDismissedToast]);
 
   const handleDismissToast = useCallback(() => {
+    if (!showDismissedToast) return;
+    setToastExiting(true);
+  }, [showDismissedToast]);
+
+  const finishToastClose = useCallback(() => {
     setShowDismissedToast(false);
+    setToastExiting(false);
+    setToastRevealed(false);
   }, []);
 
+  // Toast enter: reveal after one frame for slide-in
   useEffect(() => {
-    if (!showDismissedToast) return;
-    const t = setTimeout(() => {
-      setShowDismissedToast(false);
-    }, DISMISSED_TOAST_DURATION_SEC * 1000);
+    if (showDismissedToast && !toastExiting) {
+      setToastRevealed(false);
+      const id = requestAnimationFrame(() => {
+        requestAnimationFrame(() => setToastRevealed(true));
+      });
+      return () => cancelAnimationFrame(id);
+    }
+    if (!showDismissedToast) {
+      setToastRevealed(false);
+      setToastExiting(false);
+    }
+  }, [showDismissedToast, toastExiting]);
+
+  useEffect(() => {
+    if (!showDismissedToast || toastExiting) return;
+    const t = setTimeout(() => setToastExiting(true), DISMISSED_TOAST_DURATION_SEC * 1000);
     return () => clearTimeout(t);
-  }, [showDismissedToast]);
+  }, [showDismissedToast, toastExiting]);
 
   const renderDashboard = () => (
     <div className="flex flex-col h-full justify-center p-6 space-y-6 max-w-md mx-auto relative">
@@ -693,7 +765,13 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   }, [location.pathname, inspectView]);
 
   const closeCollectionSetDropdownAndFocusSearch = useCallback(() => {
+    if (!collectionSetDropdownOpen) return;
+    setCollectionSetDropdownClosing(true);
+  }, [collectionSetDropdownOpen]);
+
+  const finishCloseCollectionSetDropdown = useCallback(() => {
     setCollectionSetDropdownOpen(false);
+    setCollectionSetDropdownClosing(false);
     setTimeout(() => collectionSearchInputRef.current?.focus(), 0);
   }, []);
 
@@ -706,6 +784,21 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       }
     }, 0);
   }, []);
+
+  // Dropdown open: reveal after one frame for fade+slide in
+  useEffect(() => {
+    if (collectionSetDropdownOpen && !collectionSetDropdownClosing) {
+      setCollectionSetDropdownRevealed(false);
+      const id = requestAnimationFrame(() => {
+        requestAnimationFrame(() => setCollectionSetDropdownRevealed(true));
+      });
+      return () => cancelAnimationFrame(id);
+    }
+    if (!collectionSetDropdownOpen) {
+      setCollectionSetDropdownRevealed(false);
+      setCollectionSetDropdownClosing(false);
+    }
+  }, [collectionSetDropdownOpen, collectionSetDropdownClosing]);
 
   // When dropdown opens, set focused index to selected option and scroll selected into view
   useEffect(() => {
@@ -788,9 +881,13 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     };
   }, [collectionSetDropdownOpen, closeCollectionSetDropdownAndFocusSearch, collectionSetDropdownFocusedIndex, navigate]);
 
-  // Close collection set dropdown when leaving collection route
+  // Close collection set dropdown when leaving collection route (no animation)
   useEffect(() => {
-    if (!location.pathname.startsWith('/collection')) setCollectionSetDropdownOpen(false);
+    if (!location.pathname.startsWith('/collection')) {
+      setCollectionSetDropdownOpen(false);
+      setCollectionSetDropdownClosing(false);
+      setCollectionSetDropdownRevealed(false);
+    }
   }, [location.pathname]);
 
   const renderCollection = () => {
@@ -869,10 +966,10 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       return { w, h };
     };
 
-    // Card position/size for the three phases (entering: from grid, idle: center large, exiting: back to grid or shrink)
+    // Card position/size for the three phases (entering: from grid, idle: center large, exiting: back to grid or shrink). Card is always fully opaque; grayscale and dark overlay animate.
     const getInspectCardStyle = (): React.CSSProperties => {
       const base: React.CSSProperties = {
-        transition: `left ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, top ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, width ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, height ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, transform ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, opacity ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, filter ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}`,
+        transition: `left ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, top ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, width ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, height ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, transform ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, filter ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}`,
         position: 'fixed',
         borderRadius: '0.5rem',
         overflow: 'hidden',
@@ -910,7 +1007,6 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           width: 320,
           height: 448,
           transform: 'translate(-50%, -50%) scale(0)',
-          opacity: 0,
           filter: `grayscale(${grayscaleAtGrid})`,
         };
       }
@@ -948,12 +1044,20 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         {/* Inspect View overlay */}
         {inspectView != null && currentInspectCard && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md"
-            onClick={startCloseInspect}
+            className="fixed inset-0 z-50 flex items-center justify-center"
             role="dialog"
             aria-modal="true"
             aria-label="Inspect View"
           >
+            {/* Backdrop (dim + blur) as separate layer so it can fade on exit without fading the card */}
+            <div
+              className={`absolute inset-0 bg-black/70 transition-[opacity,backdrop-filter] duration-200 ease-out ${
+                inspectOverlayRevealed ? 'opacity-100 backdrop-blur-md' : 'opacity-0 backdrop-blur-none'
+              }`}
+              onClick={startCloseInspect}
+              aria-hidden="true"
+            />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             {/* Preload adjacent card images so sliding doesn't trigger load glitches */}
             {inspectView.index > 0 && filteredCards[inspectView.index - 1]?.image && (
               <img
@@ -976,7 +1080,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); startCloseInspect(); }}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+              className="absolute top-4 right-4 z-10 p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors pointer-events-auto"
               aria-label="Close"
             >
               <X size={24} />
@@ -992,7 +1096,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   setInspectSliding({ fromIndex: inspectView.index, toIndex: nextIndex });
                   setInspectView(v => v ? { ...v, index: nextIndex } : v);
                 }}
-                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-white transition-colors touch-manipulation"
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-white transition-colors touch-manipulation pointer-events-auto"
                 aria-label="Previous card"
               >
                 <ChevronLeft size={24} />
@@ -1009,7 +1113,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   setInspectSliding({ fromIndex: inspectView.index, toIndex: nextIndex });
                   setInspectView(v => v ? { ...v, index: nextIndex } : v);
                 }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-white transition-colors touch-manipulation"
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-white transition-colors touch-manipulation pointer-events-auto"
                 aria-label="Next card"
               >
                 <ChevronRight size={24} />
@@ -1093,7 +1197,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   if (e.target === inspectCardRef.current && inspectPhase === 'exiting') finishCloseInspect();
                 }}
                 onClick={(e) => e.stopPropagation()}
-                className="flex items-center justify-center overflow-hidden"
+                className="flex items-center justify-center overflow-hidden pointer-events-auto relative"
               >
                 <img
                   src={currentInspectCard.image}
@@ -1101,6 +1205,16 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   className="w-full h-full object-contain pointer-events-none"
                   loading="eager"
                   decoding="async"
+                />
+                {/* Darkening overlay (matches grid when at grid position); animates off when opening, on when closing */}
+                <div
+                  aria-hidden
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    backgroundColor: CARD_GRID_DARKEN_OVERLAY_COLOR,
+                    opacity: !inspectCardOwned && (inspectPhase === 'entering' || inspectPhase === 'exiting') ? CARD_GRID_DARKEN_OVERLAY_OPACITY : 0,
+                    transition: `opacity ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}`,
+                  }}
                 />
               </div>
             )}
@@ -1110,6 +1224,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             >
               <p className="text-lg font-medium text-white truncate max-w-full text-center drop-shadow-lg">{currentInspectCard.name}</p>
               <p className="text-sm text-gray-500">{selectedSetId === 'ALL' ? `${SETS.find(s => s.id === currentInspectCard.set)?.name ?? currentInspectCard.set} #${currentInspectCard.number}` : `#${currentInspectCard.number}`}</p>
+            </div>
             </div>
           </div>
         )}
@@ -1127,7 +1242,10 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             >
               <button
                 type="button"
-                onClick={() => setCollectionSetDropdownOpen((o) => !o)}
+                onClick={() => {
+                  if (collectionSetDropdownOpen) closeCollectionSetDropdownAndFocusSearch();
+                  else setCollectionSetDropdownOpen(true);
+                }}
                 aria-expanded={collectionSetDropdownOpen}
                 aria-haspopup="listbox"
                 aria-label="Select set"
@@ -1146,11 +1264,19 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   />
                 </span>
               </button>
-              {collectionSetDropdownOpen && (
+              {(collectionSetDropdownOpen || collectionSetDropdownClosing) && (
                 <div
                   ref={collectionSetListboxRef}
                   role="listbox"
-                  className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-gray-700 rounded-lg shadow-xl max-h-[min(60vh,320px)] overflow-y-auto py-1 z-50"
+                  className={`absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-gray-700 rounded-lg shadow-xl max-h-[min(60vh,320px)] overflow-y-auto py-1 z-50 transition-all duration-150 ease-out ${
+                    collectionSetDropdownRevealed && !collectionSetDropdownClosing
+                      ? 'opacity-100 translate-y-0'
+                      : 'opacity-0 -translate-y-1 pointer-events-none'
+                  }`}
+                  onTransitionEnd={(e) => {
+                    if (e.target !== collectionSetListboxRef.current) return;
+                    if (collectionSetDropdownClosing) finishCloseCollectionSetDropdown();
+                  }}
                 >
                   <button
                     type="button"
@@ -1249,6 +1375,22 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           className="flex-1 min-h-0 overflow-y-auto"
         >
         <div className="p-4 pb-24 touch-pan-y relative">
+          <div
+            key={searchQuery}
+            className="transition-[opacity,transform] duration-300 ease-out"
+            style={{
+              opacity: searchResultsRevealed ? 1 : 0,
+              transform: searchResultsRevealed ? 'translateY(0)' : 'translateY(12px)',
+            }}
+            ref={(el) => {
+              // #region agent log
+              if (el) {
+                const opacity = el.style.opacity ?? getComputedStyle(el).opacity;
+                fetch('http://127.0.0.1:7308/ingest/e2a675be-aace-40d9-9f6f-4eca8610d3c2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.tsx:search-results-wrapper',message:'Search results wrapper mounted',data:{searchQuery:searchQuery.slice(0,20),searchResultsRevealed,opacity},hypothesisId:'H1',timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix'})}).catch(()=>{});
+              }
+              // #endregion
+            }}
+          >
           {filteredCards.length === 0 ? (
             <div className="py-20 text-center text-gray-500 flex flex-col items-center">
               <p>No cards found.</p>
@@ -1342,6 +1484,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
               ))}
             </div>
           )}
+          </div>
         </div>
         </div>
       </div>
@@ -1453,29 +1596,48 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans overflow-hidden flex flex-col">
-      {!clerkUser && !demoBannerDismissed && !demoBannerDontShow && (
-        <div className="sticky top-0 z-40 shrink-0 flex items-center justify-between gap-3 px-4 py-2 bg-amber-500/15 border-b border-amber-500/30 text-sm">
-          <span className="text-amber-200">You&apos;re exploring in demo mode, where your on-device data is at risk of being deleted. Sign in to save your collection to the cloud.</span>
-          <div className="flex items-center gap-2 shrink-0">
-            <SignInButton mode="modal">
-              <Button variant="primary" size="sm">Sign in to save</Button>
-            </SignInButton>
-            <button
-              type="button"
-              onClick={handleDismissDemoBanner}
-              className="p-2 rounded-full text-amber-200/80 hover:text-amber-200 hover:bg-amber-500/20 transition-colors"
-              aria-label="Dismiss banner"
-            >
-              <X size={18} />
-            </button>
+      {(!clerkUser && !demoBannerDismissed && !demoBannerDontShow) || demoBannerDismissing ? (
+        <div
+          className="overflow-hidden transition-[max-height] duration-200 ease-out"
+          style={{ maxHeight: demoBannerDismissing ? 0 : 80 }}
+          onTransitionEnd={(e) => {
+            if (e.target !== e.currentTarget) return;
+            if (demoBannerDismissing) finishDemoBannerDismiss();
+          }}
+        >
+          <div
+            className={`sticky top-0 z-40 shrink-0 flex items-center justify-between gap-3 px-4 py-2 bg-amber-500/15 border-b border-amber-500/30 text-sm transition-[opacity,transform] duration-200 ease-out ${
+              demoBannerDismissing ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'
+            }`}
+          >
+            <span className="text-amber-200">You&apos;re exploring in demo mode, where your on-device data is at risk of being deleted. Sign in to save your collection to the cloud.</span>
+            <div className="flex items-center gap-2 shrink-0">
+              <SignInButton mode="modal">
+                <Button variant="primary" size="sm">Sign in to save</Button>
+              </SignInButton>
+              <button
+                type="button"
+                onClick={handleDismissDemoBanner}
+                className="p-2 rounded-full text-amber-200/80 hover:text-amber-200 hover:bg-amber-500/20 transition-colors"
+                aria-label="Dismiss banner"
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
         </div>
-      )}
-      {!clerkUser && showDismissedToast && (
+      ) : null}
+      {!clerkUser && (showDismissedToast || toastExiting) && (
         <div
-          className="fixed top-4 left-4 right-4 z-40 overflow-hidden rounded-lg bg-gray-800 border border-gray-700 shadow-lg text-sm sm:left-auto sm:right-4 sm:max-w-sm"
+          className={`fixed top-4 left-4 right-4 z-40 overflow-hidden rounded-lg bg-gray-800 border border-gray-700 shadow-lg text-sm sm:left-auto sm:right-4 sm:max-w-sm transition-all duration-200 ease-out ${
+            toastRevealed && !toastExiting ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
+          }`}
           role="status"
           aria-live="polite"
+          onTransitionEnd={(e) => {
+            if (e.target !== e.currentTarget) return;
+            if (toastExiting) finishToastClose();
+          }}
         >
           <div className="flex items-center justify-between gap-3 px-4 py-3">
             <span className="text-gray-300">Banner dismissed.</span>
@@ -1565,12 +1727,25 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         <span ref={collectionSetIdMeasureRef} className="shrink-0 text-xs font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded">{LONGEST_SET_ID}</span>
       </div>
       <div className="flex-1 min-h-0 overflow-hidden">
-        <Routes>
-          <Route path="/" element={renderDashboard()} />
-          <Route path="/collection" element={renderCollection()} />
-          <Route path="/collection/:slug" element={renderCollection()} />
-          <Route path="/statistics" element={renderStats()} />
-        </Routes>
+        <div
+          key={
+            location.pathname === '/'
+              ? 'dashboard'
+              : location.pathname.startsWith('/collection')
+                ? 'collection'
+                : location.pathname === '/statistics'
+                  ? 'statistics'
+                  : location.pathname
+          }
+          className="h-full min-h-0 overflow-hidden animate-fade-in"
+        >
+          <Routes>
+            <Route path="/" element={renderDashboard()} />
+            <Route path="/collection" element={renderCollection()} />
+            <Route path="/collection/:slug" element={renderCollection()} />
+            <Route path="/statistics" element={renderStats()} />
+          </Routes>
+        </div>
       </div>
     </div>
   );

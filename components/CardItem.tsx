@@ -135,7 +135,8 @@ export const CardItem: React.FC<CardItemProps> = ({
         className={`
           relative w-full aspect-[2.5/3.5] rounded-lg overflow-hidden border-2 transition-all duration-300
           ${getRarityColor(card.rarity)}
-          ${isOwned ? 'opacity-100 shadow-xl' : 'opacity-40 grayscale'}
+          opacity-100
+          ${isOwned ? 'shadow-xl' : 'grayscale'}
           active:scale-95 cursor-pointer bg-gray-800
         `}
       >
@@ -157,6 +158,10 @@ export const CardItem: React.FC<CardItemProps> = ({
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageError(true)}
             />
+            {/* Darkening overlay for unowned cards (matches background; keeps card fully opaque for smooth inspect transition) */}
+            {!isOwned && (
+              <div className="absolute inset-0 bg-black/60 pointer-events-none" aria-hidden />
+            )}
           </>
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center p-2 text-center text-gray-500 bg-gray-800">
