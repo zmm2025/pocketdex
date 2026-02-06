@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { CollectionState } from './types';
-import { updateCardCount } from '../services/storage';
+import { updateCardCount, getGuestCollection, setGuestCollection, clearGuestCollection } from '../services/storage';
 import { CARDS, SETS, getSetProgress, getCollectionProgress, getSetBySlug, getSetSlug, LONGEST_SET_NAME, LONGEST_SET_ID } from '../services/db';
 import { loadCollection as loadCollectionFromApi, saveCollection as saveCollectionToApi } from './services/collectionApi';
 import { getNextHint, LOADING_HINT_RECENT_COUNT } from './loadingHints';
 
 import { Button } from '../components/Button';
 import { CardItem, type CardRect } from '../components/CardItem';
+import { Modal } from '../components/Modal';
 import {
   Library,
   BarChart3,
@@ -26,6 +27,7 @@ import {
 import {
   SignInButton,
   UserButton,
+  useClerk,
   useSession,
   useUser,
 } from '@clerk/clerk-react';
@@ -34,6 +36,8 @@ const SUPABASE_URL = (import.meta as any).env.VITE_SUPABASE_URL;
 const COLLECTION_API_BASE = SUPABASE_URL ? `${SUPABASE_URL}/functions/v1` : null;
 
 const CLERK_PUBLISHABLE_KEY = (import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
+const DEMO_BANNER_DONT_SHOW_KEY = 'pocketdex_demo_banner_dont_show';
+const DISMISSED_TOAST_DURATION_SEC = 5;
 const isProductionKeyOnLocalhost =
   typeof window !== 'undefined' &&
   window.location?.hostname === 'localhost' &&
@@ -49,11 +53,23 @@ function getSyncErrorMessage(e: unknown): string {
 
 type AppProps = { clerkEnabled?: boolean };
 
+type GuestMergePromptState = 'idle' | 'loading' | 'open';
+
 const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const { session } = useSession();
   const { user: clerkUser, isLoaded: isUserLoaded } = useUser();
+  const { signOut } = useClerk();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [guestMergePrompt, setGuestMergePrompt] = useState<GuestMergePromptState>('idle');
+  const [cloudDataForMerge, setCloudDataForMerge] = useState<CollectionState | null>(null);
+  const [demoBannerDismissed, setDemoBannerDismissed] = useState(false);
+  const [demoBannerDontShow, setDemoBannerDontShow] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.localStorage.getItem(DEMO_BANNER_DONT_SHOW_KEY) === '1';
+  });
+  const [showDismissedToast, setShowDismissedToast] = useState(false);
 
   // Update document title per route
   useEffect(() => {
@@ -317,12 +333,39 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   const isSupabaseConfigured = Boolean(COLLECTION_API_BASE);
 
-  // 1. When signed in: load collection from Edge Function (Clerk JWT verified there)
+  // 1. When signed in: load collection from Edge Function; if guest data exists, show prompt instead of auto-merging
   useEffect(() => {
     if (!clerkUser?.id || !COLLECTION_API_BASE) return;
     if (hasLoadedFromCloudRef.current) return;
-    hasLoadedFromCloudRef.current = true;
 
+    const guestData = getGuestCollection();
+    const hadGuestData = Object.keys(guestData).length > 0;
+
+    if (!hadGuestData) {
+      hasLoadedFromCloudRef.current = true;
+      let cancelled = false;
+      (async () => {
+        try {
+          const token = await session?.getToken();
+          if (!token || cancelled) return;
+          setSyncStatus('syncing');
+          const cloudData = await loadCollectionFromApi(token, COLLECTION_API_BASE);
+          if (cancelled) return;
+          justLoadedFromCloudRef.current = true;
+          setCollection(cloudData ?? {});
+          setSyncStatus('saved');
+          clearSyncError();
+          setTimeout(() => setSyncStatus('idle'), 3000);
+        } catch (e) {
+          if (!cancelled) setSyncError(`Sync failed: ${getSyncErrorMessage(e)}`);
+        }
+      })();
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    setGuestMergePrompt('loading');
     let cancelled = false;
     (async () => {
       try {
@@ -331,14 +374,14 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         setSyncStatus('syncing');
         const cloudData = await loadCollectionFromApi(token, COLLECTION_API_BASE);
         if (cancelled) return;
-        // Mark that we just loaded from cloud so auto-save skips this update
-        justLoadedFromCloudRef.current = true;
-        setCollection(cloudData ?? {});
-        setSyncStatus('saved');
-        clearSyncError();
-        setTimeout(() => setSyncStatus('idle'), 3000);
+        setCloudDataForMerge(cloudData ?? {});
+        setGuestMergePrompt('open');
+        setSyncStatus('idle');
       } catch (e) {
-        if (!cancelled) setSyncError(`Sync failed: ${getSyncErrorMessage(e)}`);
+        if (!cancelled) {
+          setSyncError(`Sync failed: ${getSyncErrorMessage(e)}`);
+          setGuestMergePrompt('idle');
+        }
       }
     })();
     return () => {
@@ -346,33 +389,21 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     };
   }, [clerkUser?.id, session, COLLECTION_API_BASE]);
 
-  // 2. When user signs out: clear collection and redirect to home if on protected route
+  // 2. When user signs out or not signed in: switch to guest collection from localStorage; do not redirect
   useEffect(() => {
-    // Skip auth checks if Clerk is not enabled
-    if (!clerkEnabled) return;
-    // Wait for Clerk to finish loading before checking auth
     if (!isUserLoaded) return;
-    
     if (!clerkUser) {
       hasLoadedFromCloudRef.current = false;
-      setCollection({});
-      if (location.pathname.startsWith('/collection') || location.pathname === '/statistics') {
-        navigate('/');
-      }
+      setCollection(getGuestCollection());
     }
-  }, [clerkEnabled, clerkUser, isUserLoaded, location.pathname, navigate]);
+  }, [clerkUser, isUserLoaded]);
 
-  // 3. Guard: redirect to home if not signed in and trying to access protected routes
+  // 3. When guest and collection changes: persist to localStorage (debounced)
   useEffect(() => {
-    // Skip auth checks if Clerk is not enabled
-    if (!clerkEnabled) return;
-    // Wait for Clerk to finish loading before checking auth
-    if (!isUserLoaded) return;
-    
-    if (!clerkUser && (location.pathname.startsWith('/collection') || location.pathname === '/statistics')) {
-      navigate('/');
-    }
-  }, [clerkEnabled, clerkUser, isUserLoaded, location.pathname, navigate]);
+    if (clerkUser != null) return;
+    const t = setTimeout(() => setGuestCollection(collection), 1000);
+    return () => clearTimeout(t);
+  }, [clerkUser, collection]);
 
   // 4. Auto-save: when signed in, debounce save via Edge Function
   useEffect(() => {
@@ -406,6 +437,69 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const handleUpdateCount = useCallback((cardId: string, delta: number) => {
     setCollection(prev => updateCardCount(prev, cardId, delta));
   }, []);
+
+  const handleGuestMergeMerge = useCallback(() => {
+    const cloud = cloudDataForMerge ?? {};
+    const guest = getGuestCollection();
+    const merged: CollectionState = { ...cloud };
+    for (const [cardId, guestCount] of Object.entries(guest)) {
+      const cloudCount = merged[cardId] ?? 0;
+      merged[cardId] = cloudCount + guestCount;
+    }
+    setCollection(merged);
+    clearGuestCollection();
+    setCloudDataForMerge(null);
+    setGuestMergePrompt('idle');
+    hasLoadedFromCloudRef.current = true;
+    setSyncStatus('syncing');
+    clearSyncError();
+    // Auto-save will run from collection change and then show saved
+  }, [cloudDataForMerge]);
+
+  const handleGuestMergeUseCloudOnly = useCallback(() => {
+    const cloud = cloudDataForMerge ?? {};
+    justLoadedFromCloudRef.current = true;
+    setCollection(cloud);
+    setCloudDataForMerge(null);
+    setGuestMergePrompt('idle');
+    hasLoadedFromCloudRef.current = true;
+    setSyncStatus('saved');
+    clearSyncError();
+    setTimeout(() => setSyncStatus('idle'), 3000);
+  }, [cloudDataForMerge]);
+
+  const handleGuestMergeCancel = useCallback(() => {
+    setCloudDataForMerge(null);
+    setGuestMergePrompt('idle');
+    signOut?.();
+  }, []);
+
+  const handleDismissDemoBanner = useCallback(() => {
+    setDemoBannerDismissed(true);
+    setShowDismissedToast(true);
+  }, []);
+
+  const handleDontShowDemoBannerAgain = useCallback(() => {
+    try {
+      window.localStorage.setItem(DEMO_BANNER_DONT_SHOW_KEY, '1');
+    } catch {
+      // ignore
+    }
+    setDemoBannerDontShow(true);
+    setShowDismissedToast(false);
+  }, []);
+
+  const handleDismissToast = useCallback(() => {
+    setShowDismissedToast(false);
+  }, []);
+
+  useEffect(() => {
+    if (!showDismissedToast) return;
+    const t = setTimeout(() => {
+      setShowDismissedToast(false);
+    }, DISMISSED_TOAST_DURATION_SEC * 1000);
+    return () => clearTimeout(t);
+  }, [showDismissedToast]);
 
   const renderDashboard = () => (
     <div className="flex flex-col h-full justify-center p-6 space-y-6 max-w-md mx-auto relative">
@@ -464,22 +558,19 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         <p className="text-gray-400">TCG Pocket Companion</p>
       </div>
 
-      {!clerkUser && (
+      {!clerkUser && clerkLoadTimedOut && (
         <div className="text-sm text-center text-gray-500 space-y-1">
-          <p>Sign in to view your collection, track cards, and see statistics.</p>
-          {clerkLoadTimedOut && (
-            <div className="text-xs text-amber-500/90 space-y-2">
-              {isProductionKeyOnLocalhost ? (
-                <p>
-                  <strong>Production key on localhost.</strong> Clerk production keys (<code className="bg-gray-800 px-1 rounded">pk_live_...</code>) do not work on localhost. In Clerk Dashboard, switch to the <strong>Development</strong> instance, copy the publishable key (<code className="bg-gray-800 px-1 rounded">pk_test_...</code>), and set <code className="bg-gray-800 px-1 rounded">VITE_CLERK_PUBLISHABLE_KEY</code> in <code className="bg-gray-800 px-1 rounded">.env.local</code> to that value. Restart the dev server.
-                </p>
-              ) : (
-                <p>
-                  Sign-in is still loading. Click &quot;Retry sign-in&quot; to refresh. If it keeps failing, in Clerk Dashboard (Development) go to Configure → Paths and set <strong>Fallback development host</strong> to <code className="bg-gray-800 px-1 rounded">http://localhost:3000</code> (or your dev port).
-                </p>
-              )}
-            </div>
-          )}
+          <div className="text-xs text-amber-500/90 space-y-2">
+            {isProductionKeyOnLocalhost ? (
+              <p>
+                <strong>Production key on localhost.</strong> Clerk production keys (<code className="bg-gray-800 px-1 rounded">pk_live_...</code>) do not work on localhost. In Clerk Dashboard, switch to the <strong>Development</strong> instance, copy the publishable key (<code className="bg-gray-800 px-1 rounded">pk_test_...</code>), and set <code className="bg-gray-800 px-1 rounded">VITE_CLERK_PUBLISHABLE_KEY</code> in <code className="bg-gray-800 px-1 rounded">.env.local</code> to that value. Restart the dev server.
+              </p>
+            ) : (
+              <p>
+                Sign-in is still loading. Click &quot;Retry sign-in&quot; to refresh. If it keeps failing, in Clerk Dashboard (Development) go to Configure → Paths and set <strong>Fallback development host</strong> to <code className="bg-gray-800 px-1 rounded">http://localhost:3000</code> (or your dev port).
+              </p>
+            )}
+          </div>
         </div>
       )}
 
@@ -487,14 +578,12 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         variant="primary"
         size="lg"
         fullWidth
-        disabled={!clerkUser}
-        onClick={() => clerkUser && navigate(lastCollectionSetSlug ? `/collection/${lastCollectionSetSlug}` : '/collection')}
-        className={`h-24 flex flex-col items-center justify-center gap-1 py-5 group ${!clerkUser ? 'opacity-60 cursor-not-allowed' : ''}`}
+        onClick={() => navigate(lastCollectionSetSlug ? `/collection/${lastCollectionSetSlug}` : '/collection')}
+        className="h-24 flex flex-col items-center justify-center gap-1 py-5 group"
       >
         <Library className="size-8 shrink-0 group-hover:scale-110 transition-transform" />
         <span className="text-lg">My Collection</span>
-        {!clerkUser && <span className="text-xs text-gray-400 font-normal">Sign in to view</span>}
-        {clerkUser && lastCollectionSetSlug != null && (() => {
+        {lastCollectionSetSlug != null && (() => {
           const set = getSetBySlug(lastCollectionSetSlug);
           return set ? <span className="text-[10px] text-gray-200 font-normal leading-tight">{set.name}</span> : null;
         })()}
@@ -504,13 +593,11 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         variant="secondary"
         size="lg"
         fullWidth
-        disabled={!clerkUser}
-        onClick={() => clerkUser && navigate('/statistics')}
-        className={`h-24 flex flex-col items-center justify-center gap-1 group bg-gray-800 border-gray-700 ${!clerkUser ? 'opacity-60 cursor-not-allowed' : ''}`}
+        onClick={() => navigate('/statistics')}
+        className="h-24 flex flex-col items-center justify-center gap-1 group bg-gray-800 border-gray-700"
       >
         <BarChart3 className="group-hover:scale-110 transition-transform text-green-400" />
         <span className="text-lg">Statistics</span>
-        {!clerkUser && <span className="text-xs text-gray-400 font-normal">Sign in to view</span>}
       </Button>
 
       {!isSupabaseConfigured && (
@@ -1263,7 +1350,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   const renderStats = () => (
     <div className="flex flex-col h-screen min-h-0 overflow-y-auto">
-      <div className="sticky top-0 z-30 bg-black shrink-0 border-b border-gray-800 p-4 space-y-3 backdrop-blur-md">
+      <div className="sticky top-0 z-30 bg-black shrink-0 border-b border-gray-800 p-4 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate('/')} className="p-2 -ml-2 text-gray-400 hover:text-white">
             <ChevronLeft />
@@ -1365,7 +1452,110 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans overflow-hidden">
+    <div className="min-h-screen bg-black text-white font-sans overflow-hidden flex flex-col">
+      {!clerkUser && !demoBannerDismissed && !demoBannerDontShow && (
+        <div className="sticky top-0 z-40 shrink-0 flex items-center justify-between gap-3 px-4 py-2 bg-amber-500/15 border-b border-amber-500/30 text-sm">
+          <span className="text-amber-200">You&apos;re exploring in demo mode, where your on-device data is at risk of being deleted. Sign in to save your collection to the cloud.</span>
+          <div className="flex items-center gap-2 shrink-0">
+            <SignInButton mode="modal">
+              <Button variant="primary" size="sm">Sign in to save</Button>
+            </SignInButton>
+            <button
+              type="button"
+              onClick={handleDismissDemoBanner}
+              className="p-2 rounded-full text-amber-200/80 hover:text-amber-200 hover:bg-amber-500/20 transition-colors"
+              aria-label="Dismiss banner"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        </div>
+      )}
+      {!clerkUser && showDismissedToast && (
+        <div
+          className="fixed top-4 left-4 right-4 z-40 overflow-hidden rounded-lg bg-gray-800 border border-gray-700 shadow-lg text-sm sm:left-auto sm:right-4 sm:max-w-sm"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-center justify-between gap-3 px-4 py-3">
+            <span className="text-gray-300">Banner dismissed.</span>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={handleDontShowDemoBannerAgain}
+                className="text-amber-400 hover:text-amber-300 underline underline-offset-2 transition-colors"
+              >
+                Don&apos;t show again
+              </button>
+              <button
+                type="button"
+                onClick={handleDismissToast}
+                className="p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+                aria-label="Dismiss"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          </div>
+          <div className="h-0.5 w-full bg-gray-700" aria-hidden="true">
+            <div
+              className="h-full bg-amber-500/70"
+              style={{ animation: `toast-bar-shrink ${DISMISSED_TOAST_DURATION_SEC}s linear forwards` }}
+            />
+          </div>
+        </div>
+      )}
+      {(guestMergePrompt === 'loading' || guestMergePrompt === 'open') && (
+        <Modal
+          isOpen
+          onClose={handleGuestMergeCancel}
+          title={guestMergePrompt === 'loading' ? 'Loading your account…' : 'You have on-device collection data'}
+        >
+          {guestMergePrompt === 'loading' ? (
+            <div className="flex flex-col items-center gap-4 py-4">
+              <Loader2 size={32} className="animate-spin text-gray-400" />
+              <p className="text-sm text-gray-400 text-center">
+                Loading your saved collection so you can choose how to combine it with your on-device data.
+              </p>
+              <Button variant="secondary" size="sm" onClick={handleGuestMergeCancel}>
+                Cancel and stay in demo mode
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-sm text-gray-400">
+                You signed in with collection data already on this device. Choose how to use it with your account:
+              </p>
+              <div className="space-y-3">
+                <div className="rounded-lg border border-gray-700 bg-gray-800/50 p-4 space-y-2">
+                  <Button variant="primary" fullWidth onClick={handleGuestMergeMerge} className="justify-center">
+                    Merge into account
+                  </Button>
+                  <p className="text-xs text-gray-500">
+                    Add on-device and cloud card counts together. On-device data will be deleted.
+                  </p>
+                </div>
+                <div className="rounded-lg border border-gray-700 bg-gray-800/50 p-4 space-y-2">
+                  <Button variant="secondary" fullWidth onClick={handleGuestMergeUseCloudOnly} className="justify-center">
+                    Use cloud only
+                  </Button>
+                  <p className="text-xs text-gray-500">
+                    Use cloud card counts only. On-device data will be saved.
+                  </p>
+                </div>
+                <div className="rounded-lg border border-gray-700 bg-gray-800/50 p-4 space-y-2">
+                  <Button variant="secondary" fullWidth onClick={handleGuestMergeCancel} className="justify-center border-gray-600">
+                    Cancel
+                  </Button>
+                  <p className="text-xs text-gray-500">
+                    Sign out and return to demo mode. On-device data will be saved.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </Modal>
+      )}
       <div
         aria-hidden="true"
         className="absolute -left-[9999px] opacity-0 pointer-events-none text-sm whitespace-nowrap flex items-center gap-2"
@@ -1374,12 +1564,14 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         <span ref={collectionSetMeasureRef}>{LONGEST_SET_NAME}</span>
         <span ref={collectionSetIdMeasureRef} className="shrink-0 text-xs font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded">{LONGEST_SET_ID}</span>
       </div>
-      <Routes>
-        <Route path="/" element={renderDashboard()} />
-        <Route path="/collection" element={renderCollection()} />
-        <Route path="/collection/:slug" element={renderCollection()} />
-        <Route path="/statistics" element={renderStats()} />
-      </Routes>
+      <div className="flex-1 min-h-0 overflow-hidden">
+        <Routes>
+          <Route path="/" element={renderDashboard()} />
+          <Route path="/collection" element={renderCollection()} />
+          <Route path="/collection/:slug" element={renderCollection()} />
+          <Route path="/statistics" element={renderStats()} />
+        </Routes>
+      </div>
     </div>
   );
 };
