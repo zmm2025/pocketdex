@@ -1205,14 +1205,15 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                           count={collection[card.id] || 0}
                           showSetInNumber={selectedSetId === 'ALL'}
                           setName={selectedSetId === 'ALL' ? SETS.find(s => s.id === card.set)?.name : undefined}
-                          onIncrement={() => {
+                          onIncrement={(searchWasFocused) => {
                             handleUpdateCount(card.id, 1);
-                            focusSearchAndSelectAll();
+                            if (searchWasFocused) focusSearchAndSelectAll();
                           }}
-                          onDecrement={() => {
+                          onDecrement={(searchWasFocused) => {
                             handleUpdateCount(card.id, -1);
-                            focusSearchAndSelectAll();
+                            if (searchWasFocused) focusSearchAndSelectAll();
                           }}
+                          searchInputRef={collectionSearchInputRef}
                           onLongPress={(rect) => {
                             setInspectOriginRect(rect);
                             setInspectExitRect(null);
@@ -1235,14 +1236,15 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   count={collection[card.id] || 0}
                   showSetInNumber={selectedSetId === 'ALL'}
                   setName={selectedSetId === 'ALL' ? SETS.find(s => s.id === card.set)?.name : undefined}
-                  onIncrement={() => {
+                  onIncrement={(searchWasFocused) => {
                     handleUpdateCount(card.id, 1);
-                    focusSearchAndSelectAll();
+                    if (searchWasFocused) focusSearchAndSelectAll();
                   }}
-                  onDecrement={() => {
+                  onDecrement={(searchWasFocused) => {
                     handleUpdateCount(card.id, -1);
-                    focusSearchAndSelectAll();
+                    if (searchWasFocused) focusSearchAndSelectAll();
                   }}
+                  searchInputRef={collectionSearchInputRef}
                   onLongPress={(rect) => {
                   setInspectOriginRect(rect);
                   setInspectExitRect(null);

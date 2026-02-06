@@ -9,9 +9,11 @@ export type CardRect = { left: number; top: number; width: number; height: numbe
 interface CardItemProps {
   card: Card;
   count: number;
-  onIncrement: () => void;
-  onDecrement: () => void;
+  onIncrement: (searchWasFocused?: boolean) => void;
+  onDecrement: (searchWasFocused?: boolean) => void;
   onLongPress?: (rect: CardRect) => void;
+  /** Ref to search input; when provided, used to detect if search was focused before tap */
+  searchInputRef?: React.RefObject<HTMLInputElement | null>;
   /** When true, show number with set (e.g. "Genetic Apex #1"); when false, just "#1" */
   showSetInNumber?: boolean;
   /** Set name for the label when showSetInNumber is true (e.g. "Genetic Apex") */
@@ -24,6 +26,7 @@ export const CardItem: React.FC<CardItemProps> = ({
   onIncrement,
   onDecrement,
   onLongPress,
+  searchInputRef,
   showSetInNumber = false,
   setName,
 }) => {
@@ -35,7 +38,14 @@ export const CardItem: React.FC<CardItemProps> = ({
   const isOwned = count > 0;
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didLongPressRef = useRef(false);
+  const searchWasFocusedRef = useRef(false);
   const cardFaceRef = useRef<HTMLDivElement>(null);
+
+  const captureSearchFocusState = () => {
+    searchWasFocusedRef.current = !!(
+      searchInputRef?.current && document.activeElement === searchInputRef.current
+    );
+  };
 
   // Reset error/loaded state if card changes (e.g. reused component in list)
   useEffect(() => {
@@ -58,6 +68,7 @@ export const CardItem: React.FC<CardItemProps> = ({
   };
 
   const handlePointerDown = () => {
+    captureSearchFocusState();
     if (onLongPress) {
       didLongPressRef.current = false;
       clearLongPressTimer();
@@ -96,15 +107,15 @@ export const CardItem: React.FC<CardItemProps> = ({
     }
     if (e.ctrlKey) {
       e.preventDefault();
-      onDecrement();
+      onDecrement(searchWasFocusedRef.current);
       return;
     }
-    onIncrement();
+    onIncrement(searchWasFocusedRef.current);
   };
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
-    onDecrement();
+    onDecrement(false);
   };
 
   return (
@@ -175,10 +186,11 @@ export const CardItem: React.FC<CardItemProps> = ({
            <p className="text-[10px] text-gray-500">{numberLabel}</p>
          </div>
          {isOwned && (
-         <button 
+         <button
+             onPointerDown={captureSearchFocusState}
              onClick={(e) => {
                 e.stopPropagation();
-                onDecrement();
+                onDecrement(searchWasFocusedRef.current);
              }}
              className="ml-2 p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-full"
            >
