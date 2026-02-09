@@ -1599,18 +1599,18 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       {(!clerkUser && !demoBannerDismissed && !demoBannerDontShow) || demoBannerDismissing ? (
         <div
           className="overflow-hidden transition-[max-height] duration-200 ease-out"
-          style={{ maxHeight: demoBannerDismissing ? 0 : 80 }}
+          style={{ maxHeight: demoBannerDismissing ? 0 : 150 }}
           onTransitionEnd={(e) => {
             if (e.target !== e.currentTarget) return;
             if (demoBannerDismissing) finishDemoBannerDismiss();
           }}
         >
           <div
-            className={`sticky top-0 z-40 shrink-0 flex items-center justify-between gap-3 px-4 py-2 bg-amber-500/15 border-b border-amber-500/30 text-sm transition-[opacity,transform] duration-200 ease-out ${
+            className={`sticky top-0 z-40 shrink-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-2 bg-amber-500/15 border-b border-amber-500/30 text-sm transition-[opacity,transform] duration-200 ease-out ${
               demoBannerDismissing ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'
             }`}
           >
-            <span className="text-amber-200">You&apos;re exploring in demo mode, where your on-device data is at risk of being deleted. Sign in to save your collection to the cloud.</span>
+            <span className="text-amber-200 min-w-0 flex-1">You&apos;re exploring in demo mode, where your on-device data is at risk of being deleted. Sign in to save your collection to the cloud.</span>
             <div className="flex items-center gap-2 shrink-0">
               <SignInButton mode="modal">
                 <Button variant="primary" size="sm">Sign in to save</Button>
@@ -1618,7 +1618,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
               <button
                 type="button"
                 onClick={handleDismissDemoBanner}
-                className="p-2 rounded-full text-amber-200/80 hover:text-amber-200 hover:bg-amber-500/20 transition-colors"
+                className="p-2 rounded-full text-amber-200/80 hover:text-amber-200 hover:bg-amber-500/20 transition-colors shrink-0"
                 aria-label="Dismiss banner"
               >
                 <X size={18} />
