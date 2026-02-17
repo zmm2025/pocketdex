@@ -1,15 +1,41 @@
-import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo } from 'react';
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { useVirtualizer } from '@tanstack/react-virtual';
-import { CollectionState } from './types';
-import { updateCardCount, getGuestCollection, setGuestCollection, clearGuestCollection } from '../services/storage';
-import { CARDS, SETS, getSetProgress, getCollectionProgress, getSetBySlug, getSetSlug, LONGEST_SET_NAME, LONGEST_SET_ID } from '../services/db';
-import { loadCollection as loadCollectionFromApi, saveCollection as saveCollectionToApi } from './services/collectionApi';
-import { getNextHint, LOADING_HINT_RECENT_COUNT } from './loadingHints';
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { CollectionState } from "./types";
+import {
+  updateCardCount,
+  getGuestCollection,
+  setGuestCollection,
+  clearGuestCollection,
+} from "../services/storage";
+import {
+  CARDS,
+  SETS,
+  canonicalizeCollection,
+  getCanonicalCardId,
+  getSetProgress,
+  getCollectionProgress,
+  getSetBySlug,
+  getSetSlug,
+  LONGEST_SET_NAME,
+  LONGEST_SET_ID,
+} from "../services/db";
+import {
+  loadCollection as loadCollectionFromApi,
+  saveCollection as saveCollectionToApi,
+} from "./services/collectionApi";
+import { getNextHint, LOADING_HINT_RECENT_COUNT } from "./loadingHints";
 
-import { Button } from '../components/Button';
-import { CardItem, type CardRect } from '../components/CardItem';
-import { Modal } from '../components/Modal';
+import { Button } from "../components/Button";
+import { CardItem, type CardRect } from "../components/CardItem";
+import { Modal } from "../components/Modal";
 import {
   Library,
   BarChart3,
@@ -23,41 +49,63 @@ import {
   AlertCircle,
   Loader2,
   X,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   SignInButton,
   UserButton,
   useClerk,
   useSession,
   useUser,
-} from '@clerk/clerk-react';
+} from "@clerk/clerk-react";
+
+type AppCard = (typeof CARDS)[number];
+type CollectionDisplayCard = {
+  key: string;
+  card: AppCard;
+  count: number;
+  numberLabel: string;
+};
 
 const SUPABASE_URL = (import.meta as any).env.VITE_SUPABASE_URL;
-const COLLECTION_API_BASE = SUPABASE_URL ? `${SUPABASE_URL}/functions/v1` : null;
+const COLLECTION_API_BASE = SUPABASE_URL
+  ? `${SUPABASE_URL}/functions/v1`
+  : null;
 
 /** Background-matching overlay color for unowned card darkening (inspect transition); customizable later for theming */
-const CARD_GRID_DARKEN_OVERLAY_COLOR = 'rgb(0, 0, 0)';
+const CARD_GRID_DARKEN_OVERLAY_COLOR = "rgb(0, 0, 0)";
 const CARD_GRID_DARKEN_OVERLAY_OPACITY = 0.6;
 
-const CLERK_PUBLISHABLE_KEY = (import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
-const DEMO_BANNER_DONT_SHOW_KEY = 'pocketdex_demo_banner_dont_show';
+const CLERK_PUBLISHABLE_KEY = (import.meta as any).env
+  .VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
+const DEMO_BANNER_DONT_SHOW_KEY = "pocketdex_demo_banner_dont_show";
 const DISMISSED_TOAST_DURATION_SEC = 5;
 const isProductionKeyOnLocalhost =
-  typeof window !== 'undefined' &&
-  window.location?.hostname === 'localhost' &&
-  typeof CLERK_PUBLISHABLE_KEY === 'string' &&
-  CLERK_PUBLISHABLE_KEY.startsWith('pk_live');
+  typeof window !== "undefined" &&
+  window.location?.hostname === "localhost" &&
+  typeof CLERK_PUBLISHABLE_KEY === "string" &&
+  CLERK_PUBLISHABLE_KEY.startsWith("pk_live");
 
 function getSyncErrorMessage(e: unknown): string {
-  if (e == null) return 'Something went wrong.';
+  if (e == null) return "Something went wrong.";
   if (e instanceof Error) return e.message;
-  if (typeof e === 'object' && e !== null && 'message' in e) return String((e as { message: unknown }).message);
-  return 'Something went wrong. Try again.';
+  if (typeof e === "object" && e !== null && "message" in e)
+    return String((e as { message: unknown }).message);
+  return "Something went wrong. Try again.";
+}
+
+function areCollectionsEqual(a: CollectionState, b: CollectionState): boolean {
+  const aEntries = Object.entries(a).filter(([, count]) => count > 0);
+  const bEntries = Object.entries(b).filter(([, count]) => count > 0);
+  if (aEntries.length !== bEntries.length) return false;
+  for (const [cardId, count] of aEntries) {
+    if ((b[cardId] ?? 0) !== count) return false;
+  }
+  return true;
 }
 
 type AppProps = { clerkEnabled?: boolean };
 
-type GuestMergePromptState = 'idle' | 'loading' | 'open';
+type GuestMergePromptState = "idle" | "loading" | "open";
 
 const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const { session } = useSession();
@@ -66,12 +114,14 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [guestMergePrompt, setGuestMergePrompt] = useState<GuestMergePromptState>('idle');
-  const [cloudDataForMerge, setCloudDataForMerge] = useState<CollectionState | null>(null);
+  const [guestMergePrompt, setGuestMergePrompt] =
+    useState<GuestMergePromptState>("idle");
+  const [cloudDataForMerge, setCloudDataForMerge] =
+    useState<CollectionState | null>(null);
   const [demoBannerDismissed, setDemoBannerDismissed] = useState(false);
   const [demoBannerDontShow, setDemoBannerDontShow] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return window.localStorage.getItem(DEMO_BANNER_DONT_SHOW_KEY) === '1';
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem(DEMO_BANNER_DONT_SHOW_KEY) === "1";
   });
   const [showDismissedToast, setShowDismissedToast] = useState(false);
   const [toastExiting, setToastExiting] = useState(false);
@@ -80,56 +130,67 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   // Update document title per route
   useEffect(() => {
-    if (location.pathname === '/') {
-      document.title = 'PocketDex';
+    if (location.pathname === "/") {
+      document.title = "PocketDex";
       return;
     }
-    if (location.pathname === '/statistics') {
-      document.title = 'Statistics - PocketDex';
+    if (location.pathname === "/statistics") {
+      document.title = "Statistics - PocketDex";
       return;
     }
-    if (location.pathname === '/collection') {
-      document.title = 'Collection - PocketDex';
+    if (location.pathname === "/collection") {
+      document.title = "Collection - PocketDex";
       return;
     }
-    if (location.pathname.startsWith('/collection/')) {
-      const slug = location.pathname.replace(/^\/collection\/?/, '');
+    if (location.pathname.startsWith("/collection/")) {
+      const slug = location.pathname.replace(/^\/collection\/?/, "");
       const set = slug ? getSetBySlug(slug) : null;
-      document.title = set ? `${set.name} - PocketDex` : 'Collection - PocketDex';
+      document.title = set
+        ? `${set.name} - PocketDex`
+        : "Collection - PocketDex";
       return;
     }
-    document.title = 'PocketDex';
+    document.title = "PocketDex";
   }, [location.pathname]);
 
   const [collection, setCollection] = useState<CollectionState>({});
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResultsRevealed, setSearchResultsRevealed] = useState(true);
   const prevSearchQueryRef = useRef<string | null>(null);
   // Derive slug from pathname (useParams is not available in App, which is parent of Routes)
-  const collectionSlugFromPath = location.pathname.startsWith('/collection')
-    ? location.pathname.replace(/^\/collection\/?/, '')
-    : '';
-  const selectedSetId =
-    location.pathname.startsWith('/collection')
-      ? !collectionSlugFromPath
-        ? 'ALL'
-        : (getSetBySlug(collectionSlugFromPath)?.id ?? 'ALL')
-      : 'ALL';
+  const collectionSlugFromPath = location.pathname.startsWith("/collection")
+    ? location.pathname.replace(/^\/collection\/?/, "")
+    : "";
+  const selectedSetId = location.pathname.startsWith("/collection")
+    ? !collectionSlugFromPath
+      ? "ALL"
+      : (getSetBySlug(collectionSlugFromPath)?.id ?? "ALL")
+    : "ALL";
 
-  const [lastCollectionSetSlug, setLastCollectionSetSlug] = useState<string | null>(null);
-  const [statsFlashTargetId, setStatsFlashTargetId] = useState<string | null>(null);
+  const [lastCollectionSetSlug, setLastCollectionSetSlug] = useState<
+    string | null
+  >(null);
+  const [statsFlashTargetId, setStatsFlashTargetId] = useState<string | null>(
+    null,
+  );
   const [loadingHint, setLoadingHint] = useState(() => getNextHint([]));
   const loadingHintRecentRef = useRef<string[]>([]);
   useEffect(() => {
-    if (location.pathname.startsWith('/collection')) {
+    if (location.pathname.startsWith("/collection")) {
       setLastCollectionSetSlug(collectionSlugFromPath || null);
     }
   }, [location.pathname, collectionSlugFromPath]);
 
-  const [collectionSetDropdownOpen, setCollectionSetDropdownOpen] = useState(false);
-  const [collectionSetDropdownClosing, setCollectionSetDropdownClosing] = useState(false);
-  const [collectionSetDropdownRevealed, setCollectionSetDropdownRevealed] = useState(false);
-  const [collectionSetDropdownFocusedIndex, setCollectionSetDropdownFocusedIndex] = useState(0);
+  const [collectionSetDropdownOpen, setCollectionSetDropdownOpen] =
+    useState(false);
+  const [collectionSetDropdownClosing, setCollectionSetDropdownClosing] =
+    useState(false);
+  const [collectionSetDropdownRevealed, setCollectionSetDropdownRevealed] =
+    useState(false);
+  const [
+    collectionSetDropdownFocusedIndex,
+    setCollectionSetDropdownFocusedIndex,
+  ] = useState(0);
   const collectionSetDropdownRef = useRef<HTMLDivElement>(null);
   const collectionSetListboxRef = useRef<HTMLDivElement>(null);
   const collectionSearchInputRef = useRef<HTMLInputElement>(null);
@@ -138,14 +199,18 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   const collectionSetIdMeasureRef = useRef<HTMLSpanElement>(null);
   const collectionDropdownWidthMeasuredRef = useRef(false);
   const measurerMountedOnceRef = useRef(false);
-  const [collectionSetDropdownWidth, setCollectionSetDropdownWidth] = useState<number | null>(null);
+  const [collectionSetDropdownWidth, setCollectionSetDropdownWidth] = useState<
+    number | null
+  >(null);
   const [measurerMounted, setMeasurerMounted] = useState(0);
   useEffect(() => {
     if (collectionDropdownWidthMeasuredRef.current) return;
     if (!LONGEST_SET_NAME || !collectionSetMeasureRef.current) return;
     if (!LONGEST_SET_ID || !collectionSetIdMeasureRef.current) return;
-    const nameWidth = collectionSetMeasureRef.current.getBoundingClientRect().width;
-    const idWidth = collectionSetIdMeasureRef.current.getBoundingClientRect().width;
+    const nameWidth =
+      collectionSetMeasureRef.current.getBoundingClientRect().width;
+    const idWidth =
+      collectionSetIdMeasureRef.current.getBoundingClientRect().width;
     const gapChevronPadding = 8 + 24 + 24;
     const w = Math.ceil(nameWidth) + Math.ceil(idWidth) + gapChevronPadding;
     collectionDropdownWidthMeasuredRef.current = true;
@@ -153,20 +218,13 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   }, [measurerMounted]);
 
   useEffect(() => {
-    if (!location.pathname.startsWith('/collection')) return;
+    if (!location.pathname.startsWith("/collection")) return;
     collectionScrollRef.current?.scrollTo(0, 0);
   }, [selectedSetId]);
 
-  // #region agent log
-  useEffect(() => {
-    if (!location.pathname.startsWith('/collection')) return;
-    fetch('http://127.0.0.1:7308/ingest/e2a675be-aace-40d9-9f6f-4eca8610d3c2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.tsx:searchQuery-effect',message:'searchQuery changed',data:{searchQuery:searchQuery.slice(0,30),len:searchQuery.length},hypothesisId:'H2',timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix'})}).catch(()=>{});
-  }, [searchQuery, location.pathname]);
-  // #endregion
-
   // Search results: set revealed false before paint when search changes, then reveal after rAF so transition runs (skip on first load)
   useLayoutEffect(() => {
-    if (!location.pathname.startsWith('/collection')) return;
+    if (!location.pathname.startsWith("/collection")) return;
     const prev = prevSearchQueryRef.current;
     prevSearchQueryRef.current = searchQuery;
     if (prev === null) return; // first load: no transition
@@ -180,7 +238,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   // Scroll Statistics to the set card when navigating with hash; position so bottom of set above is at top (with padding). Flash target card after scroll completes.
   useEffect(() => {
-    if (location.pathname !== '/statistics' || !location.hash) return;
+    if (location.pathname !== "/statistics" || !location.hash) return;
     const id = location.hash.slice(1);
     const target = id ? document.getElementById(id) : null;
     if (!target) return;
@@ -192,7 +250,9 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       const containerRect = scrollContainer.getBoundingClientRect();
       // Treat top of view as below the sticky header so the target isn't hidden (Statistics panel has sticky header as first child)
       const headerEl = scrollContainer.firstElementChild;
-      const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 0;
+      const headerHeight = headerEl
+        ? headerEl.getBoundingClientRect().height
+        : 0;
       const effectiveTop = containerRect.top + headerHeight + scrollPadding;
       let delta: number;
       if (prev) {
@@ -203,26 +263,42 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         delta = targetRect.top - effectiveTop;
       }
       const scrollTopBefore = scrollContainer.scrollTop;
-      const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
-      const newScrollTop = Math.max(0, Math.min(maxScroll, scrollTopBefore + delta));
-      scrollContainer.scrollTo({ top: newScrollTop, behavior: 'smooth' });
+      const maxScroll =
+        scrollContainer.scrollHeight - scrollContainer.clientHeight;
+      const newScrollTop = Math.max(
+        0,
+        Math.min(maxScroll, scrollTopBefore + delta),
+      );
+      scrollContainer.scrollTo({ top: newScrollTop, behavior: "smooth" });
     };
 
     let scrollContainer: Element | null = target.parentElement;
     while (scrollContainer && scrollContainer !== document.body) {
       const overflowY = getComputedStyle(scrollContainer).overflowY;
-      if (overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay') break;
+      if (
+        overflowY === "auto" ||
+        overflowY === "scroll" ||
+        overflowY === "overlay"
+      )
+        break;
       scrollContainer = scrollContainer.parentElement;
     }
     if (!scrollContainer) return;
 
     const startFlashMs = 550;
     const flashDurationMs = 550;
-    const startFlash = setTimeout(() => setStatsFlashTargetId(id), startFlashMs);
-    const clearFlash = setTimeout(() => setStatsFlashTargetId(null), startFlashMs + flashDurationMs);
+    const startFlash = setTimeout(
+      () => setStatsFlashTargetId(id),
+      startFlashMs,
+    );
+    const clearFlash = setTimeout(
+      () => setStatsFlashTargetId(null),
+      startFlashMs + flashDurationMs,
+    );
 
     const doScrollWhenReady = () => {
-      const maxScroll = scrollContainer!.scrollHeight - scrollContainer!.clientHeight;
+      const maxScroll =
+        scrollContainer!.scrollHeight - scrollContainer!.clientHeight;
       if (maxScroll > 0) {
         runScroll(scrollContainer!);
         return true;
@@ -250,9 +326,12 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         const prev = target.previousElementSibling;
         if (prev) {
           const prevRect = prev.getBoundingClientRect();
-          window.scrollTo({ top: window.scrollY + prevRect.bottom - scrollPadding, behavior: 'smooth' });
+          window.scrollTo({
+            top: window.scrollY + prevRect.bottom - scrollPadding,
+            behavior: "smooth",
+          });
         } else {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }
     };
@@ -264,33 +343,102 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     };
   }, [location.pathname, location.hash]);
 
-  const [filterOwned, setFilterOwned] = useState<'all' | 'owned' | 'missing'>('all');
+  const [filterOwned, setFilterOwned] = useState<"all" | "owned" | "missing">(
+    "all",
+  );
 
   // Column count for collection grid (matches Tailwind: 3 < sm, 4 sm–md, 6 md+)
   const [collectionColumnCount, setCollectionColumnCount] = useState(() =>
-    typeof window !== 'undefined' ? (window.innerWidth < 640 ? 3 : window.innerWidth < 768 ? 4 : 6) : 3
+    typeof window !== "undefined"
+      ? window.innerWidth < 640
+        ? 3
+        : window.innerWidth < 768
+          ? 4
+          : 6
+      : 3,
   );
   useEffect(() => {
     const onResize = () =>
-      setCollectionColumnCount(window.innerWidth < 640 ? 3 : window.innerWidth < 768 ? 4 : 6);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+      setCollectionColumnCount(
+        window.innerWidth < 640 ? 3 : window.innerWidth < 768 ? 4 : 6,
+      );
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const isCollectionRoute = location.pathname.startsWith('/collection');
-  const collectionFilteredCards = useMemo(() => {
+  const isCollectionRoute = location.pathname.startsWith("/collection");
+  const setOrderById = useMemo(
+    () => Object.fromEntries(SETS.map((set, index) => [set.id, index])),
+    [],
+  );
+  const collectionFilteredCards = useMemo<CollectionDisplayCard[]>(() => {
     if (!isCollectionRoute) return [];
-    return CARDS.filter((card) => {
-      const matchesSet = selectedSetId === 'ALL' || card.set === selectedSetId;
+    const normalizedSearch = searchQuery.toLowerCase();
+    const display: CollectionDisplayCard[] = [];
+    for (const card of CARDS) {
+      const printings =
+        card.printings && card.printings.length > 0
+          ? [...card.printings].sort((a, b) => {
+              const setDiff =
+                (setOrderById[a.set] ?? 9999) - (setOrderById[b.set] ?? 9999);
+              if (setDiff !== 0) return setDiff;
+              return a.number - b.number;
+            })
+          : [{ set: card.set, number: card.number }];
+      const inSelectedSet =
+        selectedSetId === "ALL" ||
+        printings.some((printing) => printing.set === selectedSetId);
+      if (!inSelectedSet) continue;
       const matchesSearch =
-        card.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        String(card.number).includes(searchQuery);
-      const isOwned = (collection[card.id] || 0) > 0;
-      if (filterOwned === 'owned' && !isOwned) return false;
-      if (filterOwned === 'missing' && isOwned) return false;
-      return matchesSet && matchesSearch;
+        card.name.toLowerCase().includes(normalizedSearch) ||
+        String(card.number).includes(searchQuery) ||
+        printings.some((printing) =>
+          String(printing.number).includes(searchQuery),
+        );
+      if (!matchesSearch) continue;
+
+      const count = collection[card.id] || 0;
+      const numberLabel =
+        selectedSetId === "ALL"
+          ? printings
+              .map(
+                (printing) =>
+                  `${SETS.find((s) => s.id === printing.set)?.name ?? printing.set} #${printing.number}`,
+              )
+              .join(", ")
+          : (() => {
+              const printingForSet =
+                printings.find((printing) => printing.set === selectedSetId) ??
+                printings[0];
+              return `#${printingForSet.number}`;
+            })();
+
+      const item = {
+        key: card.id,
+        card,
+        count,
+        numberLabel,
+      };
+      const isOwned = item.count > 0;
+      if (filterOwned === "owned" && !isOwned) continue;
+      if (filterOwned === "missing" && isOwned) continue;
+      display.push(item);
+    }
+
+    return display.sort((a, b) => {
+      const setDiff =
+        (setOrderById[a.card.set] ?? 9999) - (setOrderById[b.card.set] ?? 9999);
+      if (setDiff !== 0) return setDiff;
+      return a.card.number - b.card.number;
     });
-  }, [isCollectionRoute, selectedSetId, searchQuery, filterOwned, collection]);
+  }, [
+    isCollectionRoute,
+    selectedSetId,
+    searchQuery,
+    filterOwned,
+    collection,
+    setOrderById,
+  ]);
 
   const collectionRowCount =
     isCollectionRoute && collectionFilteredCards.length > 0
@@ -306,21 +454,35 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     overscan: 3,
   });
 
-  const [inspectView, setInspectView] = useState<{ index: number; maxIndex: number } | null>(null);
-  const [inspectPhase, setInspectPhase] = useState<'entering' | 'idle' | 'exiting'>('idle');
-  const [inspectOriginRect, setInspectOriginRect] = useState<CardRect | null>(null);
+  const [inspectView, setInspectView] = useState<{
+    index: number;
+    maxIndex: number;
+  } | null>(null);
+  const [inspectPhase, setInspectPhase] = useState<
+    "entering" | "idle" | "exiting"
+  >("idle");
+  const [inspectOriginRect, setInspectOriginRect] = useState<CardRect | null>(
+    null,
+  );
   const [inspectExitRect, setInspectExitRect] = useState<CardRect | null>(null);
   const inspectCardRef = useRef<HTMLDivElement>(null);
   const inspectCloseRef = useRef<() => void>(() => {});
   const inspectFinishCloseRef = useRef<() => void>(() => {});
-  const inspectPhaseRef = useRef<'entering' | 'idle' | 'exiting'>('idle');
-  const inspectNavigateRef = useRef<{ goPrev: () => void; goNext: () => void }>({ goPrev: () => {}, goNext: () => {} });
+  const inspectPhaseRef = useRef<"entering" | "idle" | "exiting">("idle");
+  const inspectNavigateRef = useRef<{ goPrev: () => void; goNext: () => void }>(
+    { goPrev: () => {}, goNext: () => {} },
+  );
   const INSPECT_ANIM_MS = 280;
   const INSPECT_SLIDE_MS = 250;
   // Ease-in-out so card eases into motion and eases to a stop (no abrupt start or end)
-  const INSPECT_EASING = 'cubic-bezier(0.45, 0, 0.55, 1)';
-  const [inspectSliding, setInspectSliding] = useState<{ fromIndex: number; toIndex: number } | null>(null);
-  const [inspectSlidePhase, setInspectSlidePhase] = useState<'start' | 'end'>('start');
+  const INSPECT_EASING = "cubic-bezier(0.45, 0, 0.55, 1)";
+  const [inspectSliding, setInspectSliding] = useState<{
+    fromIndex: number;
+    toIndex: number;
+  } | null>(null);
+  const [inspectSlidePhase, setInspectSlidePhase] = useState<"start" | "end">(
+    "start",
+  );
   const [inspectOverlayRevealed, setInspectOverlayRevealed] = useState(false);
 
   useEffect(() => {
@@ -329,19 +491,21 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   // Gradual darken + blur: reveal backdrop one frame after open, fade backdrop on exit. Backdrop is a separate layer from the card so only the dim/blur fades.
   useEffect(() => {
-    if (inspectView != null && inspectPhase === 'entering') {
+    if (inspectView != null && inspectPhase === "entering") {
       setInspectOverlayRevealed(false);
       const id = requestAnimationFrame(() => {
         requestAnimationFrame(() => setInspectOverlayRevealed(true));
       });
       return () => cancelAnimationFrame(id);
     }
-    if (inspectView == null || inspectPhase === 'exiting') {
+    if (inspectView == null || inspectPhase === "exiting") {
       setInspectOverlayRevealed(false);
     }
   }, [inspectView, inspectPhase]);
 
-  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'saved' | 'error'>('idle');
+  const [syncStatus, setSyncStatus] = useState<
+    "idle" | "syncing" | "saved" | "error"
+  >("idle");
   const [syncErrorMessage, setSyncErrorMessage] = useState<string | null>(null);
   const [clerkLoadTimedOut, setClerkLoadTimedOut] = useState(false);
   const hasLoadedFromCloudRef = useRef(false);
@@ -366,13 +530,15 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     const intervalId = setInterval(() => {
       const next = getNextHint(loadingHintRecentRef.current);
       setLoadingHint(next);
-      loadingHintRecentRef.current = loadingHintRecentRef.current.slice(-(LOADING_HINT_RECENT_COUNT - 1)).concat(next);
+      loadingHintRecentRef.current = loadingHintRecentRef.current
+        .slice(-(LOADING_HINT_RECENT_COUNT - 1))
+        .concat(next);
     }, 2500);
     return () => clearInterval(intervalId);
   }, [clerkEnabled, isUserLoaded]);
 
   const setSyncError = (message: string) => {
-    setSyncStatus('error');
+    setSyncStatus("error");
     setSyncErrorMessage(message);
   };
 
@@ -386,7 +552,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     if (hasLoadedFromCloudRef.current) return;
 
     const guestData = getGuestCollection();
-    const hadGuestData = Object.keys(guestData).length > 0;
+    const canonicalGuestData = canonicalizeCollection(guestData);
+    const hadGuestData = Object.keys(canonicalGuestData).length > 0;
 
     if (!hadGuestData) {
       hasLoadedFromCloudRef.current = true;
@@ -395,16 +562,26 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         try {
           const token = await session?.getToken();
           if (!token || cancelled) return;
-          setSyncStatus('syncing');
-          const cloudData = await loadCollectionFromApi(token, COLLECTION_API_BASE);
+          setSyncStatus("syncing");
+          const cloudData = await loadCollectionFromApi(
+            token,
+            COLLECTION_API_BASE,
+          );
           if (cancelled) return;
-          justLoadedFromCloudRef.current = true;
-          setCollection(cloudData ?? {});
-          setSyncStatus('saved');
+          const rawCloudData = cloudData ?? {};
+          const canonicalCloudData = canonicalizeCollection(rawCloudData);
+          const shouldSkipImmediateSave = areCollectionsEqual(
+            canonicalCloudData,
+            rawCloudData,
+          );
+          justLoadedFromCloudRef.current = shouldSkipImmediateSave;
+          setCollection(canonicalCloudData);
+          setSyncStatus("saved");
           clearSyncError();
-          setTimeout(() => setSyncStatus('idle'), 3000);
+          setTimeout(() => setSyncStatus("idle"), 3000);
         } catch (e) {
-          if (!cancelled) setSyncError(`Sync failed: ${getSyncErrorMessage(e)}`);
+          if (!cancelled)
+            setSyncError(`Sync failed: ${getSyncErrorMessage(e)}`);
         }
       })();
       return () => {
@@ -412,22 +589,25 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       };
     }
 
-    setGuestMergePrompt('loading');
+    setGuestMergePrompt("loading");
     let cancelled = false;
     (async () => {
       try {
         const token = await session?.getToken();
         if (!token || cancelled) return;
-        setSyncStatus('syncing');
-        const cloudData = await loadCollectionFromApi(token, COLLECTION_API_BASE);
+        setSyncStatus("syncing");
+        const cloudData = await loadCollectionFromApi(
+          token,
+          COLLECTION_API_BASE,
+        );
         if (cancelled) return;
-        setCloudDataForMerge(cloudData ?? {});
-        setGuestMergePrompt('open');
-        setSyncStatus('idle');
+        setCloudDataForMerge(canonicalizeCollection(cloudData ?? {}));
+        setGuestMergePrompt("open");
+        setSyncStatus("idle");
       } catch (e) {
         if (!cancelled) {
           setSyncError(`Sync failed: ${getSyncErrorMessage(e)}`);
-          setGuestMergePrompt('idle');
+          setGuestMergePrompt("idle");
         }
       }
     })();
@@ -441,7 +621,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     if (!isUserLoaded) return;
     if (!clerkUser) {
       hasLoadedFromCloudRef.current = false;
-      setCollection(getGuestCollection());
+      setCollection(canonicalizeCollection(getGuestCollection()));
     }
   }, [clerkUser, isUserLoaded]);
 
@@ -461,18 +641,23 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       justLoadedFromCloudRef.current = false;
       return;
     }
-    setSyncStatus('syncing');
+    setSyncStatus("syncing");
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(async () => {
       try {
         const token = await session?.getToken();
         if (!token) return;
-        await saveCollectionToApi(token, clerkUser.id, collection, COLLECTION_API_BASE);
-        setSyncStatus('saved');
+        await saveCollectionToApi(
+          token,
+          clerkUser.id,
+          canonicalizeCollection(collection),
+          COLLECTION_API_BASE,
+        );
+        setSyncStatus("saved");
         clearSyncError();
-        setTimeout(() => setSyncStatus('idle'), 3000);
+        setTimeout(() => setSyncStatus("idle"), 3000);
       } catch (e) {
-        console.error('Cloud save failed', e);
+        console.error("Cloud save failed", e);
         setSyncError(`Cloud save failed: ${getSyncErrorMessage(e)}`);
       }
     }, 2000);
@@ -482,42 +667,50 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   }, [collection, clerkUser, session, COLLECTION_API_BASE]);
 
   const handleUpdateCount = useCallback((cardId: string, delta: number) => {
-    setCollection(prev => updateCardCount(prev, cardId, delta));
+    const canonicalCardId = getCanonicalCardId(cardId);
+    setCollection((prev) => updateCardCount(prev, canonicalCardId, delta));
   }, []);
 
+  const applyCollectionDelta = useCallback(
+    (entry: CollectionDisplayCard, delta: number) => {
+      handleUpdateCount(entry.card.id, delta);
+    },
+    [handleUpdateCount],
+  );
+
   const handleGuestMergeMerge = useCallback(() => {
-    const cloud = cloudDataForMerge ?? {};
-    const guest = getGuestCollection();
+    const cloud = canonicalizeCollection(cloudDataForMerge ?? {});
+    const guest = canonicalizeCollection(getGuestCollection());
     const merged: CollectionState = { ...cloud };
     for (const [cardId, guestCount] of Object.entries(guest)) {
       const cloudCount = merged[cardId] ?? 0;
       merged[cardId] = cloudCount + guestCount;
     }
-    setCollection(merged);
+    setCollection(canonicalizeCollection(merged));
     clearGuestCollection();
     setCloudDataForMerge(null);
-    setGuestMergePrompt('idle');
+    setGuestMergePrompt("idle");
     hasLoadedFromCloudRef.current = true;
-    setSyncStatus('syncing');
+    setSyncStatus("syncing");
     clearSyncError();
     // Auto-save will run from collection change and then show saved
   }, [cloudDataForMerge]);
 
   const handleGuestMergeUseCloudOnly = useCallback(() => {
-    const cloud = cloudDataForMerge ?? {};
+    const cloud = canonicalizeCollection(cloudDataForMerge ?? {});
     justLoadedFromCloudRef.current = true;
     setCollection(cloud);
     setCloudDataForMerge(null);
-    setGuestMergePrompt('idle');
+    setGuestMergePrompt("idle");
     hasLoadedFromCloudRef.current = true;
-    setSyncStatus('saved');
+    setSyncStatus("saved");
     clearSyncError();
-    setTimeout(() => setSyncStatus('idle'), 3000);
+    setTimeout(() => setSyncStatus("idle"), 3000);
   }, [cloudDataForMerge]);
 
   const handleGuestMergeCancel = useCallback(() => {
     setCloudDataForMerge(null);
-    setGuestMergePrompt('idle');
+    setGuestMergePrompt("idle");
     signOut?.();
   }, []);
 
@@ -533,7 +726,7 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   const handleDontShowDemoBannerAgain = useCallback(() => {
     try {
-      window.localStorage.setItem(DEMO_BANNER_DONT_SHOW_KEY, '1');
+      window.localStorage.setItem(DEMO_BANNER_DONT_SHOW_KEY, "1");
     } catch {
       // ignore
     }
@@ -569,7 +762,10 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   useEffect(() => {
     if (!showDismissedToast || toastExiting) return;
-    const t = setTimeout(() => setToastExiting(true), DISMISSED_TOAST_DURATION_SEC * 1000);
+    const t = setTimeout(
+      () => setToastExiting(true),
+      DISMISSED_TOAST_DURATION_SEC * 1000,
+    );
     return () => clearTimeout(t);
   }, [showDismissedToast, toastExiting]);
 
@@ -585,16 +781,58 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             <>
               {!isUserLoaded && !clerkLoadTimedOut ? (
                 <span className="text-xs text-gray-500 flex items-center gap-1.5 shrink-0">
-                  <Loader2 size={14} className="animate-spin text-gray-500 shrink-0" />
+                  <Loader2
+                    size={14}
+                    className="animate-spin text-gray-500 shrink-0"
+                  />
                   <span className="hidden xs:inline">Loading...</span>
                 </span>
               ) : clerkUser ? (
                 <>
-                  <span className="text-xs text-gray-500 flex items-center gap-1.5 shrink-0 min-w-0" title={syncStatus === 'error' ? syncErrorMessage ?? undefined : undefined}>
-                    {syncStatus === 'syncing' && <><Loader2 size={12} className="animate-spin shrink-0"/> <span className="hidden sm:inline truncate">Syncing...</span></>}
-                    {syncStatus === 'saved' && <><CheckCircle2 size={12} className="text-green-500 shrink-0"/> <span className="hidden sm:inline truncate">Saved</span></>}
-                    {syncStatus === 'error' && <><AlertCircle size={12} className="text-red-500 shrink-0"/> <span className="text-red-400 truncate hidden sm:inline">{syncErrorMessage ?? 'Error'}</span></>}
-                    {syncStatus === 'idle' && <><Cloud size={12} className="text-gray-500 shrink-0"/> <span className="hidden sm:inline truncate">Up to date</span></>}
+                  <span
+                    className="text-xs text-gray-500 flex items-center gap-1.5 shrink-0 min-w-0"
+                    title={
+                      syncStatus === "error"
+                        ? (syncErrorMessage ?? undefined)
+                        : undefined
+                    }
+                  >
+                    {syncStatus === "syncing" && (
+                      <>
+                        <Loader2 size={12} className="animate-spin shrink-0" />{" "}
+                        <span className="hidden sm:inline truncate">
+                          Syncing...
+                        </span>
+                      </>
+                    )}
+                    {syncStatus === "saved" && (
+                      <>
+                        <CheckCircle2
+                          size={12}
+                          className="text-green-500 shrink-0"
+                        />{" "}
+                        <span className="hidden sm:inline truncate">Saved</span>
+                      </>
+                    )}
+                    {syncStatus === "error" && (
+                      <>
+                        <AlertCircle
+                          size={12}
+                          className="text-red-500 shrink-0"
+                        />{" "}
+                        <span className="text-red-400 truncate hidden sm:inline">
+                          {syncErrorMessage ?? "Error"}
+                        </span>
+                      </>
+                    )}
+                    {syncStatus === "idle" && (
+                      <>
+                        <Cloud size={12} className="text-gray-500 shrink-0" />{" "}
+                        <span className="hidden sm:inline truncate">
+                          Up to date
+                        </span>
+                      </>
+                    )}
                   </span>
                   <UserButton />
                 </>
@@ -614,14 +852,18 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                     </Button>
                   ) : (
                     <SignInButton mode="modal">
-                      <Button variant="primary" size="sm">Sign in</Button>
+                      <Button variant="primary" size="sm">
+                        Sign in
+                      </Button>
                     </SignInButton>
                   )}
                 </>
               )}
             </>
           ) : (
-            <span className="text-xs text-gray-500">Sign-in not configured</span>
+            <span className="text-xs text-gray-500">
+              Sign-in not configured
+            </span>
           )}
         </div>
       </header>
@@ -635,11 +877,29 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           <div className="text-xs text-amber-500/90 space-y-2">
             {isProductionKeyOnLocalhost ? (
               <p>
-                <strong>Production key on localhost.</strong> Clerk production keys (<code className="bg-gray-800 px-1 rounded">pk_live_...</code>) do not work on localhost. In Clerk Dashboard, switch to the <strong>Development</strong> instance, copy the publishable key (<code className="bg-gray-800 px-1 rounded">pk_test_...</code>), and set <code className="bg-gray-800 px-1 rounded">VITE_CLERK_PUBLISHABLE_KEY</code> in <code className="bg-gray-800 px-1 rounded">.env.local</code> to that value. Restart the dev server.
+                <strong>Production key on localhost.</strong> Clerk production
+                keys (
+                <code className="bg-gray-800 px-1 rounded">pk_live_...</code>)
+                do not work on localhost. In Clerk Dashboard, switch to the{" "}
+                <strong>Development</strong> instance, copy the publishable key
+                (<code className="bg-gray-800 px-1 rounded">pk_test_...</code>),
+                and set{" "}
+                <code className="bg-gray-800 px-1 rounded">
+                  VITE_CLERK_PUBLISHABLE_KEY
+                </code>{" "}
+                in <code className="bg-gray-800 px-1 rounded">.env.local</code>{" "}
+                to that value. Restart the dev server.
               </p>
             ) : (
               <p>
-                Sign-in is still loading. Click &quot;Retry sign-in&quot; to refresh. If it keeps failing, in Clerk Dashboard (Development) go to Configure → Paths and set <strong>Fallback development host</strong> to <code className="bg-gray-800 px-1 rounded">http://localhost:3000</code> (or your dev port).
+                Sign-in is still loading. Click &quot;Retry sign-in&quot; to
+                refresh. If it keeps failing, in Clerk Dashboard (Development)
+                go to Configure → Paths and set{" "}
+                <strong>Fallback development host</strong> to{" "}
+                <code className="bg-gray-800 px-1 rounded">
+                  http://localhost:3000
+                </code>{" "}
+                (or your dev port).
               </p>
             )}
           </div>
@@ -650,22 +910,33 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         variant="primary"
         size="lg"
         fullWidth
-        onClick={() => navigate(lastCollectionSetSlug ? `/collection/${lastCollectionSetSlug}` : '/collection')}
+        onClick={() =>
+          navigate(
+            lastCollectionSetSlug
+              ? `/collection/${lastCollectionSetSlug}`
+              : "/collection",
+          )
+        }
         className="h-24 flex flex-col items-center justify-center gap-1 py-5 group"
       >
         <Library className="size-8 shrink-0 group-hover:scale-110 transition-transform" />
         <span className="text-lg">My Collection</span>
-        {lastCollectionSetSlug != null && (() => {
-          const set = getSetBySlug(lastCollectionSetSlug);
-          return set ? <span className="text-[10px] text-gray-200 font-normal leading-tight">{set.name}</span> : null;
-        })()}
+        {lastCollectionSetSlug != null &&
+          (() => {
+            const set = getSetBySlug(lastCollectionSetSlug);
+            return set ? (
+              <span className="text-[10px] text-gray-200 font-normal leading-tight">
+                {set.name}
+              </span>
+            ) : null;
+          })()}
       </Button>
 
       <Button
         variant="secondary"
         size="lg"
         fullWidth
-        onClick={() => navigate('/statistics')}
+        onClick={() => navigate("/statistics")}
         className="h-24 flex flex-col items-center justify-center gap-1 group bg-gray-800 border-gray-700"
       >
         <BarChart3 className="group-hover:scale-110 transition-transform text-green-400" />
@@ -674,7 +945,9 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
       {!isSupabaseConfigured && (
         <p className="text-xs text-center text-amber-500 mt-4">
-          Cloud sync is unavailable: add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your environment (e.g. .env.local or deployment secrets).
+          Cloud sync is unavailable: add VITE_SUPABASE_URL and
+          VITE_SUPABASE_ANON_KEY to your environment (e.g. .env.local or
+          deployment secrets).
         </p>
       )}
     </div>
@@ -682,9 +955,9 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   // Transition from 'entering' to 'idle' so CSS animates card from origin to center
   useEffect(() => {
-    if (inspectPhase !== 'entering' || !inspectView) return;
+    if (inspectPhase !== "entering" || !inspectView) return;
     const frame = requestAnimationFrame(() => {
-      requestAnimationFrame(() => setInspectPhase('idle'));
+      requestAnimationFrame(() => setInspectPhase("idle"));
     });
     return () => cancelAnimationFrame(frame);
   }, [inspectPhase, inspectView]);
@@ -692,15 +965,15 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   // Trigger slide animation: start at "start" positions, then set "end" so cards animate (outgoing slides out + fade, incoming slides in + fade). Clear sliding state when done.
   useEffect(() => {
     if (!inspectSliding) return;
-    setInspectSlidePhase('start');
+    setInspectSlidePhase("start");
     const frame = requestAnimationFrame(() => {
-      requestAnimationFrame(() => setInspectSlidePhase('end'));
+      requestAnimationFrame(() => setInspectSlidePhase("end"));
     });
     const done = setTimeout(() => {
       setInspectSliding(null);
-      setInspectSlidePhase('start');
+      setInspectSlidePhase("start");
       // If user started close while sliding, we just cleared sliding; finish close so overlay doesn't stick.
-      if (inspectPhaseRef.current === 'exiting') {
+      if (inspectPhaseRef.current === "exiting") {
         inspectFinishCloseRef.current();
       }
     }, INSPECT_SLIDE_MS);
@@ -712,56 +985,47 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   // Close Inspect View when leaving collection or when current index becomes invalid (e.g. filter change)
   useEffect(() => {
-    if (!location.pathname.startsWith('/collection')) {
+    if (!location.pathname.startsWith("/collection")) {
       setInspectView(null);
-      setInspectPhase('idle');
+      setInspectPhase("idle");
       setInspectOriginRect(null);
       setInspectExitRect(null);
       setInspectSliding(null);
-      setInspectSlidePhase('start');
+      setInspectSlidePhase("start");
       return;
     }
     if (inspectView == null) return;
-    const filtered = CARDS.filter(card => {
-      const matchesSet = selectedSetId === 'ALL' || card.set === selectedSetId;
-      const matchesSearch =
-        card.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        String(card.number).includes(searchQuery);
-      const isOwned = (collection[card.id] || 0) > 0;
-      if (filterOwned === 'owned' && !isOwned) return false;
-      if (filterOwned === 'missing' && isOwned) return false;
-      return matchesSet && matchesSearch;
-    });
+    const filtered = collectionFilteredCards;
     const maxIndex = filtered.length - 1;
     if (inspectView.index < 0 || inspectView.index > maxIndex) {
       setInspectView(null);
-      setInspectPhase('idle');
+      setInspectPhase("idle");
       setInspectOriginRect(null);
       setInspectExitRect(null);
       setInspectSliding(null);
-      setInspectSlidePhase('start');
+      setInspectSlidePhase("start");
     }
-  }, [location.pathname, inspectView, selectedSetId, searchQuery, filterOwned, collection]);
+  }, [location.pathname, inspectView, collectionFilteredCards]);
 
   // Keyboard: Escape to close Inspect View (animated), Arrow Left/Right to navigate (only on collection when inspect open)
   useEffect(() => {
-    if (location.pathname !== '/collection' || !inspectView) return;
+    if (location.pathname !== "/collection" || !inspectView) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         inspectCloseRef.current();
         return;
       }
-      if (e.key === 'ArrowLeft') {
+      if (e.key === "ArrowLeft") {
         inspectNavigateRef.current.goPrev();
         return;
       }
-      if (e.key === 'ArrowRight') {
+      if (e.key === "ArrowRight") {
         inspectNavigateRef.current.goNext();
         return;
       }
     };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
   }, [location.pathname, inspectView]);
 
   const closeCollectionSetDropdownAndFocusSearch = useCallback(() => {
@@ -803,14 +1067,20 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   // When dropdown opens, set focused index to selected option and scroll selected into view
   useEffect(() => {
     if (!collectionSetDropdownOpen) return;
-    const selectedIndex = selectedSetId === 'ALL' ? 0 : (SETS.findIndex((s) => s.id === selectedSetId) + 1);
+    const selectedIndex =
+      selectedSetId === "ALL"
+        ? 0
+        : SETS.findIndex((s) => s.id === selectedSetId) + 1;
     if (selectedIndex > SETS.length) setCollectionSetDropdownFocusedIndex(0);
-    else setCollectionSetDropdownFocusedIndex(selectedIndex >= 0 ? selectedIndex : 0);
+    else
+      setCollectionSetDropdownFocusedIndex(
+        selectedIndex >= 0 ? selectedIndex : 0,
+      );
     const listbox = collectionSetListboxRef.current;
     if (listbox) {
       const scroll = () => {
         const selected = listbox.querySelector('[aria-selected="true"]');
-        (selected as HTMLElement)?.scrollIntoView({ block: 'nearest' });
+        (selected as HTMLElement)?.scrollIntoView({ block: "nearest" });
       };
       requestAnimationFrame(scroll);
     }
@@ -819,7 +1089,9 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
   // When dropdown is open and focused index changes, focus that option
   useEffect(() => {
     if (!collectionSetDropdownOpen) return;
-    const option = collectionSetListboxRef.current?.querySelector(`[data-index="${collectionSetDropdownFocusedIndex}"]`) as HTMLElement | null;
+    const option = collectionSetListboxRef.current?.querySelector(
+      `[data-index="${collectionSetDropdownFocusedIndex}"]`,
+    ) as HTMLElement | null;
     option?.focus();
   }, [collectionSetDropdownOpen, collectionSetDropdownFocusedIndex]);
 
@@ -828,38 +1100,41 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     if (!collectionSetDropdownOpen) return;
     const handleOutside = (e: MouseEvent | TouchEvent) => {
       const el = collectionSetDropdownRef.current;
-      if (el && !el.contains(e.target as Node)) closeCollectionSetDropdownAndFocusSearch();
+      if (el && !el.contains(e.target as Node))
+        closeCollectionSetDropdownAndFocusSearch();
     };
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         closeCollectionSetDropdownAndFocusSearch();
         e.preventDefault();
         return;
       }
       const optionCount = SETS.length + 1;
-      if (e.key === 'ArrowDown') {
+      if (e.key === "ArrowDown") {
         setCollectionSetDropdownFocusedIndex((i) => (i + 1) % optionCount);
         e.preventDefault();
         return;
       }
-      if (e.key === 'ArrowUp') {
-        setCollectionSetDropdownFocusedIndex((i) => (i - 1 + optionCount) % optionCount);
+      if (e.key === "ArrowUp") {
+        setCollectionSetDropdownFocusedIndex(
+          (i) => (i - 1 + optionCount) % optionCount,
+        );
         e.preventDefault();
         return;
       }
-      if (e.key === 'Home') {
+      if (e.key === "Home") {
         setCollectionSetDropdownFocusedIndex(0);
         e.preventDefault();
         return;
       }
-      if (e.key === 'End') {
+      if (e.key === "End") {
         setCollectionSetDropdownFocusedIndex(SETS.length);
         e.preventDefault();
         return;
       }
-      if (e.key === 'Enter') {
+      if (e.key === "Enter") {
         if (collectionSetDropdownFocusedIndex === 0) {
-          navigate('/collection');
+          navigate("/collection");
         } else {
           const set = SETS[collectionSetDropdownFocusedIndex - 1];
           if (set) {
@@ -871,19 +1146,24 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         e.preventDefault();
       }
     };
-    document.addEventListener('mousedown', handleOutside);
-    document.addEventListener('touchstart', handleOutside, { passive: true });
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("mousedown", handleOutside);
+    document.addEventListener("touchstart", handleOutside, { passive: true });
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener('mousedown', handleOutside);
-      document.removeEventListener('touchstart', handleOutside);
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("touchstart", handleOutside);
+      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [collectionSetDropdownOpen, closeCollectionSetDropdownAndFocusSearch, collectionSetDropdownFocusedIndex, navigate]);
+  }, [
+    collectionSetDropdownOpen,
+    closeCollectionSetDropdownAndFocusSearch,
+    collectionSetDropdownFocusedIndex,
+    navigate,
+  ]);
 
   // Close collection set dropdown when leaving collection route (no animation)
   useEffect(() => {
-    if (!location.pathname.startsWith('/collection')) {
+    if (!location.pathname.startsWith("/collection")) {
       setCollectionSetDropdownOpen(false);
       setCollectionSetDropdownClosing(false);
       setCollectionSetDropdownRevealed(false);
@@ -892,9 +1172,12 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   const renderCollection = () => {
     const filteredCards = collectionFilteredCards;
-    const currentInspectCard = inspectView != null ? filteredCards[inspectView.index] ?? null : null;
+    const currentInspectEntry =
+      inspectView != null ? (filteredCards[inspectView.index] ?? null) : null;
+    const currentInspectCard = currentInspectEntry?.card ?? null;
     const canGoLeft = inspectView != null && inspectView.index > 0;
-    const canGoRight = inspectView != null && inspectView.index < inspectView.maxIndex;
+    const canGoRight =
+      inspectView != null && inspectView.index < inspectView.maxIndex;
 
     const startCloseInspect = () => {
       if (!currentInspectCard) {
@@ -903,8 +1186,10 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       }
       // If we're mid-slide, clear sliding state so we render the single card and run the exit animation (avoids stuck overlay).
       setInspectSliding(null);
-      setInspectSlidePhase('start');
-      const el = document.querySelector(`[data-card-rect-id="${currentInspectCard.id}"]`);
+      setInspectSlidePhase("start");
+      const el = document.querySelector(
+        `[data-card-rect-id="${currentInspectCard.id}"]`,
+      );
       const rect = el?.getBoundingClientRect();
       if (rect) {
         setInspectExitRect({
@@ -914,20 +1199,20 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           height: rect.height,
         });
         // Defer 'exiting' so the single card paints at center first, then animates to grid (otherwise no transition runs).
-        requestAnimationFrame(() => setInspectPhase('exiting'));
+        requestAnimationFrame(() => setInspectPhase("exiting"));
       } else {
         setInspectExitRect(null);
-        setInspectPhase('exiting');
+        setInspectPhase("exiting");
       }
     };
 
     const finishCloseInspect = () => {
       setInspectView(null);
-      setInspectPhase('idle');
+      setInspectPhase("idle");
       setInspectOriginRect(null);
       setInspectExitRect(null);
       setInspectSliding(null);
-      setInspectSlidePhase('start');
+      setInspectSlidePhase("start");
     };
 
     inspectCloseRef.current = startCloseInspect;
@@ -937,26 +1222,28 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       goPrev: () => {
         if (!inspectView || inspectView.index <= 0) return;
         const nextIndex = inspectView.index - 1;
-        setInspectSlidePhase('start');
+        setInspectSlidePhase("start");
         setInspectSliding({ fromIndex: inspectView.index, toIndex: nextIndex });
-        setInspectView(v => (v ? { ...v, index: nextIndex } : v));
+        setInspectView((v) => (v ? { ...v, index: nextIndex } : v));
       },
       goNext: () => {
         if (!inspectView || inspectView.index >= inspectView.maxIndex) return;
         const nextIndex = inspectView.index + 1;
-        setInspectSlidePhase('start');
+        setInspectSlidePhase("start");
         setInspectSliding({ fromIndex: inspectView.index, toIndex: nextIndex });
-        setInspectView(v => (v ? { ...v, index: nextIndex } : v));
+        setInspectView((v) => (v ? { ...v, index: nextIndex } : v));
       },
     };
 
     // Grayscale matches grid: unowned cards are grayscale; interpolate to/from color during open/close
-    const inspectCardOwned = currentInspectCard ? (collection[currentInspectCard.id] ?? 0) > 0 : false;
+    const inspectCardOwned = currentInspectCard
+      ? (collection[currentInspectCard.id] ?? 0) > 0
+      : false;
     const grayscaleAtGrid = inspectCardOwned ? 0 : 1;
 
     // Card dimensions for idle and for sliding cards (same as idle branch)
     const getInspectCardDimensions = (): { w: number; h: number } => {
-      if (typeof window === 'undefined') return { w: 280, h: 392 };
+      if (typeof window === "undefined") return { w: 280, h: 392 };
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const maxW = Math.min(280, vw - 112);
@@ -970,25 +1257,25 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     const getInspectCardStyle = (): React.CSSProperties => {
       const base: React.CSSProperties = {
         transition: `left ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, top ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, width ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, height ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, transform ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}, filter ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}`,
-        position: 'fixed',
-        borderRadius: '0.5rem',
-        overflow: 'hidden',
-        border: '2px solid rgb(55 65 81)',
-        backgroundColor: 'rgb(17 24 39)',
-        boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.5)',
+        position: "fixed",
+        borderRadius: "0.5rem",
+        overflow: "hidden",
+        border: "2px solid rgb(55 65 81)",
+        backgroundColor: "rgb(17 24 39)",
+        boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.5)",
       };
-      if (inspectPhase === 'entering' && inspectOriginRect) {
+      if (inspectPhase === "entering" && inspectOriginRect) {
         return {
           ...base,
           left: inspectOriginRect.left,
           top: inspectOriginRect.top,
           width: inspectOriginRect.width,
           height: inspectOriginRect.height,
-          transform: 'none',
+          transform: "none",
           filter: `grayscale(${grayscaleAtGrid})`,
         };
       }
-      if (inspectPhase === 'exiting') {
+      if (inspectPhase === "exiting") {
         if (inspectExitRect) {
           return {
             ...base,
@@ -996,30 +1283,30 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             top: inspectExitRect.top,
             width: inspectExitRect.width,
             height: inspectExitRect.height,
-            transform: 'none',
+            transform: "none",
             filter: `grayscale(${grayscaleAtGrid})`,
           };
         }
         return {
           ...base,
-          left: '50%',
-          top: '50%',
+          left: "50%",
+          top: "50%",
           width: 320,
           height: 448,
-          transform: 'translate(-50%, -50%) scale(0)',
+          transform: "translate(-50%, -50%) scale(0)",
           filter: `grayscale(${grayscaleAtGrid})`,
         };
       }
       // idle: centered, smaller so card never overlaps side arrows or top/bottom chrome (56px sides, 64px top/bottom)
-      if (typeof window === 'undefined') {
+      if (typeof window === "undefined") {
         return {
           ...base,
-          left: '50%',
-          top: '50%',
+          left: "50%",
+          top: "50%",
           width: 280,
           height: 392,
-          transform: 'translate(-50%, -50%)',
-          filter: 'grayscale(0)',
+          transform: "translate(-50%, -50%)",
+          filter: "grayscale(0)",
         };
       }
       const vw = window.innerWidth;
@@ -1030,12 +1317,12 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       const h = Math.min((w * 3.5) / 2.5, maxH);
       return {
         ...base,
-        left: '50%',
-        top: '50%',
+        left: "50%",
+        top: "50%",
         width: w,
         height: h,
-        transform: 'translate(-50%, -50%)',
-        filter: 'grayscale(0)',
+        transform: "translate(-50%, -50%)",
+        filter: "grayscale(0)",
       };
     };
 
@@ -1052,189 +1339,241 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             {/* Backdrop (dim + blur) as separate layer so it can fade on exit without fading the card */}
             <div
               className={`absolute inset-0 bg-black/70 transition-[opacity,backdrop-filter] duration-200 ease-out ${
-                inspectOverlayRevealed ? 'opacity-100 backdrop-blur-md' : 'opacity-0 backdrop-blur-none'
+                inspectOverlayRevealed
+                  ? "opacity-100 backdrop-blur-md"
+                  : "opacity-0 backdrop-blur-none"
               }`}
               onClick={startCloseInspect}
               aria-hidden="true"
             />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            {/* Preload adjacent card images so sliding doesn't trigger load glitches */}
-            {inspectView.index > 0 && filteredCards[inspectView.index - 1]?.image && (
-              <img
-                src={filteredCards[inspectView.index - 1].image}
-                alt=""
-                aria-hidden
-                className="absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden"
-                loading="eager"
-              />
-            )}
-            {inspectView.index < inspectView.maxIndex && filteredCards[inspectView.index + 1]?.image && (
-              <img
-                src={filteredCards[inspectView.index + 1].image}
-                alt=""
-                aria-hidden
-                className="absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden"
-                loading="eager"
-              />
-            )}
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); startCloseInspect(); }}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors pointer-events-auto"
-              aria-label="Close"
-            >
-              <X size={24} />
-            </button>
-            {canGoLeft && (
+              {/* Preload adjacent card images so sliding doesn't trigger load glitches */}
+              {inspectView.index > 0 &&
+                filteredCards[inspectView.index - 1]?.card.image && (
+                  <img
+                    src={filteredCards[inspectView.index - 1].card.image}
+                    alt=""
+                    aria-hidden
+                    className="absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden"
+                    loading="eager"
+                  />
+                )}
+              {inspectView.index < inspectView.maxIndex &&
+                filteredCards[inspectView.index + 1]?.card.image && (
+                  <img
+                    src={filteredCards[inspectView.index + 1].card.image}
+                    alt=""
+                    aria-hidden
+                    className="absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden"
+                    loading="eager"
+                  />
+                )}
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (!inspectView || inspectView.index <= 0) return;
-                  const nextIndex = inspectView.index - 1;
-                  setInspectSlidePhase('start');
-                  setInspectSliding({ fromIndex: inspectView.index, toIndex: nextIndex });
-                  setInspectView(v => v ? { ...v, index: nextIndex } : v);
+                  startCloseInspect();
                 }}
-                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-white transition-colors touch-manipulation pointer-events-auto"
-                aria-label="Previous card"
+                className="absolute top-4 right-4 z-10 p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors pointer-events-auto"
+                aria-label="Close"
               >
-                <ChevronLeft size={24} />
+                <X size={24} />
               </button>
-            )}
-            {canGoRight && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!inspectView || inspectView.index >= inspectView.maxIndex) return;
-                  const nextIndex = inspectView.index + 1;
-                  setInspectSlidePhase('start');
-                  setInspectSliding({ fromIndex: inspectView.index, toIndex: nextIndex });
-                  setInspectView(v => v ? { ...v, index: nextIndex } : v);
-                }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-white transition-colors touch-manipulation pointer-events-auto"
-                aria-label="Next card"
-              >
-                <ChevronRight size={24} />
-              </button>
-            )}
-            {inspectSliding ? (
-              (() => {
-                const dims = getInspectCardDimensions();
-                const goingNext = inspectSliding.toIndex > inspectSliding.fromIndex;
-                // fromIndex = index we're leaving, toIndex = index we're going to (same for both next and prev).
-                const outgoingCardIndex = inspectSliding.fromIndex;
-                const incomingCardIndex = inspectSliding.toIndex;
-                const baseCardStyle: React.CSSProperties = {
-                  position: 'fixed',
-                  left: '50%',
-                  top: '50%',
-                  width: dims.w,
-                  height: dims.h,
-                  marginLeft: -dims.w / 2,
-                  marginTop: -dims.h / 2,
-                  borderRadius: '0.5rem',
-                  overflow: 'hidden',
-                  border: '2px solid rgb(55 65 81)',
-                  backgroundColor: 'rgb(17 24 39)',
-                  boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.5)',
-                  transition: inspectSlidePhase === 'start'
-                    ? 'none'
-                    : `transform ${INSPECT_SLIDE_MS}ms ease-out, opacity ${INSPECT_SLIDE_MS}ms ease-out`,
-                  pointerEvents: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                };
-                const atEnd = inspectSlidePhase === 'end';
-                const outgoingStyle: React.CSSProperties = {
-                  ...baseCardStyle,
-                  transform: atEnd
-                    ? (goingNext ? 'translate(-100%, 0)' : 'translate(100%, 0)')
-                    : 'translate(0, 0)',
-                  opacity: atEnd ? 0 : 1,
-                };
-                const incomingStyle: React.CSSProperties = {
-                  ...baseCardStyle,
-                  transform: atEnd
-                    ? 'translate(0, 0)'
-                    : goingNext
-                      ? 'translate(100%, 0)'
-                      : 'translate(-100%, 0)',
-                  opacity: atEnd ? 1 : 0,
-                };
-                return (
-                  <>
-                    <div style={outgoingStyle}>
-                      <img
-                        key={filteredCards[outgoingCardIndex]?.id ?? 'out'}
-                        src={filteredCards[outgoingCardIndex]?.image ?? ''}
-                        alt={filteredCards[outgoingCardIndex]?.name ?? ''}
-                        className="w-full h-full object-contain pointer-events-none"
-                        loading="eager"
-                        decoding="async"
-                      />
-                    </div>
-                    <div style={incomingStyle}>
-                      <img
-                        key={filteredCards[incomingCardIndex]?.id ?? 'in'}
-                        src={filteredCards[incomingCardIndex]?.image ?? ''}
-                        alt={filteredCards[incomingCardIndex]?.name ?? ''}
-                        className="w-full h-full object-contain pointer-events-none"
-                        loading="eager"
-                        decoding="async"
-                      />
-                    </div>
-                  </>
-                );
-              })()
-            ) : (
-              <div
-                ref={inspectCardRef}
-                style={getInspectCardStyle()}
-                onTransitionEnd={(e) => {
-                  if (e.target === inspectCardRef.current && inspectPhase === 'exiting') finishCloseInspect();
-                }}
-                onClick={(e) => e.stopPropagation()}
-                className="flex items-center justify-center overflow-hidden pointer-events-auto relative"
-              >
-                <img
-                  src={currentInspectCard.image}
-                  alt={currentInspectCard.name}
-                  className="w-full h-full object-contain pointer-events-none"
-                  loading="eager"
-                  decoding="async"
-                />
-                {/* Darkening overlay (matches grid when at grid position); animates off when opening, on when closing */}
-                <div
-                  aria-hidden
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    backgroundColor: CARD_GRID_DARKEN_OVERLAY_COLOR,
-                    opacity: !inspectCardOwned && (inspectPhase === 'entering' || inspectPhase === 'exiting') ? CARD_GRID_DARKEN_OVERLAY_OPACITY : 0,
-                    transition: `opacity ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}`,
+              {canGoLeft && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!inspectView || inspectView.index <= 0) return;
+                    const nextIndex = inspectView.index - 1;
+                    setInspectSlidePhase("start");
+                    setInspectSliding({
+                      fromIndex: inspectView.index,
+                      toIndex: nextIndex,
+                    });
+                    setInspectView((v) => (v ? { ...v, index: nextIndex } : v));
                   }}
-                />
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-white transition-colors touch-manipulation pointer-events-auto"
+                  aria-label="Previous card"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+              )}
+              {canGoRight && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (
+                      !inspectView ||
+                      inspectView.index >= inspectView.maxIndex
+                    )
+                      return;
+                    const nextIndex = inspectView.index + 1;
+                    setInspectSlidePhase("start");
+                    setInspectSliding({
+                      fromIndex: inspectView.index,
+                      toIndex: nextIndex,
+                    });
+                    setInspectView((v) => (v ? { ...v, index: nextIndex } : v));
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-white transition-colors touch-manipulation pointer-events-auto"
+                  aria-label="Next card"
+                >
+                  <ChevronRight size={24} />
+                </button>
+              )}
+              {inspectSliding ? (
+                (() => {
+                  const dims = getInspectCardDimensions();
+                  const goingNext =
+                    inspectSliding.toIndex > inspectSliding.fromIndex;
+                  // fromIndex = index we're leaving, toIndex = index we're going to (same for both next and prev).
+                  const outgoingCardIndex = inspectSliding.fromIndex;
+                  const incomingCardIndex = inspectSliding.toIndex;
+                  const baseCardStyle: React.CSSProperties = {
+                    position: "fixed",
+                    left: "50%",
+                    top: "50%",
+                    width: dims.w,
+                    height: dims.h,
+                    marginLeft: -dims.w / 2,
+                    marginTop: -dims.h / 2,
+                    borderRadius: "0.5rem",
+                    overflow: "hidden",
+                    border: "2px solid rgb(55 65 81)",
+                    backgroundColor: "rgb(17 24 39)",
+                    boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.5)",
+                    transition:
+                      inspectSlidePhase === "start"
+                        ? "none"
+                        : `transform ${INSPECT_SLIDE_MS}ms ease-out, opacity ${INSPECT_SLIDE_MS}ms ease-out`,
+                    pointerEvents: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  };
+                  const atEnd = inspectSlidePhase === "end";
+                  const outgoingStyle: React.CSSProperties = {
+                    ...baseCardStyle,
+                    transform: atEnd
+                      ? goingNext
+                        ? "translate(-100%, 0)"
+                        : "translate(100%, 0)"
+                      : "translate(0, 0)",
+                    opacity: atEnd ? 0 : 1,
+                  };
+                  const incomingStyle: React.CSSProperties = {
+                    ...baseCardStyle,
+                    transform: atEnd
+                      ? "translate(0, 0)"
+                      : goingNext
+                        ? "translate(100%, 0)"
+                        : "translate(-100%, 0)",
+                    opacity: atEnd ? 1 : 0,
+                  };
+                  return (
+                    <>
+                      <div style={outgoingStyle}>
+                        <img
+                          key={
+                            filteredCards[outgoingCardIndex]?.card.id ?? "out"
+                          }
+                          src={
+                            filteredCards[outgoingCardIndex]?.card.image ?? ""
+                          }
+                          alt={
+                            filteredCards[outgoingCardIndex]?.card.name ?? ""
+                          }
+                          className="w-full h-full object-contain pointer-events-none"
+                          loading="eager"
+                          decoding="async"
+                        />
+                      </div>
+                      <div style={incomingStyle}>
+                        <img
+                          key={
+                            filteredCards[incomingCardIndex]?.card.id ?? "in"
+                          }
+                          src={
+                            filteredCards[incomingCardIndex]?.card.image ?? ""
+                          }
+                          alt={
+                            filteredCards[incomingCardIndex]?.card.name ?? ""
+                          }
+                          className="w-full h-full object-contain pointer-events-none"
+                          loading="eager"
+                          decoding="async"
+                        />
+                      </div>
+                    </>
+                  );
+                })()
+              ) : (
+                <div
+                  ref={inspectCardRef}
+                  style={getInspectCardStyle()}
+                  onTransitionEnd={(e) => {
+                    if (
+                      e.target === inspectCardRef.current &&
+                      inspectPhase === "exiting"
+                    )
+                      finishCloseInspect();
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center justify-center overflow-hidden pointer-events-auto relative"
+                >
+                  <img
+                    src={currentInspectCard.image}
+                    alt={currentInspectCard.name}
+                    className="w-full h-full object-contain pointer-events-none"
+                    loading="eager"
+                    decoding="async"
+                  />
+                  {/* Darkening overlay (matches grid when at grid position); animates off when opening, on when closing */}
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      backgroundColor: CARD_GRID_DARKEN_OVERLAY_COLOR,
+                      opacity:
+                        !inspectCardOwned &&
+                        (inspectPhase === "entering" ||
+                          inspectPhase === "exiting")
+                          ? CARD_GRID_DARKEN_OVERLAY_OPACITY
+                          : 0,
+                      transition: `opacity ${INSPECT_ANIM_MS}ms ${INSPECT_EASING}`,
+                    }}
+                  />
+                </div>
+              )}
+              <div
+                className="absolute bottom-8 left-0 right-0 flex flex-col items-center px-4 pointer-events-none"
+                style={{ transition: `opacity ${INSPECT_ANIM_MS}ms ease-out` }}
+              >
+                <p className="text-lg font-medium text-white truncate max-w-full text-center drop-shadow-lg">
+                  {currentInspectCard.name}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {currentInspectEntry?.numberLabel ??
+                    `#${currentInspectCard.number}`}
+                </p>
               </div>
-            )}
-            <div
-              className="absolute bottom-8 left-0 right-0 flex flex-col items-center px-4 pointer-events-none"
-              style={{ transition: `opacity ${INSPECT_ANIM_MS}ms ease-out` }}
-            >
-              <p className="text-lg font-medium text-white truncate max-w-full text-center drop-shadow-lg">{currentInspectCard.name}</p>
-              <p className="text-sm text-gray-500">{selectedSetId === 'ALL' ? `${SETS.find(s => s.id === currentInspectCard.set)?.name ?? currentInspectCard.set} #${currentInspectCard.number}` : `#${currentInspectCard.number}`}</p>
-            </div>
             </div>
           </div>
         )}
 
         <div className="sticky top-0 z-30 bg-black shrink-0 border-b border-gray-800 p-4 space-y-3 backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/')} className="p-2 -ml-2 text-gray-400 hover:text-white">
+            <button
+              onClick={() => navigate("/")}
+              className="p-2 -ml-2 text-gray-400 hover:text-white"
+            >
               <ChevronLeft />
             </button>
-            <h2 className="text-xl font-bold hidden min-[584px]:block">Collection</h2>
+            <h2 className="text-xl font-bold hidden min-[584px]:block">
+              Collection
+            </h2>
             <div
               ref={collectionSetDropdownRef}
               className="relative flex-none min-w-0 shrink max-w-full"
@@ -1243,7 +1582,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
               <button
                 type="button"
                 onClick={() => {
-                  if (collectionSetDropdownOpen) closeCollectionSetDropdownAndFocusSearch();
+                  if (collectionSetDropdownOpen)
+                    closeCollectionSetDropdownAndFocusSearch();
                   else setCollectionSetDropdownOpen(true);
                 }}
                 aria-expanded={collectionSetDropdownOpen}
@@ -1252,15 +1592,21 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                 className="group/dropdown w-full flex items-center justify-between gap-2 bg-gray-900 border border-gray-700 text-white text-sm rounded-lg px-3 py-2 outline-none transition-colors hover:bg-gray-800 hover:border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 truncate min-h-[40px]"
               >
                 <span className="truncate">
-                  {selectedSetId === 'ALL' ? 'All Sets' : (SETS.find((s) => s.id === selectedSetId)?.name ?? selectedSetId)}
+                  {selectedSetId === "ALL"
+                    ? "All Sets"
+                    : (SETS.find((s) => s.id === selectedSetId)?.name ??
+                      selectedSetId)}
                 </span>
                 <span className="flex items-center gap-2 shrink-0">
-                  {selectedSetId !== 'ALL' && (
-                    <span className="hidden headerNarrow:inline shrink-0 text-xs font-mono text-gray-400 bg-gray-800 group-hover/dropdown:bg-gray-900 px-2 py-0.5 rounded transition-colors">{SETS.find((s) => s.id === selectedSetId)?.id ?? selectedSetId}</span>
+                  {selectedSetId !== "ALL" && (
+                    <span className="hidden headerNarrow:inline shrink-0 text-xs font-mono text-gray-400 bg-gray-800 group-hover/dropdown:bg-gray-900 px-2 py-0.5 rounded transition-colors">
+                      {SETS.find((s) => s.id === selectedSetId)?.id ??
+                        selectedSetId}
+                    </span>
                   )}
                   <ChevronDown
                     size={16}
-                    className={`text-gray-400 transition-transform ${collectionSetDropdownOpen ? 'rotate-180' : ''}`}
+                    className={`text-gray-400 transition-transform ${collectionSetDropdownOpen ? "rotate-180" : ""}`}
                   />
                 </span>
               </button>
@@ -1269,25 +1615,27 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   ref={collectionSetListboxRef}
                   role="listbox"
                   className={`absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-gray-700 rounded-lg shadow-xl max-h-[min(60vh,320px)] overflow-y-auto py-1 z-50 transition-all duration-150 ease-out ${
-                    collectionSetDropdownRevealed && !collectionSetDropdownClosing
-                      ? 'opacity-100 translate-y-0'
-                      : 'opacity-0 -translate-y-1 pointer-events-none'
+                    collectionSetDropdownRevealed &&
+                    !collectionSetDropdownClosing
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 -translate-y-1 pointer-events-none"
                   }`}
                   onTransitionEnd={(e) => {
                     if (e.target !== collectionSetListboxRef.current) return;
-                    if (collectionSetDropdownClosing) finishCloseCollectionSetDropdown();
+                    if (collectionSetDropdownClosing)
+                      finishCloseCollectionSetDropdown();
                   }}
                 >
                   <button
                     type="button"
                     role="option"
-                    aria-selected={selectedSetId === 'ALL'}
+                    aria-selected={selectedSetId === "ALL"}
                     data-index={0}
                     onClick={() => {
-                      navigate('/collection');
+                      navigate("/collection");
                       closeCollectionSetDropdownAndFocusSearch();
                     }}
-                    className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 text-left text-sm transition-colors hover:bg-blue-900/40 focus:bg-blue-900/40 focus:outline-none ${selectedSetId === 'ALL' ? 'bg-blue-900/90 text-white' : 'text-gray-200'}`}
+                    className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 text-left text-sm transition-colors hover:bg-blue-900/40 focus:bg-blue-900/40 focus:outline-none ${selectedSetId === "ALL" ? "bg-blue-900/90 text-white" : "text-gray-200"}`}
                   >
                     <span className="truncate">All Sets</span>
                   </button>
@@ -1305,10 +1653,12 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                           if (slug != null) navigate(`/collection/${slug}`);
                           closeCollectionSetDropdownAndFocusSearch();
                         }}
-                        className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 text-left text-sm transition-colors hover:bg-blue-900/40 focus:bg-blue-900/40 focus:outline-none ${isSelected ? 'bg-blue-900/90 text-white' : 'text-gray-200'}`}
+                        className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 text-left text-sm transition-colors hover:bg-blue-900/40 focus:bg-blue-900/40 focus:outline-none ${isSelected ? "bg-blue-900/90 text-white" : "text-gray-200"}`}
                       >
                         <span className="truncate">{set.name}</span>
-                        <span className="shrink-0 text-xs font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded">{set.id}</span>
+                        <span className="shrink-0 text-xs font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded">
+                          {set.id}
+                        </span>
                       </button>
                     );
                   })}
@@ -1317,7 +1667,10 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             </div>
             {(() => {
               const progress = getCollectionProgress(collection, selectedSetId);
-              const statsHash = selectedSetId === 'ALL' ? 'allsets' : (getSetSlug(selectedSetId) ?? selectedSetId);
+              const statsHash =
+                selectedSetId === "ALL"
+                  ? "allsets"
+                  : (getSetSlug(selectedSetId) ?? selectedSetId);
               return (
                 <>
                   {/* Progress region: clickable, same height as dropdown, navigates to Statistics and scrolls to this set */}
@@ -1325,9 +1678,11 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                     type="button"
                     onClick={() => navigate(`/statistics#${statsHash}`)}
                     className="group/progress flex min-h-[40px] min-w-[3rem] items-center gap-2 px-3 py-2 sm:flex-1 rounded-lg border border-gray-700 bg-gray-900 text-left outline-none transition-colors hover:bg-gray-800 hover:border-gray-600 cursor-pointer focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black focus:border-blue-500"
-                    aria-label={`View ${selectedSetId === 'ALL' ? 'All Sets' : 'set'} in Statistics`}
+                    aria-label={`View ${selectedSetId === "ALL" ? "All Sets" : "set"} in Statistics`}
                   >
-                    <span className="text-xs font-medium text-blue-400 shrink-0 tabular-nums">{Math.floor(progress.percentage)}%</span>
+                    <span className="text-xs font-medium text-blue-400 shrink-0 tabular-nums">
+                      {Math.floor(progress.percentage)}%
+                    </span>
                     <div className="hidden sm:block flex-1 min-w-[48px] h-3 bg-gray-800 group-hover/progress:bg-gray-900 rounded-full overflow-hidden transition-colors">
                       <div
                         className="bg-gradient-to-r from-blue-600 to-purple-500 h-full rounded-full transition-all duration-1000 ease-out"
@@ -1350,7 +1705,10 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           </div>
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                size={16}
+              />
               <input
                 ref={collectionSearchInputRef}
                 type="text"
@@ -1362,8 +1720,10 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
               />
             </div>
             <button
-              className={`p-2 rounded-lg border ${filterOwned === 'owned' ? 'bg-blue-600 border-blue-600 text-white' : 'bg-gray-800 border-gray-700 text-gray-400'}`}
-              onClick={() => setFilterOwned(prev => prev === 'owned' ? 'all' : 'owned')}
+              className={`p-2 rounded-lg border ${filterOwned === "owned" ? "bg-blue-600 border-blue-600 text-white" : "bg-gray-800 border-gray-700 text-gray-400"}`}
+              onClick={() =>
+                setFilterOwned((prev) => (prev === "owned" ? "all" : "owned"))
+              }
               title="Show Owned Only"
             >
               <Filter size={18} />
@@ -1374,118 +1734,138 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           ref={collectionScrollRef}
           className="flex-1 min-h-0 overflow-y-auto"
         >
-        <div className="p-4 pb-24 touch-pan-y relative">
-          <div
-            key={searchQuery}
-            className="transition-[opacity,transform] duration-300 ease-out"
-            style={{
-              opacity: searchResultsRevealed ? 1 : 0,
-              transform: searchResultsRevealed ? 'translateY(0)' : 'translateY(12px)',
-            }}
-            ref={(el) => {
-              // #region agent log
-              if (el) {
-                const opacity = el.style.opacity ?? getComputedStyle(el).opacity;
-                fetch('http://127.0.0.1:7308/ingest/e2a675be-aace-40d9-9f6f-4eca8610d3c2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.tsx:search-results-wrapper',message:'Search results wrapper mounted',data:{searchQuery:searchQuery.slice(0,20),searchResultsRevealed,opacity},hypothesisId:'H1',timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix'})}).catch(()=>{});
-              }
-              // #endregion
-            }}
-          >
-          {filteredCards.length === 0 ? (
-            <div className="py-20 text-center text-gray-500 flex flex-col items-center">
-              <p>No cards found.</p>
-            </div>
-          ) : filteredCards.length > 50 ? (
-            <>
-              <div
-                style={{
-                  height: collectionVirtualizer.getTotalSize(),
-                  position: 'relative',
-                  width: '100%',
-                  marginTop: 16,
-                  marginBottom: 96,
-                }}
-              >
-              {collectionVirtualizer.getVirtualItems().map((virtualRow) => (
-                <div
-                  key={virtualRow.key}
-                  ref={collectionVirtualizer.measureElement}
-                  data-index={virtualRow.index}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    transform: `translateY(${virtualRow.start}px)`,
-                  }}
-                  className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4 select-none"
-                >
-                  {filteredCards
-                    .slice(
-                      virtualRow.index * collectionColumnCount,
-                      (virtualRow.index + 1) * collectionColumnCount
-                    )
-                    .map((card, i) => {
-                      const index = virtualRow.index * collectionColumnCount + i;
-                      return (
-                        <CardItem
-                          key={card.id}
-                          card={card}
-                          count={collection[card.id] || 0}
-                          showSetInNumber={selectedSetId === 'ALL'}
-                          setName={selectedSetId === 'ALL' ? SETS.find(s => s.id === card.set)?.name : undefined}
-                          onIncrement={(searchWasFocused) => {
-                            handleUpdateCount(card.id, 1);
-                            if (searchWasFocused) focusSearchAndSelectAll();
-                          }}
-                          onDecrement={(searchWasFocused) => {
-                            handleUpdateCount(card.id, -1);
-                            if (searchWasFocused) focusSearchAndSelectAll();
-                          }}
-                          searchInputRef={collectionSearchInputRef}
-                          onLongPress={(rect) => {
-                            setInspectOriginRect(rect);
-                            setInspectExitRect(null);
-                            setInspectView({ index, maxIndex: filteredCards.length - 1 });
-                            setInspectPhase('entering');
-                          }}
-                        />
-                      );
-                    })}
+          <div className="p-4 pb-24 touch-pan-y relative">
+            <div
+              key={searchQuery}
+              className="transition-[opacity,transform] duration-300 ease-out"
+              style={{
+                opacity: searchResultsRevealed ? 1 : 0,
+                transform: searchResultsRevealed
+                  ? "translateY(0)"
+                  : "translateY(12px)",
+              }}
+            >
+              {filteredCards.length === 0 ? (
+                <div className="py-20 text-center text-gray-500 flex flex-col items-center">
+                  <p>No cards found.</p>
                 </div>
-              ))}
-              </div>
-            </>
-          ) : (
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4 select-none">
-              {filteredCards.map((card, index) => (
-                <CardItem
-                  key={card.id}
-                  card={card}
-                  count={collection[card.id] || 0}
-                  showSetInNumber={selectedSetId === 'ALL'}
-                  setName={selectedSetId === 'ALL' ? SETS.find(s => s.id === card.set)?.name : undefined}
-                  onIncrement={(searchWasFocused) => {
-                    handleUpdateCount(card.id, 1);
-                    if (searchWasFocused) focusSearchAndSelectAll();
-                  }}
-                  onDecrement={(searchWasFocused) => {
-                    handleUpdateCount(card.id, -1);
-                    if (searchWasFocused) focusSearchAndSelectAll();
-                  }}
-                  searchInputRef={collectionSearchInputRef}
-                  onLongPress={(rect) => {
-                  setInspectOriginRect(rect);
-                  setInspectExitRect(null);
-                  setInspectView({ index, maxIndex: filteredCards.length - 1 });
-                  setInspectPhase('entering');
-                }}
-                />
-              ))}
+              ) : filteredCards.length > 50 ? (
+                <>
+                  <div
+                    style={{
+                      height: collectionVirtualizer.getTotalSize(),
+                      position: "relative",
+                      width: "100%",
+                      marginTop: 16,
+                      marginBottom: 96,
+                    }}
+                  >
+                    {collectionVirtualizer
+                      .getVirtualItems()
+                      .map((virtualRow) => (
+                        <div
+                          key={virtualRow.key}
+                          ref={collectionVirtualizer.measureElement}
+                          data-index={virtualRow.index}
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            transform: `translateY(${virtualRow.start}px)`,
+                          }}
+                          className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4 select-none"
+                        >
+                          {filteredCards
+                            .slice(
+                              virtualRow.index * collectionColumnCount,
+                              (virtualRow.index + 1) * collectionColumnCount,
+                            )
+                            .map((entry, i) => {
+                              const card = entry.card;
+                              const index =
+                                virtualRow.index * collectionColumnCount + i;
+                              return (
+                                <CardItem
+                                  key={entry.key}
+                                  card={card}
+                                  count={entry.count}
+                                  numberLabelOverride={entry.numberLabel}
+                                  showSetInNumber={selectedSetId === "ALL"}
+                                  setName={
+                                    selectedSetId === "ALL"
+                                      ? SETS.find((s) => s.id === card.set)
+                                          ?.name
+                                      : undefined
+                                  }
+                                  onIncrement={(searchWasFocused) => {
+                                    applyCollectionDelta(entry, 1);
+                                    if (searchWasFocused)
+                                      focusSearchAndSelectAll();
+                                  }}
+                                  onDecrement={(searchWasFocused) => {
+                                    applyCollectionDelta(entry, -1);
+                                    if (searchWasFocused)
+                                      focusSearchAndSelectAll();
+                                  }}
+                                  searchInputRef={collectionSearchInputRef}
+                                  onLongPress={(rect) => {
+                                    setInspectOriginRect(rect);
+                                    setInspectExitRect(null);
+                                    setInspectView({
+                                      index,
+                                      maxIndex: filteredCards.length - 1,
+                                    });
+                                    setInspectPhase("entering");
+                                  }}
+                                />
+                              );
+                            })}
+                        </div>
+                      ))}
+                  </div>
+                </>
+              ) : (
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4 select-none">
+                  {filteredCards.map((entry, index) => {
+                    const card = entry.card;
+                    return (
+                      <CardItem
+                        key={entry.key}
+                        card={card}
+                        count={entry.count}
+                        numberLabelOverride={entry.numberLabel}
+                        showSetInNumber={selectedSetId === "ALL"}
+                        setName={
+                          selectedSetId === "ALL"
+                            ? SETS.find((s) => s.id === card.set)?.name
+                            : undefined
+                        }
+                        onIncrement={(searchWasFocused) => {
+                          applyCollectionDelta(entry, 1);
+                          if (searchWasFocused) focusSearchAndSelectAll();
+                        }}
+                        onDecrement={(searchWasFocused) => {
+                          applyCollectionDelta(entry, -1);
+                          if (searchWasFocused) focusSearchAndSelectAll();
+                        }}
+                        searchInputRef={collectionSearchInputRef}
+                        onLongPress={(rect) => {
+                          setInspectOriginRect(rect);
+                          setInspectExitRect(null);
+                          setInspectView({
+                            index,
+                            maxIndex: filteredCards.length - 1,
+                          });
+                          setInspectPhase("entering");
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          )}
           </div>
-        </div>
         </div>
       </div>
     );
@@ -1495,7 +1875,10 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     <div className="flex flex-col h-screen min-h-0 overflow-y-auto">
       <div className="sticky top-0 z-30 bg-black shrink-0 border-b border-gray-800 p-4 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate('/')} className="p-2 -ml-2 text-gray-400 hover:text-white">
+          <button
+            onClick={() => navigate("/")}
+            className="p-2 -ml-2 text-gray-400 hover:text-white"
+          >
             <ChevronLeft />
           </button>
           <h2 className="text-xl font-bold">Statistics</h2>
@@ -1504,22 +1887,28 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       <div className="p-6 space-y-6 pb-12">
         {/* All Sets: always first, links to /collection. Percentile rounded down to hundredths, two decimal places. */}
         {(() => {
-          const allStats = getCollectionProgress(collection, 'ALL');
+          const allStats = getCollectionProgress(collection, "ALL");
           const allPct = Math.floor(allStats.percentage * 100) / 100;
           return (
             <button
               type="button"
               id="allsets"
-              onClick={() => navigate('/collection')}
-              className={`scroll-mt-24 w-full text-left bg-gray-900 border rounded-xl p-5 shadow-lg transition-colors hover:bg-gray-700 hover:border-gray-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${statsFlashTargetId === 'allsets' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-gray-800'}`}
+              onClick={() => navigate("/collection")}
+              className={`scroll-mt-24 w-full text-left bg-gray-900 border rounded-xl p-5 shadow-lg transition-colors hover:bg-gray-700 hover:border-gray-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${statsFlashTargetId === "allsets" ? "ring-2 ring-blue-500 border-blue-500" : "border-gray-800"}`}
             >
               <div className="flex items-center justify-between mb-4 gap-3">
                 <div className="flex items-center gap-2 min-w-0">
-                  <h3 className="text-lg font-bold text-white truncate">All Sets</h3>
+                  <h3 className="text-lg font-bold text-white truncate">
+                    All Sets
+                  </h3>
                 </div>
                 <div className="text-right shrink-0">
-                  <div className="text-xs text-gray-500 whitespace-nowrap">{allStats.owned} / {allStats.total}</div>
-                  <div className="text-[10px] text-gray-500 whitespace-nowrap">{allStats.totalCopies} total</div>
+                  <div className="text-xs text-gray-500 whitespace-nowrap">
+                    {allStats.owned} / {allStats.total}
+                  </div>
+                  <div className="text-[10px] text-gray-500 whitespace-nowrap">
+                    {allStats.totalCopies} total
+                  </div>
                 </div>
               </div>
               <div className="w-full bg-gray-800 rounded-full h-4 overflow-hidden">
@@ -1529,12 +1918,14 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                 />
               </div>
               <div className="mt-2 text-right">
-                <span className="text-sm font-medium text-blue-400">{allPct.toFixed(2)}% Complete</span>
+                <span className="text-sm font-medium text-blue-400">
+                  {allPct.toFixed(2)}% Complete
+                </span>
               </div>
             </button>
           );
         })()}
-        {SETS.map(set => {
+        {SETS.map((set) => {
           const stats = getSetProgress(set.id, collection);
           const slug = getSetSlug(set.id);
           const pct = Math.floor(stats.percentage * 100) / 100;
@@ -1544,18 +1935,24 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
               type="button"
               id={slug ?? set.id}
               onClick={() => slug != null && navigate(`/collection/${slug}`)}
-              className={`scroll-mt-24 w-full text-left bg-gray-900 border rounded-xl p-5 shadow-lg transition-colors hover:bg-gray-700 hover:border-gray-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${statsFlashTargetId === (slug ?? set.id) ? 'ring-2 ring-blue-500 border-blue-500' : 'border-gray-800'}`}
+              className={`scroll-mt-24 w-full text-left bg-gray-900 border rounded-xl p-5 shadow-lg transition-colors hover:bg-gray-700 hover:border-gray-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${statsFlashTargetId === (slug ?? set.id) ? "ring-2 ring-blue-500 border-blue-500" : "border-gray-800"}`}
             >
               <div className="flex items-center justify-between mb-4 gap-3">
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="shrink-0 text-xs font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded">
                     {set.id}
                   </span>
-                  <h3 className="text-lg font-bold text-white truncate">{set.name}</h3>
+                  <h3 className="text-lg font-bold text-white truncate">
+                    {set.name}
+                  </h3>
                 </div>
                 <div className="text-right shrink-0">
-                  <div className="text-xs text-gray-500 whitespace-nowrap">{stats.owned} / {stats.total}</div>
-                  <div className="text-[10px] text-gray-500 whitespace-nowrap">{stats.totalCopies} total</div>
+                  <div className="text-xs text-gray-500 whitespace-nowrap">
+                    {stats.owned} / {stats.total}
+                  </div>
+                  <div className="text-[10px] text-gray-500 whitespace-nowrap">
+                    {stats.totalCopies} total
+                  </div>
                 </div>
               </div>
               <div className="w-full bg-gray-800 rounded-full h-4 overflow-hidden">
@@ -1565,7 +1962,9 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                 />
               </div>
               <div className="mt-2 text-right">
-                <span className="text-sm font-medium text-blue-400">{pct.toFixed(2)}% Complete</span>
+                <span className="text-sm font-medium text-blue-400">
+                  {pct.toFixed(2)}% Complete
+                </span>
               </div>
             </button>
           );
@@ -1596,7 +1995,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans overflow-hidden flex flex-col">
-      {(!clerkUser && !demoBannerDismissed && !demoBannerDontShow) || demoBannerDismissing ? (
+      {(!clerkUser && !demoBannerDismissed && !demoBannerDontShow) ||
+      demoBannerDismissing ? (
         <div
           className="overflow-hidden transition-[max-height] duration-200 ease-out"
           style={{ maxHeight: demoBannerDismissing ? 0 : 150 }}
@@ -1607,13 +2007,21 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         >
           <div
             className={`sticky top-0 z-40 shrink-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-2 bg-amber-500/15 border-b border-amber-500/30 text-sm transition-[opacity,transform] duration-200 ease-out ${
-              demoBannerDismissing ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'
+              demoBannerDismissing
+                ? "opacity-0 -translate-y-2 pointer-events-none"
+                : "opacity-100 translate-y-0"
             }`}
           >
-            <span className="text-amber-200 min-w-0 flex-1">You&apos;re exploring in demo mode, where your on-device data is at risk of being deleted. Sign in to save your collection to the cloud.</span>
+            <span className="text-amber-200 min-w-0 flex-1">
+              You&apos;re exploring in demo mode, where your on-device data is
+              at risk of being deleted. Sign in to save your collection to the
+              cloud.
+            </span>
             <div className="flex items-center gap-2 shrink-0">
               <SignInButton mode="modal">
-                <Button variant="primary" size="sm">Sign in to save</Button>
+                <Button variant="primary" size="sm">
+                  Sign in to save
+                </Button>
               </SignInButton>
               <button
                 type="button"
@@ -1630,7 +2038,9 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       {!clerkUser && (showDismissedToast || toastExiting) && (
         <div
           className={`fixed top-4 left-4 right-4 z-40 overflow-hidden rounded-lg bg-gray-800 border border-gray-700 shadow-lg text-sm sm:left-auto sm:right-4 sm:max-w-sm transition-all duration-200 ease-out ${
-            toastRevealed && !toastExiting ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
+            toastRevealed && !toastExiting
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 -translate-y-full"
           }`}
           role="status"
           aria-live="polite"
@@ -1662,43 +2072,66 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           <div className="h-0.5 w-full bg-gray-700" aria-hidden="true">
             <div
               className="h-full bg-amber-500/70"
-              style={{ animation: `toast-bar-shrink ${DISMISSED_TOAST_DURATION_SEC}s linear forwards` }}
+              style={{
+                animation: `toast-bar-shrink ${DISMISSED_TOAST_DURATION_SEC}s linear forwards`,
+              }}
             />
           </div>
         </div>
       )}
-      {(guestMergePrompt === 'loading' || guestMergePrompt === 'open') && (
+      {(guestMergePrompt === "loading" || guestMergePrompt === "open") && (
         <Modal
           isOpen
           onClose={handleGuestMergeCancel}
-          title={guestMergePrompt === 'loading' ? 'Loading your account…' : 'You have on-device collection data'}
+          title={
+            guestMergePrompt === "loading"
+              ? "Loading your account…"
+              : "You have on-device collection data"
+          }
         >
-          {guestMergePrompt === 'loading' ? (
+          {guestMergePrompt === "loading" ? (
             <div className="flex flex-col items-center gap-4 py-4">
               <Loader2 size={32} className="animate-spin text-gray-400" />
               <p className="text-sm text-gray-400 text-center">
-                Loading your saved collection so you can choose how to combine it with your on-device data.
+                Loading your saved collection so you can choose how to combine
+                it with your on-device data.
               </p>
-              <Button variant="secondary" size="sm" onClick={handleGuestMergeCancel}>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleGuestMergeCancel}
+              >
                 Cancel and stay in demo mode
               </Button>
             </div>
           ) : (
             <div className="space-y-4">
               <p className="text-sm text-gray-400">
-                You signed in with collection data already on this device. Choose how to use it with your account:
+                You signed in with collection data already on this device.
+                Choose how to use it with your account:
               </p>
               <div className="space-y-3">
                 <div className="rounded-lg border border-gray-700 bg-gray-800/50 p-4 space-y-2">
-                  <Button variant="primary" fullWidth onClick={handleGuestMergeMerge} className="justify-center">
+                  <Button
+                    variant="primary"
+                    fullWidth
+                    onClick={handleGuestMergeMerge}
+                    className="justify-center"
+                  >
                     Merge into account
                   </Button>
                   <p className="text-xs text-gray-500">
-                    Add on-device and cloud card counts together. On-device data will be deleted.
+                    Add on-device and cloud card counts together. On-device data
+                    will be deleted.
                   </p>
                 </div>
                 <div className="rounded-lg border border-gray-700 bg-gray-800/50 p-4 space-y-2">
-                  <Button variant="secondary" fullWidth onClick={handleGuestMergeUseCloudOnly} className="justify-center">
+                  <Button
+                    variant="secondary"
+                    fullWidth
+                    onClick={handleGuestMergeUseCloudOnly}
+                    className="justify-center"
+                  >
                     Use cloud only
                   </Button>
                   <p className="text-xs text-gray-500">
@@ -1706,11 +2139,17 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   </p>
                 </div>
                 <div className="rounded-lg border border-gray-700 bg-gray-800/50 p-4 space-y-2">
-                  <Button variant="secondary" fullWidth onClick={handleGuestMergeCancel} className="justify-center border-gray-600">
+                  <Button
+                    variant="secondary"
+                    fullWidth
+                    onClick={handleGuestMergeCancel}
+                    className="justify-center border-gray-600"
+                  >
                     Cancel
                   </Button>
                   <p className="text-xs text-gray-500">
-                    Sign out and return to demo mode. On-device data will be saved.
+                    Sign out and return to demo mode. On-device data will be
+                    saved.
                   </p>
                 </div>
               </div>
@@ -1721,20 +2160,30 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       <div
         aria-hidden="true"
         className="absolute -left-[9999px] opacity-0 pointer-events-none text-sm whitespace-nowrap flex items-center gap-2"
-        ref={(el) => { if (el && !measurerMountedOnceRef.current) { measurerMountedOnceRef.current = true; setMeasurerMounted(1); } }}
+        ref={(el) => {
+          if (el && !measurerMountedOnceRef.current) {
+            measurerMountedOnceRef.current = true;
+            setMeasurerMounted(1);
+          }
+        }}
       >
         <span ref={collectionSetMeasureRef}>{LONGEST_SET_NAME}</span>
-        <span ref={collectionSetIdMeasureRef} className="shrink-0 text-xs font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded">{LONGEST_SET_ID}</span>
+        <span
+          ref={collectionSetIdMeasureRef}
+          className="shrink-0 text-xs font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded"
+        >
+          {LONGEST_SET_ID}
+        </span>
       </div>
       <div className="flex-1 min-h-0 overflow-hidden">
         <div
           key={
-            location.pathname === '/'
-              ? 'dashboard'
-              : location.pathname.startsWith('/collection')
-                ? 'collection'
-                : location.pathname === '/statistics'
-                  ? 'statistics'
+            location.pathname === "/"
+              ? "dashboard"
+              : location.pathname.startsWith("/collection")
+                ? "collection"
+                : location.pathname === "/statistics"
+                  ? "statistics"
                   : location.pathname
           }
           className="h-full min-h-0 overflow-hidden animate-fade-in"

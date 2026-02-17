@@ -1,10 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Card, Rarity } from '../types';
-import { Minus, ImageOff } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+import { Card, Rarity } from "../types";
+import { Minus, ImageOff } from "lucide-react";
 
 const LONG_PRESS_MS = 500;
 
-export type CardRect = { left: number; top: number; width: number; height: number };
+export type CardRect = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
 
 interface CardItemProps {
   card: Card;
@@ -18,6 +23,8 @@ interface CardItemProps {
   showSetInNumber?: boolean;
   /** Set name for the label when showSetInNumber is true (e.g. "Genetic Apex") */
   setName?: string;
+  /** Optional explicit label under the card name; overrides set/number formatting. */
+  numberLabelOverride?: string;
 }
 
 export const CardItem: React.FC<CardItemProps> = ({
@@ -29,10 +36,13 @@ export const CardItem: React.FC<CardItemProps> = ({
   searchInputRef,
   showSetInNumber = false,
   setName,
+  numberLabelOverride,
 }) => {
-  const numberLabel = showSetInNumber
-    ? `${setName ?? card.set} #${card.number}`
-    : `#${card.number}`;
+  const numberLabel =
+    numberLabelOverride ??
+    (showSetInNumber
+      ? `${setName ?? card.set} #${card.number}`
+      : `#${card.number}`);
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const isOwned = count > 0;
@@ -43,7 +53,8 @@ export const CardItem: React.FC<CardItemProps> = ({
 
   const captureSearchFocusState = () => {
     searchWasFocusedRef.current = !!(
-      searchInputRef?.current && document.activeElement === searchInputRef.current
+      searchInputRef?.current &&
+      document.activeElement === searchInputRef.current
     );
   };
 
@@ -55,9 +66,11 @@ export const CardItem: React.FC<CardItemProps> = ({
 
   // Visual cues for rarity
   const getRarityColor = (r: Rarity) => {
-    if (r === Rarity.ILLUSTRATION_RARE || r === Rarity.CROWN_RARE) return 'border-yellow-400 shadow-yellow-900/40';
-    if (r === Rarity.DOUBLE_RARE) return 'border-purple-400 shadow-purple-900/40';
-    return 'border-gray-700 shadow-black/40';
+    if (r === Rarity.ILLUSTRATION_RARE || r === Rarity.CROWN_RARE)
+      return "border-yellow-400 shadow-yellow-900/40";
+    if (r === Rarity.DOUBLE_RARE)
+      return "border-purple-400 shadow-purple-900/40";
+    return "border-gray-700 shadow-black/40";
   };
 
   const clearLongPressTimer = () => {
@@ -119,7 +132,7 @@ export const CardItem: React.FC<CardItemProps> = ({
   };
 
   return (
-    <div 
+    <div
       className="relative group flex flex-col items-center select-none touch-manipulation"
       data-card-id={card.id}
     >
@@ -136,7 +149,7 @@ export const CardItem: React.FC<CardItemProps> = ({
           relative w-full aspect-[2.5/3.5] rounded-lg overflow-hidden border-2 transition-all duration-300
           ${getRarityColor(card.rarity)}
           opacity-100
-          ${isOwned ? 'shadow-xl' : 'grayscale'}
+          ${isOwned ? "shadow-xl" : "grayscale"}
           active:scale-95 cursor-pointer bg-gray-800
         `}
       >
@@ -160,7 +173,10 @@ export const CardItem: React.FC<CardItemProps> = ({
             />
             {/* Darkening overlay for unowned cards (matches background; keeps card fully opaque for smooth inspect transition) */}
             {!isOwned && (
-              <div className="absolute inset-0 bg-black/60 pointer-events-none" aria-hidden />
+              <div
+                className="absolute inset-0 bg-black/60 pointer-events-none"
+                aria-hidden
+              />
             )}
           </>
         ) : (
@@ -169,7 +185,7 @@ export const CardItem: React.FC<CardItemProps> = ({
             <span className="text-[10px] font-mono">{numberLabel}</span>
           </div>
         )}
-        
+
         {/* Count Badge */}
         {count > 0 && (
           <div className="absolute top-1 right-1 bg-blue-600 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full shadow-md z-10">
@@ -180,28 +196,34 @@ export const CardItem: React.FC<CardItemProps> = ({
         {/* Rarity Indicator (Text Overlay) */}
         <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6">
           <p className="text-[10px] text-gray-300 uppercase tracking-wider text-center font-bold truncate">
-            {card.rarity === Rarity.DOUBLE_RARE ? 'RR' : card.rarity === Rarity.ILLUSTRATION_RARE ? 'IR' : ''}
+            {card.rarity === Rarity.DOUBLE_RARE
+              ? "RR"
+              : card.rarity === Rarity.ILLUSTRATION_RARE
+                ? "IR"
+                : ""}
           </p>
         </div>
       </div>
 
       <div className="mt-2 w-full flex items-center justify-between px-1">
-         <div className="flex-1 min-w-0">
-           <p className="text-xs font-medium text-gray-200 truncate">{card.name}</p>
-           <p className="text-[10px] text-gray-500">{numberLabel}</p>
-         </div>
-         {isOwned && (
-         <button
-             onPointerDown={captureSearchFocusState}
-             onClick={(e) => {
-                e.stopPropagation();
-                onDecrement(searchWasFocusedRef.current);
-             }}
-             className="ml-2 p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-full"
-           >
-             <Minus size={14} />
-           </button>
-         )}
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-medium text-gray-200 truncate">
+            {card.name}
+          </p>
+          <p className="text-[10px] text-gray-500">{numberLabel}</p>
+        </div>
+        {isOwned && (
+          <button
+            onPointerDown={captureSearchFocusState}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDecrement(searchWasFocusedRef.current);
+            }}
+            className="ml-2 p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-full"
+          >
+            <Minus size={14} />
+          </button>
+        )}
       </div>
     </div>
   );

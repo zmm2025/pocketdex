@@ -1,90 +1,13 @@
 {
-  "generatedAt": "2026-02-01T12:57:38.264Z",
+  "generatedAt": "2026-02-17T11:54:37.631Z",
   "source": "https://www.serebii.net/tcgpocket/",
   "sets": [
     {
-      "id": "B1b",
-      "name": "Fantastical Parade",
-      "totalCards": 234,
+      "id": "A1",
+      "name": "Genetic Apex",
+      "totalCards": 286,
       "packs": [],
-      "slug": "fantasticalparade"
-    },
-    {
-      "id": "B1a",
-      "name": "Crimson Blaze",
-      "totalCards": 103,
-      "packs": [],
-      "slug": "crimsonblaze"
-    },
-    {
-      "id": "B1",
-      "name": "Mega Rising",
-      "totalCards": 331,
-      "packs": [],
-      "slug": "megarising"
-    },
-    {
-      "id": "A4b",
-      "name": "Deluxe Pack ex",
-      "totalCards": 379,
-      "packs": [],
-      "slug": "deluxepackex"
-    },
-    {
-      "id": "A4a",
-      "name": "Secluded Springs",
-      "totalCards": 105,
-      "packs": [],
-      "slug": "secludedsprings"
-    },
-    {
-      "id": "A4",
-      "name": "Wisdom of Sea and Sky",
-      "totalCards": 241,
-      "packs": [],
-      "slug": "wisdomofseaandsky"
-    },
-    {
-      "id": "A3b",
-      "name": "Eevee Grove",
-      "totalCards": 107,
-      "packs": [],
-      "slug": "eeveegrove"
-    },
-    {
-      "id": "A3a",
-      "name": "Extradimensional Crisis",
-      "totalCards": 103,
-      "packs": [],
-      "slug": "extradimensionalcrisis"
-    },
-    {
-      "id": "A3",
-      "name": "Celestial Guardians",
-      "totalCards": 239,
-      "packs": [],
-      "slug": "celestialguardians"
-    },
-    {
-      "id": "A2b",
-      "name": "Shining Revelry",
-      "totalCards": 111,
-      "packs": [],
-      "slug": "shiningrevelry"
-    },
-    {
-      "id": "A2a",
-      "name": "Triumphant Light",
-      "totalCards": 96,
-      "packs": [],
-      "slug": "triumphantlight"
-    },
-    {
-      "id": "A2",
-      "name": "Space-Time Smackdown",
-      "totalCards": 207,
-      "packs": [],
-      "slug": "space-timesmackdown"
+      "slug": "geneticapex"
     },
     {
       "id": "A1a",
@@ -94,18 +17,88 @@
       "slug": "mythicalisland"
     },
     {
-      "id": "A1",
-      "name": "Genetic Apex",
-      "totalCards": 286,
+      "id": "A2",
+      "name": "Space-time Smackdown",
+      "totalCards": 207,
       "packs": [],
-      "slug": "geneticapex"
+      "slug": "space-timesmackdown"
     },
     {
-      "id": "PROMO-B",
-      "name": "Promo-B",
-      "totalCards": 32,
+      "id": "A2a",
+      "name": "Triumphant Light",
+      "totalCards": 96,
       "packs": [],
-      "slug": "promo-b"
+      "slug": "triumphantlight"
+    },
+    {
+      "id": "A2b",
+      "name": "Shining Revelry",
+      "totalCards": 111,
+      "packs": [],
+      "slug": "shiningrevelry"
+    },
+    {
+      "id": "A3",
+      "name": "Celestial Guardians",
+      "totalCards": 239,
+      "packs": [],
+      "slug": "celestialguardians"
+    },
+    {
+      "id": "A3a",
+      "name": "Extradimensional Crisis",
+      "totalCards": 103,
+      "packs": [],
+      "slug": "extradimensionalcrisis"
+    },
+    {
+      "id": "A3b",
+      "name": "Eevee Grove",
+      "totalCards": 107,
+      "packs": [],
+      "slug": "eeveegrove"
+    },
+    {
+      "id": "A4",
+      "name": "Wisdom of Sea and Sky",
+      "totalCards": 241,
+      "packs": [],
+      "slug": "wisdomofseaandsky"
+    },
+    {
+      "id": "A4a",
+      "name": "Secluded Springs",
+      "totalCards": 105,
+      "packs": [],
+      "slug": "secludedsprings"
+    },
+    {
+      "id": "A4b",
+      "name": "Deluxe Pack ex",
+      "totalCards": 379,
+      "packs": [],
+      "slug": "deluxepackex"
+    },
+    {
+      "id": "B1",
+      "name": "Mega Rising",
+      "totalCards": 331,
+      "packs": [],
+      "slug": "megarising"
+    },
+    {
+      "id": "B1a",
+      "name": "Crimson Blaze",
+      "totalCards": 103,
+      "packs": [],
+      "slug": "crimsonblaze"
+    },
+    {
+      "id": "B1b",
+      "name": "Fantastical Parade",
+      "totalCards": 234,
+      "packs": [],
+      "slug": "fantasticalparade"
     },
     {
       "id": "PROMO-A",
@@ -113,6 +106,13 @@
       "totalCards": 117,
       "packs": [],
       "slug": "promo-a"
+    },
+    {
+      "id": "PROMO-B",
+      "name": "Promo-B",
+      "totalCards": 32,
+      "packs": [],
+      "slug": "promo-b"
     }
   ]
 }
