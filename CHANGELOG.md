@@ -14,7 +14,7 @@ List is subject to change without notice.
 - **App Settings**: Account-based app settings like theme & UI behavior
 - **Blog**: On-website blog with changelog for updates
 - **UX/UI**: Website themes, new press animations, interaction tweaks, Alpha state banner, external links (source code, donations), feedback modal, new logo and art
-- **Bug fixes**: Deluxe Pack card registration, guides for testing to prevent bugs
+- **Bug fixes**: Guides for testing to prevent bugs
 - Community Discord
 - Performance improvements
 - README data privacy disclosure
