@@ -917,7 +917,13 @@
       "energyType": "Fire",
       "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
-      "health": 30
+      "health": 30,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4",
@@ -1810,7 +1816,13 @@
       "weakness": {
         "type": "Lightning",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4",
@@ -1887,7 +1899,13 @@
       "energyType": "Lightning",
       "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
-      "health": 30
+      "health": 30,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4",
@@ -1993,7 +2011,13 @@
       "energyType": "Lightning",
       "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
-      "health": 30
+      "health": 30,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4",
@@ -2128,7 +2152,13 @@
       "energyType": "Psychic",
       "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
-      "health": 30
+      "health": 30,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4",
@@ -2176,7 +2206,13 @@
       "energyType": "Psychic",
       "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
-      "health": 30
+      "health": 30,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4",
@@ -2862,7 +2898,13 @@
       "energyType": "Fighting",
       "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
-      "health": 30
+      "health": 30,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4",
@@ -3291,7 +3333,13 @@
       "weakness": {
         "type": "Grass",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4",
@@ -4345,7 +4393,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4",
@@ -4362,7 +4416,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4",
@@ -4603,7 +4663,13 @@
       "weakness": {
         "type": "Water",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4",
@@ -4738,7 +4804,13 @@
       "energyType": "Lightning",
       "raritySymbol": "star1",
       "rarityLabel": "Art Rare",
-      "health": 30
+      "health": 30,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4",

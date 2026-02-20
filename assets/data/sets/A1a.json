@@ -602,7 +602,13 @@
       "weakness": {
         "type": "Lightning",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A1a",

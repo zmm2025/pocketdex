@@ -1,0 +1,799 @@
+{
+  "setPacks": {
+    "A1": [
+      {
+        "id": "pikachu",
+        "name": "Pikachu"
+      },
+      {
+        "id": "charizard",
+        "name": "Charizard"
+      },
+      {
+        "id": "mewtwo",
+        "name": "Mewtwo"
+      }
+    ],
+    "A1a": [
+      {
+        "id": "mew",
+        "name": "Mew"
+      }
+    ],
+    "A2": [
+      {
+        "id": "dialga",
+        "name": "Dialga"
+      },
+      {
+        "id": "palkia",
+        "name": "Palkia"
+      }
+    ],
+    "A2a": [
+      {
+        "id": "arceus",
+        "name": "Arceus"
+      }
+    ],
+    "A2b": [
+      {
+        "id": "booster",
+        "name": "Booster"
+      }
+    ],
+    "A3": [
+      {
+        "id": "solgaleo",
+        "name": "Solgaleo"
+      },
+      {
+        "id": "lunala",
+        "name": "Lunala"
+      }
+    ],
+    "A3a": [
+      {
+        "id": "booster",
+        "name": "Booster"
+      }
+    ],
+    "A3b": [
+      {
+        "id": "booster",
+        "name": "Booster"
+      }
+    ],
+    "A4": [
+      {
+        "id": "lugia",
+        "name": "Lugia"
+      },
+      {
+        "id": "ho-oh",
+        "name": "Ho Oh"
+      }
+    ],
+    "A4a": [
+      {
+        "id": "booster",
+        "name": "Booster"
+      }
+    ],
+    "A4b": [
+      {
+        "id": "booster",
+        "name": "Booster"
+      }
+    ],
+    "B1": [
+      {
+        "id": "megablaziken",
+        "name": "Megablaziken"
+      },
+      {
+        "id": "megagyarados",
+        "name": "Megagyarados"
+      },
+      {
+        "id": "megaaltaria",
+        "name": "Megaaltaria"
+      }
+    ],
+    "B1a": [
+      {
+        "id": "booster",
+        "name": "Booster"
+      }
+    ],
+    "B1b": [
+      {
+        "id": "booster",
+        "name": "Booster"
+      }
+    ],
+    "PROMO-A": [],
+    "PROMO-B": []
+  },
+  "cardPacks": {
+    "A1-216": [
+      "pikachu"
+    ],
+    "A1-217": [
+      "charizard"
+    ],
+    "A1-218": [
+      "mewtwo"
+    ],
+    "A1-219": [
+      "charizard"
+    ],
+    "A1-220": [
+      "pikachu"
+    ],
+    "A1-221": [
+      "charizard"
+    ],
+    "A1-222": [
+      "mewtwo"
+    ],
+    "A1-223": [
+      "mewtwo"
+    ],
+    "A1-224": [
+      "pikachu"
+    ],
+    "A1-225": [
+      "charizard"
+    ],
+    "A1-226": [
+      "pikachu"
+    ],
+    "A1-266": [
+      "charizard"
+    ],
+    "A1-267": [
+      "pikachu"
+    ],
+    "A1-268": [
+      "charizard"
+    ],
+    "A1-269": [
+      "mewtwo"
+    ],
+    "A1-270": [
+      "mewtwo"
+    ],
+    "A1-271": [
+      "pikachu"
+    ],
+    "A1-272": [
+      "charizard"
+    ],
+    "A1-273": [
+      "pikachu"
+    ],
+    "A1a-063": [
+      "mew"
+    ],
+    "A1a-064": [
+      "mew"
+    ],
+    "A1a-065": [
+      "mew"
+    ],
+    "A1a-066": [
+      "mew"
+    ],
+    "A1a-067": [
+      "mew"
+    ],
+    "A1a-068": [
+      "mew"
+    ],
+    "A1a-080": [
+      "mew"
+    ],
+    "A1a-081": [
+      "mew"
+    ],
+    "A1a-082": [
+      "mew"
+    ],
+    "A2-144": [
+      "dialga"
+    ],
+    "A2-145": [
+      "palkia"
+    ],
+    "A2-146": [
+      "dialga"
+    ],
+    "A2-147": [
+      "dialga"
+    ],
+    "A2-148": [
+      "palkia"
+    ],
+    "A2-149": [
+      "palkia"
+    ],
+    "A2-150": [
+      "palkia"
+    ],
+    "A2-151": [
+      "dialga"
+    ],
+    "A2-152": [
+      "palkia"
+    ],
+    "A2-153": [
+      "dialga"
+    ],
+    "A2-154": [
+      "dialga"
+    ],
+    "A2-155": [
+      "palkia"
+    ],
+    "A2-190": [
+      "palkia"
+    ],
+    "A2-191": [
+      "dialga"
+    ],
+    "A2-192": [
+      "palkia"
+    ],
+    "A2-193": [
+      "dialga"
+    ],
+    "A2-194": [
+      "dialga"
+    ],
+    "A2-195": [
+      "palkia"
+    ],
+    "A2a-072": [
+      "arceus"
+    ],
+    "A2a-073": [
+      "arceus"
+    ],
+    "A2a-074": [
+      "arceus"
+    ],
+    "A2a-075": [
+      "arceus"
+    ],
+    "A2a-087": [
+      "arceus"
+    ],
+    "A2a-088": [
+      "arceus"
+    ],
+    "A2a-089": [
+      "arceus"
+    ],
+    "A2a-090": [
+      "arceus"
+    ],
+    "A2b-069": [
+      "booster"
+    ],
+    "A2b-070": [
+      "booster"
+    ],
+    "A2b-071": [
+      "booster"
+    ],
+    "A2b-072": [
+      "booster"
+    ],
+    "A2b-088": [
+      "booster"
+    ],
+    "A2b-089": [
+      "booster"
+    ],
+    "A2b-090": [
+      "booster"
+    ],
+    "A2b-091": [
+      "booster"
+    ],
+    "A2b-111": [
+      "booster"
+    ],
+    "A3-142": [
+      "solgaleo",
+      "lunala"
+    ],
+    "A3-143": [
+      "lunala"
+    ],
+    "A3-144": [
+      "solgaleo",
+      "lunala"
+    ],
+    "A3-145": [
+      "solgaleo"
+    ],
+    "A3-146": [
+      "lunala"
+    ],
+    "A3-147": [
+      "solgaleo"
+    ],
+    "A3-148": [
+      "lunala"
+    ],
+    "A3-149": [
+      "lunala"
+    ],
+    "A3-150": [
+      "lunala"
+    ],
+    "A3-151": [
+      "lunala"
+    ],
+    "A3-152": [
+      "solgaleo"
+    ],
+    "A3-153": [
+      "solgaleo"
+    ],
+    "A3-154": [
+      "solgaleo"
+    ],
+    "A3-155": [
+      "solgaleo"
+    ],
+    "A3-190": [
+      "lunala"
+    ],
+    "A3-191": [
+      "lunala"
+    ],
+    "A3-192": [
+      "lunala"
+    ],
+    "A3-193": [
+      "lunala"
+    ],
+    "A3-194": [
+      "solgaleo"
+    ],
+    "A3-195": [
+      "solgaleo"
+    ],
+    "A3-196": [
+      "solgaleo"
+    ],
+    "A3-197": [
+      "solgaleo"
+    ],
+    "A3-208": [
+      "lunala"
+    ],
+    "A3-209": [
+      "solgaleo"
+    ],
+    "A3a-063": [
+      "booster"
+    ],
+    "A3a-064": [
+      "booster"
+    ],
+    "A3a-065": [
+      "booster"
+    ],
+    "A3a-066": [
+      "booster"
+    ],
+    "A3a-067": [
+      "booster"
+    ],
+    "A3a-068": [
+      "booster"
+    ],
+    "A3a-069": [
+      "booster"
+    ],
+    "A3a-081": [
+      "booster"
+    ],
+    "A3a-082": [
+      "booster"
+    ],
+    "A3a-083": [
+      "booster"
+    ],
+    "A3b-066": [
+      "booster"
+    ],
+    "A3b-067": [
+      "booster"
+    ],
+    "A3b-068": [
+      "booster"
+    ],
+    "A3b-069": [
+      "booster"
+    ],
+    "A3b-085": [
+      "booster"
+    ],
+    "A3b-086": [
+      "booster"
+    ],
+    "A3b-107": [
+      "booster"
+    ],
+    "A4-151": [
+      "lugia"
+    ],
+    "A4-152": [
+      "lugia"
+    ],
+    "A4-153": [
+      "ho-oh"
+    ],
+    "A4-154": [
+      "ho-oh"
+    ],
+    "A4-155": [
+      "ho-oh",
+      "lugia"
+    ],
+    "A4-156": [
+      "lugia"
+    ],
+    "A4-157": [
+      "lugia"
+    ],
+    "A4-158": [
+      "ho-oh"
+    ],
+    "A4-159": [
+      "lugia"
+    ],
+    "A4-160": [
+      "ho-oh"
+    ],
+    "A4-161": [
+      "ho-oh"
+    ],
+    "A4-196": [
+      "lugia"
+    ],
+    "A4-197": [
+      "lugia"
+    ],
+    "A4-198": [
+      "ho-oh"
+    ],
+    "A4-199": [
+      "lugia"
+    ],
+    "A4-200": [
+      "ho-oh"
+    ],
+    "A4-201": [
+      "ho-oh"
+    ],
+    "A4a-067": [
+      "booster"
+    ],
+    "A4a-068": [
+      "booster"
+    ],
+    "A4a-069": [
+      "booster"
+    ],
+    "A4a-070": [
+      "booster"
+    ],
+    "A4a-071": [
+      "booster"
+    ],
+    "A4a-083": [
+      "booster"
+    ],
+    "A4a-084": [
+      "booster"
+    ],
+    "A4a-085": [
+      "booster"
+    ],
+    "A4b-308": [
+      "booster"
+    ],
+    "A4b-309": [
+      "booster"
+    ],
+    "A4b-310": [
+      "booster"
+    ],
+    "A4b-311": [
+      "booster"
+    ],
+    "A4b-312": [
+      "booster"
+    ],
+    "A4b-313": [
+      "booster"
+    ],
+    "A4b-314": [
+      "booster"
+    ],
+    "A4b-315": [
+      "booster"
+    ],
+    "A4b-316": [
+      "booster"
+    ],
+    "A4b-317": [
+      "booster"
+    ],
+    "A4b-318": [
+      "booster"
+    ],
+    "A4b-319": [
+      "booster"
+    ],
+    "A4b-320": [
+      "booster"
+    ],
+    "A4b-321": [
+      "booster"
+    ],
+    "A4b-322": [
+      "booster"
+    ],
+    "A4b-323": [
+      "booster"
+    ],
+    "A4b-324": [
+      "booster"
+    ],
+    "A4b-325": [
+      "booster"
+    ],
+    "A4b-326": [
+      "booster"
+    ],
+    "A4b-327": [
+      "booster"
+    ],
+    "A4b-328": [
+      "booster"
+    ],
+    "A4b-329": [
+      "booster"
+    ],
+    "A4b-330": [
+      "booster"
+    ],
+    "A4b-331": [
+      "booster"
+    ],
+    "A4b-332": [
+      "booster"
+    ],
+    "A4b-333": [
+      "booster"
+    ],
+    "A4b-334": [
+      "booster"
+    ],
+    "A4b-335": [
+      "booster"
+    ],
+    "A4b-336": [
+      "booster"
+    ],
+    "A4b-337": [
+      "booster"
+    ],
+    "A4b-338": [
+      "booster"
+    ],
+    "A4b-339": [
+      "booster"
+    ],
+    "A4b-340": [
+      "booster"
+    ],
+    "A4b-341": [
+      "booster"
+    ],
+    "A4b-342": [
+      "booster"
+    ],
+    "A4b-343": [
+      "booster"
+    ],
+    "A4b-344": [
+      "booster"
+    ],
+    "A4b-345": [
+      "booster"
+    ],
+    "A4b-346": [
+      "booster"
+    ],
+    "A4b-347": [
+      "booster"
+    ],
+    "A4b-348": [
+      "booster"
+    ],
+    "A4b-349": [
+      "booster"
+    ],
+    "A4b-350": [
+      "booster"
+    ],
+    "A4b-351": [
+      "booster"
+    ],
+    "A4b-352": [
+      "booster"
+    ],
+    "A4b-353": [
+      "booster"
+    ],
+    "A4b-373": [
+      "booster"
+    ],
+    "A4b-374": [
+      "booster"
+    ],
+    "A4b-375": [
+      "booster"
+    ],
+    "A4b-379": [
+      "booster"
+    ],
+    "B1-213": [
+      "megablaziken"
+    ],
+    "B1-214": [
+      "megablaziken"
+    ],
+    "B1-215": [
+      "megagyarados"
+    ],
+    "B1-216": [
+      "megagyarados"
+    ],
+    "B1-217": [
+      "megablaziken"
+    ],
+    "B1-218": [
+      "megaaltaria"
+    ],
+    "B1-219": [
+      "megagyarados"
+    ],
+    "B1-220": [
+      "megaaltaria"
+    ],
+    "B1-221": [
+      "megagyarados"
+    ],
+    "B1-222": [
+      "megablaziken"
+    ],
+    "B1-223": [
+      "megablaziken"
+    ],
+    "B1-224": [
+      "megaaltaria"
+    ],
+    "B1-225": [
+      "megagyarados"
+    ],
+    "B1-226": [
+      "megaaltaria"
+    ],
+    "B1-266": [
+      "megagyarados"
+    ],
+    "B1-267": [
+      "megablaziken"
+    ],
+    "B1-268": [
+      "megablaziken"
+    ],
+    "B1-269": [
+      "megaaltaria"
+    ],
+    "B1-270": [
+      "megagyarados"
+    ],
+    "B1-271": [
+      "megaaltaria"
+    ],
+    "B1-331": [
+      "megablaziken",
+      "megagyarados",
+      "megaaltaria"
+    ],
+    "B1a-066": [
+      "booster"
+    ],
+    "B1a-067": [
+      "booster"
+    ],
+    "B1a-068": [
+      "booster"
+    ],
+    "B1a-069": [
+      "booster"
+    ],
+    "B1a-081": [
+      "booster"
+    ],
+    "B1a-082": [
+      "booster"
+    ],
+    "B1a-103": [
+      "booster"
+    ],
+    "B1b-144": [
+      "booster"
+    ],
+    "B1b-145": [
+      "booster"
+    ],
+    "B1b-146": [
+      "booster"
+    ],
+    "B1b-147": [
+      "booster"
+    ],
+    "B1b-148": [
+      "booster"
+    ],
+    "B1b-149": [
+      "booster"
+    ],
+    "B1b-150": [
+      "booster"
+    ],
+    "B1b-151": [
+      "booster"
+    ],
+    "B1b-152": [
+      "booster"
+    ],
+    "B1b-153": [
+      "booster"
+    ],
+    "B1b-154": [
+      "booster"
+    ],
+    "B1b-155": [
+      "booster"
+    ],
+    "B1b-190": [
+      "booster"
+    ],
+    "B1b-191": [
+      "booster"
+    ],
+    "B1b-192": [
+      "booster"
+    ],
+    "B1b-193": [
+      "booster"
+    ],
+    "B1b-234": [
+      "booster"
+    ]
+  },
+  "generatedAt": "2026-02-19T06:02:40.220Z",
+  "source": "https://www.serebii.net/tcgpocket/"
+}

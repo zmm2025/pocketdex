@@ -428,7 +428,13 @@
       "weakness": {
         "type": "Water",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A3b",
@@ -770,7 +776,13 @@
       "weakness": {
         "type": "Fighting",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A3b",

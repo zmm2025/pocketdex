@@ -805,7 +805,13 @@
       "weakness": {
         "type": "Fighting",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A2b",
@@ -973,7 +979,13 @@
       "weakness": {
         "type": "Darkness",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A2b",

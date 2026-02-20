@@ -2168,7 +2168,13 @@
       "weakness": {
         "type": "Water",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4b",
@@ -2742,7 +2748,13 @@
       "weakness": {
         "type": "Lightning",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4b",
@@ -6651,7 +6663,13 @@
       "weakness": {
         "type": "Fighting",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4b",
@@ -6674,7 +6692,13 @@
       "weakness": {
         "type": "Fighting",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4b",
@@ -9082,7 +9106,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4b",
@@ -9099,7 +9129,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4b",
@@ -9116,7 +9152,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4b",
@@ -9133,7 +9175,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4b",
@@ -9150,7 +9198,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4b",
@@ -9167,7 +9221,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4b",
@@ -9184,7 +9244,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4b",

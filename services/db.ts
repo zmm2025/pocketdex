@@ -53,8 +53,9 @@ const mapSymbolToRarity = (symbol?: RaritySymbol): Rarity => {
     case "star3":
       return Rarity.ILLUSTRATION_RARE;
     case "shiny1":
+      return Rarity.SHINY_RARE;
     case "shiny2":
-      return Rarity.SUPER_RARE;
+      return Rarity.DOUBLE_SHINY_RARE;
     case "crown":
       return Rarity.CROWN_RARE;
     default:
@@ -68,6 +69,9 @@ const mapRarityLabelToRarity = (label?: string): Rarity | undefined => {
   if (normalized.includes("promo")) return Rarity.PROMO;
   if (normalized.includes("common")) return Rarity.COMMON;
   if (normalized.includes("uncommon")) return Rarity.UNCOMMON;
+  if (normalized.includes("double") && normalized.includes("shiny"))
+    return Rarity.DOUBLE_SHINY_RARE;
+  if (normalized.includes("shiny")) return Rarity.SHINY_RARE;
   if (normalized.includes("rare") && normalized.includes("double"))
     return Rarity.DOUBLE_RARE;
   if (normalized.includes("rare") && normalized.includes("illustration"))

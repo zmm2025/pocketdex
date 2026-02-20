@@ -834,7 +834,13 @@
       "weakness": {
         "type": "Water",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A2",
@@ -1727,7 +1733,13 @@
       "weakness": {
         "type": "Fighting",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A2",
@@ -4219,7 +4231,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A2",
@@ -4236,7 +4254,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A2",
@@ -5086,7 +5110,13 @@
       "weakness": {
         "type": "Water",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A2",
@@ -5472,7 +5502,13 @@
       "weakness": {
         "type": "Water",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A2",

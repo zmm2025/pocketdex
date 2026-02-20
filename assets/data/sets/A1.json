@@ -2168,7 +2168,13 @@
       "weakness": {
         "type": "Lightning",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A1",
@@ -2191,7 +2197,13 @@
       "weakness": {
         "type": "Lightning",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A1",
@@ -2881,7 +2893,13 @@
       "weakness": {
         "type": "Fighting",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A1",
@@ -6658,7 +6676,13 @@
       "weakness": {
         "type": "Fighting",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A1",
@@ -7290,7 +7314,13 @@
       "weakness": {
         "type": "Lightning",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A1",

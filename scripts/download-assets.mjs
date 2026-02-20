@@ -534,10 +534,7 @@ function parseCardsFromSetPage(html, setSlug) {
         }
       : undefined;
     const retreatImgs = block.match(/tcgpocket\/image\/colorless\.png/gi) || [];
-    const retreatCost =
-      retreatImgs.length > 0
-        ? [{ type: "Colorless", count: retreatImgs.length }]
-        : undefined;
+    const retreatCost = [{ type: "Colorless", count: retreatImgs.length }];
     const exStatus =
       /\bex\s*<\/|>\s*ex\b/i.test(block) || /\bex\b/i.test(nameDec)
         ? "ex"

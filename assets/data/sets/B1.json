@@ -2516,7 +2516,13 @@
       "weakness": {
         "type": "Fighting",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -2655,7 +2661,13 @@
       "weakness": {
         "type": "Fighting",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -2678,7 +2690,13 @@
       "weakness": {
         "type": "Fighting",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -3132,7 +3150,13 @@
       "energyType": "Psychic",
       "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
-      "health": 30
+      "health": 30,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -6221,7 +6245,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -6238,7 +6268,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -6255,7 +6291,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8044,7 +8086,13 @@
       "energyType": "Grass",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 60
+      "health": 60,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8063,7 +8111,13 @@
       "energyType": "Grass",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 90
+      "health": 90,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8082,7 +8136,13 @@
       "energyType": "Grass",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 140
+      "health": 140,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8101,7 +8161,13 @@
       "energyType": "Grass",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 60
+      "health": 60,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8120,7 +8186,13 @@
       "energyType": "Grass",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 80
+      "health": 80,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8139,7 +8211,13 @@
       "energyType": "Fire",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 100
+      "health": 100,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8158,7 +8236,13 @@
       "energyType": "Fire",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 60
+      "health": 60,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8177,7 +8261,13 @@
       "energyType": "Fire",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 80
+      "health": 80,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8196,7 +8286,13 @@
       "energyType": "Water",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 60
+      "health": 60,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8215,7 +8311,13 @@
       "energyType": "Water",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 90
+      "health": 90,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8234,7 +8336,13 @@
       "energyType": "Water",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 150
+      "health": 150,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8253,7 +8361,13 @@
       "energyType": "Water",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 100
+      "health": 100,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8272,7 +8386,13 @@
       "energyType": "Water",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 50
+      "health": 50,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8291,7 +8411,13 @@
       "energyType": "Water",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 60
+      "health": 60,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8310,7 +8436,13 @@
       "energyType": "Water",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 90
+      "health": 90,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8329,7 +8461,13 @@
       "energyType": "Lightning",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 100
+      "health": 100,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8348,7 +8486,13 @@
       "energyType": "Lightning",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 70
+      "health": 70,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8367,7 +8511,13 @@
       "energyType": "Lightning",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 90
+      "health": 90,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8386,7 +8536,13 @@
       "energyType": "Psychic",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 70
+      "health": 70,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8405,7 +8561,13 @@
       "energyType": "Psychic",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 100
+      "health": 100,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8424,7 +8586,13 @@
       "energyType": "Fighting",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 70
+      "health": 70,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8443,7 +8611,13 @@
       "energyType": "Fighting",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 100
+      "health": 100,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8462,7 +8636,13 @@
       "energyType": "Fighting",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 160
+      "health": 160,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8481,7 +8661,13 @@
       "energyType": "Fighting",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 60
+      "health": 60,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8500,7 +8686,13 @@
       "energyType": "Metal",
       "raritySymbol": "shiny1",
       "rarityLabel": "Crown Rare",
-      "health": 50
+      "health": 50,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8644,7 +8836,13 @@
       "energyType": "Grass",
       "raritySymbol": "shiny2",
       "rarityLabel": "Crown Rare",
-      "health": 170
+      "health": 170,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8663,7 +8861,13 @@
       "energyType": "Fire",
       "raritySymbol": "shiny2",
       "rarityLabel": "Crown Rare",
-      "health": 180
+      "health": 180,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8682,7 +8886,13 @@
       "energyType": "Water",
       "raritySymbol": "shiny2",
       "rarityLabel": "Crown Rare",
-      "health": 150
+      "health": 150,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8701,7 +8911,13 @@
       "energyType": "Water",
       "raritySymbol": "shiny2",
       "rarityLabel": "Crown Rare",
-      "health": 180
+      "health": 180,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8720,7 +8936,13 @@
       "energyType": "Lightning",
       "raritySymbol": "shiny2",
       "rarityLabel": "Crown Rare",
-      "health": 120
+      "health": 120,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8739,7 +8961,13 @@
       "energyType": "Lightning",
       "raritySymbol": "shiny2",
       "rarityLabel": "Crown Rare",
-      "health": 130
+      "health": 130,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8758,7 +8986,13 @@
       "energyType": "Fighting",
       "raritySymbol": "shiny2",
       "rarityLabel": "Crown Rare",
-      "health": 150
+      "health": 150,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8777,7 +9011,13 @@
       "energyType": "Fighting",
       "raritySymbol": "shiny2",
       "rarityLabel": "Crown Rare",
-      "health": 130
+      "health": 130,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8796,7 +9036,13 @@
       "energyType": "Metal",
       "raritySymbol": "shiny2",
       "rarityLabel": "Crown Rare",
-      "health": 130
+      "health": 130,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8815,7 +9061,13 @@
       "energyType": "Metal",
       "raritySymbol": "shiny2",
       "rarityLabel": "Crown Rare",
-      "health": 150
+      "health": 150,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "B1",
@@ -8940,7 +9192,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "crown",
-      "rarityLabel": "Crown Rare"
+      "rarityLabel": "Crown Rare",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     }
   ]
 }

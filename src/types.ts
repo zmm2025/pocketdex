@@ -6,6 +6,8 @@ export enum Rarity {
   ART_RARE = "Art Rare", // Star 1 (Full Art)
   SUPER_RARE = "Super Rare", // Star 2
   ILLUSTRATION_RARE = "Illustration Rare", // Star 3 (Immersive)
+  SHINY_RARE = "Shiny Rare", // Shiny 1
+  DOUBLE_SHINY_RARE = "Double Shiny Rare", // Shiny 2
   CROWN_RARE = "Crown Rare", // Crown
   PROMO = "Promo", // Promo cards (no rarity icon)
 }

@@ -656,7 +656,13 @@
       "energyType": "Water",
       "raritySymbol": "diamond3",
       "rarityLabel": "Rare",
-      "health": 30
+      "health": 30,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4a",
@@ -737,7 +743,13 @@
       "weakness": {
         "type": "Fighting",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4a",
@@ -2798,7 +2810,13 @@
       "weakness": {
         "type": "Water",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A4a",
@@ -2904,7 +2922,13 @@
       "energyType": "Water",
       "raritySymbol": "crown",
       "rarityLabel": "Crown Rare",
-      "health": 30
+      "health": 30,
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     }
   ]
 }

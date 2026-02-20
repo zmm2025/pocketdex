@@ -109,7 +109,13 @@
       "weakness": {
         "type": "Fire",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A3",
@@ -2249,7 +2255,13 @@
       "weakness": {
         "type": "Metal",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A3",
@@ -2272,7 +2284,13 @@
       "weakness": {
         "type": "Metal",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A3",
@@ -4172,7 +4190,13 @@
       "moves": [],
       "boosterPacks": [],
       "raritySymbol": "diamond2",
-      "rarityLabel": "Uncommon"
+      "rarityLabel": "Uncommon",
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A3",
@@ -4650,7 +4674,13 @@
       "weakness": {
         "type": "Metal",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A3",
@@ -6032,7 +6062,13 @@
       "weakness": {
         "type": "Lightning",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A3",
@@ -6432,7 +6468,13 @@
       "weakness": {
         "type": "Lightning",
         "value": 20
-      }
+      },
+      "retreatCost": [
+        {
+          "type": "Colorless",
+          "count": 0
+        }
+      ]
     },
     {
       "set": "A3",

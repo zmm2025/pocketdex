@@ -8,7 +8,14 @@ import React, {
 } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { CollectionState } from "./types";
+import {
+  CardType,
+  CollectionState,
+  EnergyType,
+  ExStatus,
+  PokemonStage,
+  Rarity,
+} from "./types";
 import {
   updateCardCount,
   getGuestCollection,
@@ -22,10 +29,7 @@ import {
   getCanonicalCardId,
   getSetProgress,
   getCollectionProgress,
-  getSetBySlug,
   getSetSlug,
-  LONGEST_SET_NAME,
-  LONGEST_SET_ID,
 } from "../services/db";
 import {
   loadCollection as loadCollectionFromApi,
@@ -37,13 +41,27 @@ import { Button } from "../components/Button";
 import { CardItem, type CardRect } from "../components/CardItem";
 import { Modal } from "../components/Modal";
 import {
+  type LucideIcon,
   Library,
   BarChart3,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
-  Filter,
   Search,
+  Filter,
+  RotateCcw,
+  Hash,
+  Gem,
+  Copy,
+  Sun,
+  AlertTriangle,
+  Heart,
+  Swords,
+  Shield,
+  Layers3,
+  Zap,
+  Package,
+  ArrowUp,
   Cloud,
   CheckCircle2,
   AlertCircle,
@@ -57,6 +75,7 @@ import {
   useSession,
   useUser,
 } from "@clerk/clerk-react";
+import boosterPackData from "../assets/data/booster-packs.json";
 
 type AppCard = (typeof CARDS)[number];
 type CollectionDisplayCard = {
@@ -65,6 +84,115 @@ type CollectionDisplayCard = {
   count: number;
   numberLabel: string;
 };
+
+type TrainerSubtype =
+  | "item"
+  | "pokemon-tool"
+  | "fossil"
+  | "supporter"
+  | "stadium";
+type CopyBucket = "0" | "1" | "2plus";
+type WeaknessFilterOption = EnergyType | "none";
+
+type SortByOptionId =
+  | "collector-number"
+  | "rarity"
+  | "count"
+  | "type"
+  | "weakness"
+  | "hp"
+  | "attack"
+  | "retreat-cost"
+  | "card-type"
+  | "ability"
+  | "expansion-order";
+
+type SortDirection = "asc" | "desc";
+
+type SortOption = {
+  id: SortByOptionId;
+  label: string;
+  icon: LucideIcon;
+};
+type ActiveFilterChip = {
+  key: string;
+  content: React.ReactNode;
+  onRemove: () => void;
+};
+
+const UI_ICON_BASE = `${(import.meta as any).env.BASE_URL || "/"}assets/ui/icons`;
+const UI_TYPE_ICON_BASE = `${UI_ICON_BASE}/type`;
+const UI_RARITY_ICON_BASE = `${UI_ICON_BASE}/rarity`;
+
+const ENERGY_TYPE_OPTIONS: { value: EnergyType; icon: string }[] = [
+  { value: "Grass", icon: `${UI_TYPE_ICON_BASE}/grass.png` },
+  { value: "Fire", icon: `${UI_TYPE_ICON_BASE}/fire.png` },
+  { value: "Water", icon: `${UI_TYPE_ICON_BASE}/water.png` },
+  { value: "Lightning", icon: `${UI_TYPE_ICON_BASE}/lightning.png` },
+  { value: "Psychic", icon: `${UI_TYPE_ICON_BASE}/psychic.png` },
+  { value: "Fighting", icon: `${UI_TYPE_ICON_BASE}/fighting.png` },
+  { value: "Darkness", icon: `${UI_TYPE_ICON_BASE}/darkness.png` },
+  { value: "Metal", icon: `${UI_TYPE_ICON_BASE}/metal.png` },
+  { value: "Dragon", icon: `${UI_TYPE_ICON_BASE}/dragon.png` },
+  { value: "Colorless", icon: `${UI_TYPE_ICON_BASE}/colorless.png` },
+];
+
+const RARITY_OPTIONS: {
+  value: Rarity;
+  icon?: string;
+  label?: string;
+}[] = [
+  { value: Rarity.COMMON, icon: `${UI_RARITY_ICON_BASE}/diamond1.png` },
+  { value: Rarity.UNCOMMON, icon: `${UI_RARITY_ICON_BASE}/diamond2.png` },
+  { value: Rarity.RARE, icon: `${UI_RARITY_ICON_BASE}/diamond3.png` },
+  { value: Rarity.DOUBLE_RARE, icon: `${UI_RARITY_ICON_BASE}/diamond4.png` },
+  { value: Rarity.ART_RARE, icon: `${UI_RARITY_ICON_BASE}/star1.png` },
+  { value: Rarity.SUPER_RARE, icon: `${UI_RARITY_ICON_BASE}/star2.png` },
+  { value: Rarity.ILLUSTRATION_RARE, icon: `${UI_RARITY_ICON_BASE}/star3.png` },
+  { value: Rarity.SHINY_RARE, icon: `${UI_RARITY_ICON_BASE}/shiny1.png` },
+  {
+    value: Rarity.DOUBLE_SHINY_RARE,
+    icon: `${UI_RARITY_ICON_BASE}/shiny2.png`,
+  },
+  { value: Rarity.CROWN_RARE, icon: `${UI_RARITY_ICON_BASE}/crown.png` },
+  { value: Rarity.PROMO, label: "PROMO" },
+];
+
+const EX_STATUS_OPTIONS: { value: ExStatus; label: string }[] = [
+  { value: "non-ex", label: "Normal" },
+  { value: "ex", label: "Ex" },
+  { value: "mega-ex", label: "Mega ex" },
+];
+
+const TRAINER_TYPE_OPTIONS: { value: TrainerSubtype; label: string }[] = [
+  { value: "item", label: "Item" },
+  { value: "pokemon-tool", label: "Tool" },
+  { value: "fossil", label: "Fossil" },
+  { value: "supporter", label: "Supporter" },
+  { value: "stadium", label: "Stadium" },
+];
+
+const COPY_BUCKET_OPTIONS: { value: CopyBucket; label: string }[] = [
+  { value: "0", label: "0 copies" },
+  { value: "1", label: "1 copy" },
+  { value: "2plus", label: "2+ copies" },
+];
+
+const POKEMON_STAGE_OPTIONS: PokemonStage[] = ["Basic", "Stage 1", "Stage 2"];
+
+const SORT_OPTIONS: SortOption[] = [
+  { id: "collector-number", label: "Collector card number", icon: Hash },
+  { id: "rarity", label: "Rarity", icon: Gem },
+  { id: "count", label: "Number of cards", icon: Copy },
+  { id: "type", label: "Type", icon: Sun },
+  { id: "weakness", label: "Weakness", icon: AlertTriangle },
+  { id: "hp", label: "HP", icon: Heart },
+  { id: "attack", label: "Attack", icon: Swords },
+  { id: "retreat-cost", label: "Retreat Cost", icon: Shield },
+  { id: "card-type", label: "Card Type", icon: Layers3 },
+  { id: "ability", label: "Ability", icon: Zap },
+  { id: "expansion-order", label: "Expansion order", icon: Package },
+];
 
 const SUPABASE_URL = (import.meta as any).env.VITE_SUPABASE_URL;
 const COLLECTION_API_BASE = SUPABASE_URL
@@ -102,6 +230,363 @@ function areCollectionsEqual(a: CollectionState, b: CollectionState): boolean {
   }
   return true;
 }
+
+const parseMaybeNumber = (value: string): number | null => {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  const parsed = Number(trimmed);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const parseAttackDamageValue = (value: unknown): number | null => {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string") {
+    const match = value.match(/\d+/);
+    if (!match) return null;
+    const parsed = Number(match[0]);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
+};
+
+const getCardAttackDamageMax = (card: AppCard): number | null => {
+  const attacks = card.attacks ?? card.moves ?? [];
+  const damages = attacks
+    .map((attack) => parseAttackDamageValue((attack as any).damage))
+    .filter((damage): damage is number => damage != null);
+  if (damages.length === 0) return null;
+  return Math.max(...damages);
+};
+
+const getCardCraftCost = (card: AppCard): number | null => {
+  if (
+    typeof card.costToCraft === "number" &&
+    Number.isFinite(card.costToCraft)
+  ) {
+    return card.costToCraft;
+  }
+  switch (card.rarity) {
+    case Rarity.COMMON:
+      return 35;
+    case Rarity.UNCOMMON:
+      return 70;
+    case Rarity.RARE:
+      return 150;
+    case Rarity.DOUBLE_RARE:
+      return 500;
+    case Rarity.ART_RARE:
+    case Rarity.SHINY_RARE:
+      return 400;
+    case Rarity.SUPER_RARE:
+    case Rarity.DOUBLE_SHINY_RARE:
+      return 1250;
+    case Rarity.ILLUSTRATION_RARE:
+      return 1500;
+    case Rarity.CROWN_RARE:
+      return 2500;
+    case Rarity.PROMO:
+      return null;
+    default:
+      return null;
+  }
+};
+
+const getRetreatCostCount = (card: AppCard): number | null => {
+  if (!card.retreatCost || card.retreatCost.length === 0) return 0;
+  return card.retreatCost.reduce((sum, cost) => sum + (cost.count ?? 0), 0);
+};
+
+const getNumericBounds = (
+  values: readonly number[],
+  fallbackMin: number,
+  fallbackMax: number,
+) => {
+  if (values.length === 0) return { min: fallbackMin, max: fallbackMax };
+  let min = values[0];
+  let max = values[0];
+  for (let i = 1; i < values.length; i += 1) {
+    const value = values[i];
+    if (value < min) min = value;
+    if (value > max) max = value;
+  }
+  return { min, max };
+};
+
+const ENERGY_SORT_ORDER: EnergyType[] = [
+  "Grass",
+  "Fire",
+  "Water",
+  "Lightning",
+  "Psychic",
+  "Fighting",
+  "Darkness",
+  "Metal",
+  "Dragon",
+  "Colorless",
+];
+
+const getExpansionSortKey = (setId: string) => {
+  const promoMatch = setId.match(/^PROMO-([A-Z])$/i);
+  if (promoMatch) {
+    return {
+      block: promoMatch[1].toUpperCase(),
+      number: 0,
+      suffix: "",
+      isPromo: true,
+    };
+  }
+  const setMatch = setId.match(/^([A-Z])(\d+)([a-z])?$/);
+  if (setMatch) {
+    return {
+      block: setMatch[1],
+      number: Number(setMatch[2]),
+      suffix: (setMatch[3] ?? "").toLowerCase(),
+      isPromo: false,
+    };
+  }
+  return {
+    block: "A",
+    number: 0,
+    suffix: "",
+    isPromo: false,
+  };
+};
+
+const getTrainerSubtype = (card: AppCard): TrainerSubtype | null => {
+  const text = `${card.name} ${card.description ?? ""}`.toLowerCase();
+  if (card.type === CardType.SUPPORTER) return "supporter";
+  if (card.type === CardType.POKEMON_TOOL) return "pokemon-tool";
+  if (card.type === CardType.ITEM) {
+    if (text.includes("fossil")) return "fossil";
+    return "item";
+  }
+  if (text.includes("stadium")) return "stadium";
+  return null;
+};
+
+type DualRangeFilterProps = {
+  label: string;
+  minBound: number;
+  maxBound: number;
+  step?: number;
+  allowedValues?: number[];
+  minValue: number;
+  maxValue: number;
+  onChange: (nextMin: number, nextMax: number) => void;
+};
+
+const DualRangeFilter: React.FC<DualRangeFilterProps> = ({
+  label,
+  minBound,
+  maxBound,
+  step = 1,
+  allowedValues,
+  minValue,
+  maxValue,
+  onChange,
+}) => {
+  const span = maxBound - minBound;
+  const safeSpan = span <= 0 ? 1 : span;
+  const hasRange = maxBound > minBound;
+  const minPercent = ((minValue - minBound) / safeSpan) * 100;
+  const maxPercent = ((maxValue - minBound) / safeSpan) * 100;
+  const handlesOverlap = minValue === maxValue;
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const snappedValues = useMemo(() => {
+    if (!allowedValues || allowedValues.length === 0) return null;
+    const unique = Array.from(
+      new Set(
+        allowedValues.filter(
+          (value) =>
+            Number.isFinite(value) && value >= minBound && value <= maxBound,
+        ),
+      ),
+    ).sort((a, b) => a - b);
+    return unique.length > 0 ? unique : null;
+  }, [allowedValues, minBound, maxBound]);
+
+  const clampToStep = useCallback(
+    (value: number) => {
+      if (snappedValues && snappedValues.length > 0) {
+        let nearest = snappedValues[0];
+        let nearestDiff = Math.abs(value - nearest);
+        for (let i = 1; i < snappedValues.length; i += 1) {
+          const candidate = snappedValues[i];
+          const diff = Math.abs(value - candidate);
+          if (diff < nearestDiff) {
+            nearest = candidate;
+            nearestDiff = diff;
+          }
+        }
+        return nearest;
+      }
+      const snapped = Math.round((value - minBound) / step) * step + minBound;
+      return Math.max(minBound, Math.min(maxBound, snapped));
+    },
+    [minBound, maxBound, step, snappedValues],
+  );
+
+  const valueFromClientX = useCallback(
+    (clientX: number) => {
+      const rect = trackRef.current?.getBoundingClientRect();
+      if (!rect || rect.width <= 0) return minBound;
+      const ratio = Math.max(
+        0,
+        Math.min(1, (clientX - rect.left) / rect.width),
+      );
+      return clampToStep(minBound + ratio * (maxBound - minBound));
+    },
+    [clampToStep, minBound, maxBound],
+  );
+
+  const updateHandleValue = useCallback(
+    (handle: "min" | "max", nextValue: number) => {
+      if (handle === "min") {
+        onChange(Math.min(nextValue, maxValue), maxValue);
+        return;
+      }
+      onChange(minValue, Math.max(nextValue, minValue));
+    },
+    [onChange, minValue, maxValue],
+  );
+
+  const startDrag = useCallback(
+    (handle: "min" | "max", e: React.PointerEvent<HTMLElement>) => {
+      e.preventDefault();
+      const pointerId = e.pointerId;
+      const target = e.currentTarget;
+      target.setPointerCapture?.(pointerId);
+
+      const move = (clientX: number) => {
+        updateHandleValue(handle, valueFromClientX(clientX));
+      };
+
+      const onPointerMove = (ev: PointerEvent) => move(ev.clientX);
+      const onPointerUp = () => {
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerup", onPointerUp);
+      };
+
+      move(e.clientX);
+      window.addEventListener("pointermove", onPointerMove);
+      window.addEventListener("pointerup", onPointerUp);
+    },
+    [updateHandleValue, valueFromClientX],
+  );
+
+  const startDragOverlap = useCallback(
+    (e: React.PointerEvent<HTMLElement>) => {
+      e.preventDefault();
+      const pointerId = e.pointerId;
+      const target = e.currentTarget;
+      target.setPointerCapture?.(pointerId);
+      const startX = e.clientX;
+
+      const onPointerMove = (ev: PointerEvent) => {
+        const nextValue = valueFromClientX(ev.clientX);
+        const delta = ev.clientX - startX;
+        if (delta < 0) {
+          updateHandleValue("min", nextValue);
+          return;
+        }
+        updateHandleValue("max", nextValue);
+      };
+
+      const onPointerUp = () => {
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerup", onPointerUp);
+      };
+
+      window.addEventListener("pointermove", onPointerMove);
+      window.addEventListener("pointerup", onPointerUp);
+    },
+    [valueFromClientX, updateHandleValue],
+  );
+
+  const onTrackPointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (!hasRange) return;
+      const clickedValue = valueFromClientX(e.clientX);
+      if (handlesOverlap) {
+        const handle = clickedValue < minValue ? "min" : "max";
+        updateHandleValue(handle, clickedValue);
+        startDrag(handle, e);
+        return;
+      }
+      const minDiff = Math.abs(clickedValue - minValue);
+      const maxDiff = Math.abs(clickedValue - maxValue);
+      const handle = minDiff <= maxDiff ? "min" : "max";
+      updateHandleValue(handle, clickedValue);
+      startDrag(handle, e);
+    },
+    [
+      hasRange,
+      valueFromClientX,
+      minValue,
+      maxValue,
+      handlesOverlap,
+      updateHandleValue,
+      startDrag,
+    ],
+  );
+
+  return (
+    <div className="text-[11px] text-gray-400 space-y-1.5">
+      <div className="flex items-center justify-between">
+        <span>{label}</span>
+        <span className="font-mono text-[10px] text-gray-300">
+          {minValue} - {maxValue}
+        </span>
+      </div>
+      <div
+        ref={trackRef}
+        className="relative h-7 px-3 touch-none"
+        onPointerDown={onTrackPointerDown}
+      >
+        <div className="absolute left-3 right-3 top-1/2 h-1 -translate-y-1/2 rounded-full bg-gray-800" />
+        <div
+          className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-blue-600"
+          style={{
+            left: `${Math.max(0, Math.min(100, minPercent))}%`,
+            right: `${Math.max(0, Math.min(100, 100 - maxPercent))}%`,
+          }}
+        />
+        <button
+          type="button"
+          className="absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-blue-300 bg-blue-500 shadow outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          style={{
+            left: `${Math.max(0, Math.min(100, minPercent))}%`,
+          }}
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            if (handlesOverlap) {
+              startDragOverlap(e);
+              return;
+            }
+            startDrag("min", e);
+          }}
+          aria-label={`${label} minimum`}
+          disabled={!hasRange}
+        />
+        {hasRange && !handlesOverlap && (
+          <button
+            type="button"
+            className="absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-blue-300 bg-blue-500 shadow outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            style={{
+              left: `${Math.max(0, Math.min(100, maxPercent))}%`,
+            }}
+            onPointerDown={(e) => {
+              e.stopPropagation();
+              startDrag("max", e);
+            }}
+            aria-label={`${label} maximum`}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
 
 type AppProps = { clerkEnabled?: boolean };
 
@@ -142,85 +627,97 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       document.title = "Collection - PocketDex";
       return;
     }
-    if (location.pathname.startsWith("/collection/")) {
-      const slug = location.pathname.replace(/^\/collection\/?/, "");
-      const set = slug ? getSetBySlug(slug) : null;
-      document.title = set
-        ? `${set.name} - PocketDex`
-        : "Collection - PocketDex";
-      return;
-    }
     document.title = "PocketDex";
   }, [location.pathname]);
 
   const [collection, setCollection] = useState<CollectionState>({});
   const [searchQuery, setSearchQuery] = useState("");
+  const [collectionSearchOpen, setCollectionSearchOpen] = useState(false);
+  const [collectionFiltersOpen, setCollectionFiltersOpen] = useState(false);
+  const [collectionSetDropdownOpen, setCollectionSetDropdownOpen] =
+    useState(false);
+  const [collectionBoosterDropdownOpen, setCollectionBoosterDropdownOpen] =
+    useState(false);
+  const [collectionSortDropdownOpen, setCollectionSortDropdownOpen] =
+    useState(false);
+  const [sortBy, setSortBy] = useState<SortByOptionId>("collector-number");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [selectedSetFilters, setSelectedSetFilters] = useState<string[]>([]);
+  const [selectedBoosterPackFilters, setSelectedBoosterPackFilters] = useState<
+    string[]
+  >([]);
+  const [selectedRarities, setSelectedRarities] = useState<Rarity[]>([]);
+  const [selectedPokemonTypes, setSelectedPokemonTypes] = useState<
+    EnergyType[]
+  >([]);
+  const [hpMinInput, setHpMinInput] = useState("ANY");
+  const [hpMaxInput, setHpMaxInput] = useState("ANY");
+  const [attackMinInput, setAttackMinInput] = useState("ANY");
+  const [attackMaxInput, setAttackMaxInput] = useState("ANY");
+  const [craftCostMinInput, setCraftCostMinInput] = useState("ANY");
+  const [craftCostMaxInput, setCraftCostMaxInput] = useState("ANY");
+  const [selectedWeaknessFilters, setSelectedWeaknessFilters] = useState<
+    WeaknessFilterOption[]
+  >([]);
+  const [retreatMinInput, setRetreatMinInput] = useState("");
+  const [retreatMaxInput, setRetreatMaxInput] = useState("");
+  const [abilityFilter, setAbilityFilter] = useState<"has" | "none" | null>(
+    null,
+  );
+  const [selectedCopyBuckets, setSelectedCopyBuckets] = useState<CopyBucket[]>(
+    [],
+  );
+  const [selectedPokemonStages, setSelectedPokemonStages] = useState<
+    PokemonStage[]
+  >([]);
+  const [selectedExStatuses, setSelectedExStatuses] = useState<ExStatus[]>([]);
+  const [selectedTrainerTypes, setSelectedTrainerTypes] = useState<
+    TrainerSubtype[]
+  >([]);
   const [searchResultsRevealed, setSearchResultsRevealed] = useState(true);
   const prevSearchQueryRef = useRef<string | null>(null);
-  // Derive slug from pathname (useParams is not available in App, which is parent of Routes)
-  const collectionSlugFromPath = location.pathname.startsWith("/collection")
-    ? location.pathname.replace(/^\/collection\/?/, "")
-    : "";
-  const selectedSetId = location.pathname.startsWith("/collection")
-    ? !collectionSlugFromPath
-      ? "ALL"
-      : (getSetBySlug(collectionSlugFromPath)?.id ?? "ALL")
-    : "ALL";
+  const selectableSetIds = useMemo(
+    () => ["ALL", ...SETS.map((set) => set.id)],
+    [],
+  );
+  const selectedSetId =
+    selectedSetFilters.length === 1 ? selectedSetFilters[0] : "ALL";
 
-  const [lastCollectionSetSlug, setLastCollectionSetSlug] = useState<
-    string | null
-  >(null);
+  const [lastCollectionSetId, setLastCollectionSetId] = useState<string | null>(
+    null,
+  );
   const [statsFlashTargetId, setStatsFlashTargetId] = useState<string | null>(
     null,
   );
   const [loadingHint, setLoadingHint] = useState(() => getNextHint([]));
   const loadingHintRecentRef = useRef<string[]>([]);
   useEffect(() => {
-    if (location.pathname.startsWith("/collection")) {
-      setLastCollectionSetSlug(collectionSlugFromPath || null);
+    if (location.pathname !== "/collection") return;
+    if (selectedSetFilters.length === 1) {
+      setLastCollectionSetId(selectedSetFilters[0]);
     }
-  }, [location.pathname, collectionSlugFromPath]);
+  }, [location.pathname, selectedSetFilters]);
 
-  const [collectionSetDropdownOpen, setCollectionSetDropdownOpen] =
-    useState(false);
-  const [collectionSetDropdownClosing, setCollectionSetDropdownClosing] =
-    useState(false);
-  const [collectionSetDropdownRevealed, setCollectionSetDropdownRevealed] =
-    useState(false);
-  const [
-    collectionSetDropdownFocusedIndex,
-    setCollectionSetDropdownFocusedIndex,
-  ] = useState(0);
-  const collectionSetDropdownRef = useRef<HTMLDivElement>(null);
-  const collectionSetListboxRef = useRef<HTMLDivElement>(null);
+  const collectionSearchPanelRef = useRef<HTMLDivElement>(null);
+  const collectionFilterToggleRef = useRef<HTMLButtonElement>(null);
+  const collectionSearchToggleRef = useRef<HTMLButtonElement>(null);
+  const collectionSearchBarRef = useRef<HTMLDivElement>(null);
   const collectionSearchInputRef = useRef<HTMLInputElement>(null);
+  const collectionSetDropdownRef = useRef<HTMLDivElement>(null);
+  const collectionBoosterDropdownRef = useRef<HTMLDivElement>(null);
+  const collectionSortDropdownRef = useRef<HTMLDivElement>(null);
   const collectionScrollRef = useRef<HTMLDivElement>(null);
-  const collectionSetMeasureRef = useRef<HTMLSpanElement>(null);
-  const collectionSetIdMeasureRef = useRef<HTMLSpanElement>(null);
-  const collectionDropdownWidthMeasuredRef = useRef(false);
-  const measurerMountedOnceRef = useRef(false);
-  const [collectionSetDropdownWidth, setCollectionSetDropdownWidth] = useState<
-    number | null
-  >(null);
-  const [measurerMounted, setMeasurerMounted] = useState(0);
+  const collectionCardsAreaRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    if (collectionDropdownWidthMeasuredRef.current) return;
-    if (!LONGEST_SET_NAME || !collectionSetMeasureRef.current) return;
-    if (!LONGEST_SET_ID || !collectionSetIdMeasureRef.current) return;
-    const nameWidth =
-      collectionSetMeasureRef.current.getBoundingClientRect().width;
-    const idWidth =
-      collectionSetIdMeasureRef.current.getBoundingClientRect().width;
-    const gapChevronPadding = 8 + 24 + 24;
-    const w = Math.ceil(nameWidth) + Math.ceil(idWidth) + gapChevronPadding;
-    collectionDropdownWidthMeasuredRef.current = true;
-    setCollectionSetDropdownWidth(w);
-  }, [measurerMounted]);
+    if (!location.pathname.startsWith("/collection/")) return;
+    navigate("/collection", { replace: true });
+  }, [location.pathname, navigate]);
 
   useEffect(() => {
     if (!location.pathname.startsWith("/collection")) return;
     collectionScrollRef.current?.scrollTo(0, 0);
-  }, [selectedSetId]);
+  }, [selectedSetFilters, selectedBoosterPackFilters]);
 
   // Search results: set revealed false before paint when search changes, then reveal after rAF so transition runs (skip on first load)
   useLayoutEffect(() => {
@@ -343,34 +840,233 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     };
   }, [location.pathname, location.hash]);
 
-  const [filterOwned, setFilterOwned] = useState<"all" | "owned" | "missing">(
-    "all",
-  );
-
   // Column count for collection grid (matches Tailwind: 3 < sm, 4 sm–md, 6 md+)
+  const getDefaultCollectionColumnCount = (width: number) =>
+    width < 900 ? 3 : 5;
+  const ALLOWED_COLLECTION_COLUMN_COUNTS = useMemo(() => {
+    const values: number[] = [];
+    for (let i = 3; i <= 60; i += 1) {
+      if (i % 3 === 0 || i % 5 === 0) values.push(i);
+    }
+    return values;
+  }, []);
   const [collectionColumnCount, setCollectionColumnCount] = useState(() =>
     typeof window !== "undefined"
-      ? window.innerWidth < 640
-        ? 3
-        : window.innerWidth < 768
-          ? 4
-          : 6
+      ? getDefaultCollectionColumnCount(window.innerWidth)
       : 3,
   );
+  const [collectionColumnZoomCustomized, setCollectionColumnZoomCustomized] =
+    useState(false);
   useEffect(() => {
     const onResize = () =>
-      setCollectionColumnCount(
-        window.innerWidth < 640 ? 3 : window.innerWidth < 768 ? 4 : 6,
+      setCollectionColumnCount((prev) =>
+        collectionColumnZoomCustomized
+          ? prev
+          : getDefaultCollectionColumnCount(window.innerWidth),
       );
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, []);
+  }, [collectionColumnZoomCustomized]);
+  const adjustCollectionColumnCount = useCallback(
+    (direction: "in" | "out") => {
+      setCollectionColumnCount((prev) => {
+        if (direction === "in") {
+          const nextIn = [...ALLOWED_COLLECTION_COLUMN_COUNTS]
+            .reverse()
+            .find((value) => value < prev);
+          return nextIn ?? prev;
+        }
+        const nextOut = ALLOWED_COLLECTION_COLUMN_COUNTS.find(
+          (value) => value > prev,
+        );
+        return nextOut ?? prev;
+      });
+      setCollectionColumnZoomCustomized(true);
+    },
+    [ALLOWED_COLLECTION_COLUMN_COUNTS],
+  );
+  useEffect(() => {
+    const el = collectionCardsAreaRef.current;
+    if (!el) return;
+    const onWheel = (event: WheelEvent) => {
+      if (!event.ctrlKey) return;
+      event.preventDefault();
+      adjustCollectionColumnCount(event.deltaY < 0 ? "in" : "out");
+    };
+    let lastPinchDistance: number | null = null;
+    const PINCH_THRESHOLD_PX = 10;
+    const onTouchMove = (event: TouchEvent) => {
+      if (event.touches.length !== 2) {
+        lastPinchDistance = null;
+        return;
+      }
+      const dx = event.touches[0].clientX - event.touches[1].clientX;
+      const dy = event.touches[0].clientY - event.touches[1].clientY;
+      const distance = Math.hypot(dx, dy);
+      if (lastPinchDistance == null) {
+        lastPinchDistance = distance;
+        return;
+      }
+      const delta = distance - lastPinchDistance;
+      if (Math.abs(delta) < PINCH_THRESHOLD_PX) return;
+      event.preventDefault();
+      adjustCollectionColumnCount(delta > 0 ? "out" : "in");
+      lastPinchDistance = distance;
+    };
+    const clearPinch = () => {
+      lastPinchDistance = null;
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", clearPinch);
+    el.addEventListener("touchcancel", clearPinch);
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", clearPinch);
+      el.removeEventListener("touchcancel", clearPinch);
+    };
+  }, [adjustCollectionColumnCount]);
 
   const isCollectionRoute = location.pathname.startsWith("/collection");
   const setOrderById = useMemo(
     () => Object.fromEntries(SETS.map((set, index) => [set.id, index])),
     [],
   );
+  const hpMin = parseMaybeNumber(hpMinInput);
+  const hpMax = parseMaybeNumber(hpMaxInput);
+  const attackMin = parseMaybeNumber(attackMinInput);
+  const attackMax = parseMaybeNumber(attackMaxInput);
+  const craftCostMin = parseMaybeNumber(craftCostMinInput);
+  const craftCostMax = parseMaybeNumber(craftCostMaxInput);
+  const retreatMin = parseMaybeNumber(retreatMinInput);
+  const retreatMax = parseMaybeNumber(retreatMaxInput);
+  const hpBounds = useMemo(() => {
+    const hpValues = CARDS.map((card) => card.hp ?? card.health).filter(
+      (value): value is number =>
+        typeof value === "number" && Number.isFinite(value),
+    );
+    return getNumericBounds(hpValues, 0, 0);
+  }, []);
+  const attackBounds = useMemo(() => {
+    const attackValues = CARDS.map((card) =>
+      getCardAttackDamageMax(card),
+    ).filter(
+      (value): value is number =>
+        typeof value === "number" && Number.isFinite(value),
+    );
+    return getNumericBounds(attackValues, 0, 300);
+  }, []);
+  const retreatBounds = useMemo(() => {
+    const retreatValues = CARDS.map((card) => getRetreatCostCount(card)).filter(
+      (value): value is number =>
+        typeof value === "number" && Number.isFinite(value),
+    );
+    return getNumericBounds(retreatValues, 0, 0);
+  }, []);
+  const craftCostBounds = useMemo(() => {
+    const craftCostValues = CARDS.map((card) => getCardCraftCost(card)).filter(
+      (value): value is number =>
+        typeof value === "number" && Number.isFinite(value),
+    );
+    return getNumericBounds(craftCostValues, 0, 0);
+  }, []);
+  const craftCostStops = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          CARDS.map((card) => getCardCraftCost(card)).filter(
+            (value): value is number =>
+              typeof value === "number" && Number.isFinite(value),
+          ),
+        ),
+      ).sort((a, b) => a - b),
+    [],
+  );
+  const clampToBounds = (value: number, min: number, max: number) =>
+    Math.max(min, Math.min(max, value));
+  const hpMinSliderValue = clampToBounds(
+    hpMin ?? hpBounds.min,
+    hpBounds.min,
+    hpBounds.max,
+  );
+  const hpMaxSliderValue = clampToBounds(
+    hpMax ?? hpBounds.max,
+    hpBounds.min,
+    hpBounds.max,
+  );
+  const attackMinSliderValue = clampToBounds(
+    attackMin ?? attackBounds.min,
+    attackBounds.min,
+    attackBounds.max,
+  );
+  const attackMaxSliderValue = clampToBounds(
+    attackMax ?? attackBounds.max,
+    attackBounds.min,
+    attackBounds.max,
+  );
+  const craftCostMinSliderValue = clampToBounds(
+    craftCostMin ?? craftCostBounds.min,
+    craftCostBounds.min,
+    craftCostBounds.max,
+  );
+  const craftCostMaxSliderValue = clampToBounds(
+    craftCostMax ?? craftCostBounds.max,
+    craftCostBounds.min,
+    craftCostBounds.max,
+  );
+  const retreatMinSliderValue = clampToBounds(
+    retreatMin ?? retreatBounds.min,
+    retreatBounds.min,
+    retreatBounds.max,
+  );
+  const retreatMaxSliderValue = clampToBounds(
+    retreatMax ?? retreatBounds.max,
+    retreatBounds.min,
+    retreatBounds.max,
+  );
+  const boosterPackOptions = useMemo<{ id: string; name: string }[]>(() => {
+    const setPackMap = (boosterPackData as any).setPacks ?? {};
+    const sourceSetIds =
+      selectedSetFilters.length > 0 ? selectedSetFilters : selectableSetIds;
+    const showSetPrefix = selectedSetFilters.length > 1;
+    const unique = new Map<string, { id: string; name: string }>();
+    for (const setId of sourceSetIds) {
+      if (setId === "ALL") continue;
+      const setName = SETS.find((set) => set.id === setId)?.name ?? setId;
+      const packsForSet = (setPackMap[setId] ?? []) as {
+        id: string;
+        name?: string;
+      }[];
+      for (const pack of packsForSet) {
+        if (!unique.has(pack.id)) {
+          const packName = pack.name ?? pack.id;
+          unique.set(pack.id, {
+            id: pack.id,
+            name: showSetPrefix ? `${setName}: ${packName}` : packName,
+          });
+        }
+      }
+    }
+    return Array.from(unique.values()).sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
+  }, [selectedSetFilters, selectableSetIds]);
+
+  useEffect(() => {
+    setSelectedBoosterPackFilters((prev) =>
+      prev.filter((value) =>
+        boosterPackOptions.some((option) => option.id === value),
+      ),
+    );
+  }, [boosterPackOptions]);
+
+  useEffect(() => {
+    if (selectedSetFilters.length === 0 || boosterPackOptions.length <= 1) {
+      setCollectionBoosterDropdownOpen(false);
+    }
+  }, [selectedSetFilters, boosterPackOptions.length]);
+
   const collectionFilteredCards = useMemo<CollectionDisplayCard[]>(() => {
     if (!isCollectionRoute) return [];
     const normalizedSearch = searchQuery.toLowerCase();
@@ -386,9 +1082,113 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
             })
           : [{ set: card.set, number: card.number }];
       const inSelectedSet =
-        selectedSetId === "ALL" ||
-        printings.some((printing) => printing.set === selectedSetId);
+        selectedSetFilters.length === 0 ||
+        printings.some((printing) => selectedSetFilters.includes(printing.set));
       if (!inSelectedSet) continue;
+      const mappedBoosterPacks =
+        ((boosterPackData as any).cardPacks?.[card.id] as
+          | string[]
+          | undefined) ??
+        card.boosterPacks ??
+        [];
+      if (
+        selectedBoosterPackFilters.length > 0 &&
+        !selectedBoosterPackFilters.some((pack) =>
+          mappedBoosterPacks.includes(pack),
+        )
+      ) {
+        continue;
+      }
+      if (
+        selectedRarities.length > 0 &&
+        !selectedRarities.includes(card.rarity)
+      )
+        continue;
+      const pokemonType = card.pokemonType ?? card.energyType;
+      if (
+        selectedPokemonTypes.length > 0 &&
+        (!pokemonType || !selectedPokemonTypes.includes(pokemonType))
+      ) {
+        continue;
+      }
+      const hpValue = card.hp ?? card.health ?? null;
+      if (hpMin != null && (hpValue == null || hpValue < hpMin)) continue;
+      if (hpMax != null && (hpValue == null || hpValue > hpMax)) continue;
+      const maxAttackDamage = getCardAttackDamageMax(card);
+      if (
+        attackMin != null &&
+        (maxAttackDamage == null || maxAttackDamage < attackMin)
+      ) {
+        continue;
+      }
+      if (
+        attackMax != null &&
+        (maxAttackDamage == null || maxAttackDamage > attackMax)
+      ) {
+        continue;
+      }
+      const craftCost = getCardCraftCost(card);
+      if (
+        craftCostMin != null &&
+        (craftCost == null || craftCost < craftCostMin)
+      )
+        continue;
+      if (
+        craftCostMax != null &&
+        (craftCost == null || craftCost > craftCostMax)
+      )
+        continue;
+      if (selectedWeaknessFilters.length > 0) {
+        const hasNoneWeakness = !card.weakness;
+        const matchesNone =
+          selectedWeaknessFilters.includes("none") && hasNoneWeakness;
+        const matchesTyped =
+          card.weakness != null &&
+          selectedWeaknessFilters.includes(card.weakness.type);
+        if (!matchesNone && !matchesTyped) continue;
+      }
+      const retreatCount = getRetreatCostCount(card);
+      if (
+        retreatMin != null &&
+        (retreatCount == null || retreatCount < retreatMin)
+      )
+        continue;
+      if (
+        retreatMax != null &&
+        (retreatCount == null || retreatCount > retreatMax)
+      )
+        continue;
+      const hasAbility = (card.abilities ?? []).length > 0;
+      if (abilityFilter === "has" && !hasAbility) continue;
+      if (abilityFilter === "none" && hasAbility) continue;
+      if (
+        selectedExStatuses.length > 0 &&
+        !selectedExStatuses.includes(card.exStatus ?? "non-ex")
+      ) {
+        continue;
+      }
+      if (selectedTrainerTypes.length > 0) {
+        const trainerSubtype = getTrainerSubtype(card);
+        if (!trainerSubtype || !selectedTrainerTypes.includes(trainerSubtype))
+          continue;
+      }
+      const pokemonStage = (card.pokemonStage ??
+        card.stage ??
+        null) as PokemonStage | null;
+      if (
+        selectedPokemonStages.length > 0 &&
+        (!pokemonStage || !selectedPokemonStages.includes(pokemonStage))
+      ) {
+        continue;
+      }
+      const count = collection[card.id] || 0;
+      if (selectedCopyBuckets.length > 0) {
+        const matchesCopies =
+          (selectedCopyBuckets.includes("0") && count === 0) ||
+          (selectedCopyBuckets.includes("1") && count === 1) ||
+          (selectedCopyBuckets.includes("2plus") && count >= 2);
+        if (!matchesCopies) continue;
+      }
       const matchesSearch =
         card.name.toLowerCase().includes(normalizedSearch) ||
         String(card.number).includes(searchQuery) ||
@@ -396,8 +1196,6 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           String(printing.number).includes(searchQuery),
         );
       if (!matchesSearch) continue;
-
-      const count = collection[card.id] || 0;
       const numberLabel =
         selectedSetId === "ALL"
           ? printings
@@ -419,23 +1217,196 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         count,
         numberLabel,
       };
-      const isOwned = item.count > 0;
-      if (filterOwned === "owned" && !isOwned) continue;
-      if (filterOwned === "missing" && isOwned) continue;
       display.push(item);
     }
 
-    return display.sort((a, b) => {
+    const compareCollectorNumber = (
+      a: CollectionDisplayCard,
+      b: CollectionDisplayCard,
+    ) => {
       const setDiff =
         (setOrderById[a.card.set] ?? 9999) - (setOrderById[b.card.set] ?? 9999);
       if (setDiff !== 0) return setDiff;
       return a.card.number - b.card.number;
+    };
+
+    const compareNullableNumber = (
+      a: number | null,
+      b: number | null,
+      highToLow: boolean,
+      naAlwaysLast: boolean,
+    ) => {
+      if (a == null && b == null) return 0;
+      if (a == null) return naAlwaysLast ? 1 : -1;
+      if (b == null) return naAlwaysLast ? -1 : 1;
+      return highToLow ? b - a : a - b;
+    };
+
+    const getEnergyRank = (type: EnergyType | null) => {
+      if (!type) return Number.POSITIVE_INFINITY;
+      const idx = ENERGY_SORT_ORDER.indexOf(type);
+      return idx === -1 ? Number.POSITIVE_INFINITY : idx;
+    };
+
+    const getRarityRankAsc = (rarity: Rarity) => {
+      const order: Rarity[] = [
+        Rarity.CROWN_RARE,
+        Rarity.DOUBLE_SHINY_RARE,
+        Rarity.SHINY_RARE,
+        Rarity.ILLUSTRATION_RARE,
+        Rarity.SUPER_RARE,
+        Rarity.ART_RARE,
+        Rarity.DOUBLE_RARE,
+        Rarity.RARE,
+        Rarity.UNCOMMON,
+        Rarity.COMMON,
+      ];
+      const idx = order.indexOf(rarity);
+      return idx === -1 ? 999 : idx;
+    };
+
+    const getCardTypeRankAsc = (card: AppCard) => {
+      if (card.type !== CardType.POKEMON) return 3;
+      if (card.exStatus === "mega-ex") return 2;
+      if (card.exStatus === "ex") return 1;
+      return 0;
+    };
+
+    const getAbilityRankAsc = (card: AppCard) => {
+      if (card.type !== CardType.POKEMON) return 2;
+      return (card.abilities ?? []).length > 0 ? 0 : 1;
+    };
+
+    const compareExpansionOrder = (
+      a: CollectionDisplayCard,
+      b: CollectionDisplayCard,
+      direction: SortDirection,
+    ) => {
+      const aKey = getExpansionSortKey(a.card.set);
+      const bKey = getExpansionSortKey(b.card.set);
+      if (aKey.block !== bKey.block) {
+        return direction === "asc"
+          ? bKey.block.localeCompare(aKey.block)
+          : aKey.block.localeCompare(bKey.block);
+      }
+      if (aKey.isPromo !== bKey.isPromo) {
+        return aKey.isPromo ? 1 : -1;
+      }
+      if (aKey.number !== bKey.number) {
+        return direction === "asc"
+          ? bKey.number - aKey.number
+          : aKey.number - bKey.number;
+      }
+      const aSuffixWeight =
+        aKey.suffix.length > 0 ? aKey.suffix.charCodeAt(0) - 96 : 0;
+      const bSuffixWeight =
+        bKey.suffix.length > 0 ? bKey.suffix.charCodeAt(0) - 96 : 0;
+      return direction === "asc"
+        ? bSuffixWeight - aSuffixWeight
+        : aSuffixWeight - bSuffixWeight;
+    };
+
+    return display.sort((a, b) => {
+      let diff = 0;
+      switch (sortBy) {
+        case "collector-number":
+          diff = compareCollectorNumber(a, b);
+          break;
+        case "rarity": {
+          const aPromo = a.card.rarity === Rarity.PROMO;
+          const bPromo = b.card.rarity === Rarity.PROMO;
+          if (aPromo !== bPromo) diff = aPromo ? 1 : -1;
+          else {
+            const base =
+              getRarityRankAsc(a.card.rarity) - getRarityRankAsc(b.card.rarity);
+            diff = sortDirection === "asc" ? base : -base;
+          }
+          break;
+        }
+        case "count":
+          diff =
+            sortDirection === "asc" ? b.count - a.count : a.count - b.count;
+          break;
+        case "type": {
+          const aType = a.card.pokemonType ?? a.card.energyType ?? null;
+          const bType = b.card.pokemonType ?? b.card.energyType ?? null;
+          const base = getEnergyRank(aType) - getEnergyRank(bType);
+          diff = sortDirection === "asc" ? base : -base;
+          break;
+        }
+        case "weakness": {
+          const aWeakness = a.card.weakness?.type ?? null;
+          const bWeakness = b.card.weakness?.type ?? null;
+          const base = getEnergyRank(aWeakness) - getEnergyRank(bWeakness);
+          diff = sortDirection === "asc" ? base : -base;
+          break;
+        }
+        case "hp":
+          diff = compareNullableNumber(
+            a.card.hp ?? a.card.health ?? null,
+            b.card.hp ?? b.card.health ?? null,
+            sortDirection === "asc",
+            true,
+          );
+          break;
+        case "attack":
+          diff = compareNullableNumber(
+            getCardAttackDamageMax(a.card),
+            getCardAttackDamageMax(b.card),
+            sortDirection === "asc",
+            true,
+          );
+          break;
+        case "retreat-cost":
+          diff = compareNullableNumber(
+            getRetreatCostCount(a.card),
+            getRetreatCostCount(b.card),
+            sortDirection === "desc",
+            true,
+          );
+          break;
+        case "card-type": {
+          const base = getCardTypeRankAsc(a.card) - getCardTypeRankAsc(b.card);
+          diff = sortDirection === "asc" ? base : -base;
+          break;
+        }
+        case "ability": {
+          const base = getAbilityRankAsc(a.card) - getAbilityRankAsc(b.card);
+          diff = sortDirection === "asc" ? base : -base;
+          break;
+        }
+        case "expansion-order":
+          diff = compareExpansionOrder(a, b, sortDirection);
+          break;
+        default:
+          diff = 0;
+      }
+      if (diff !== 0) return diff;
+      return compareCollectorNumber(a, b);
     });
   }, [
     isCollectionRoute,
-    selectedSetId,
+    selectedSetFilters,
     searchQuery,
-    filterOwned,
+    selectedBoosterPackFilters,
+    selectedRarities,
+    selectedPokemonTypes,
+    hpMin,
+    hpMax,
+    attackMin,
+    attackMax,
+    craftCostMin,
+    craftCostMax,
+    selectedWeaknessFilters,
+    retreatMin,
+    retreatMax,
+    abilityFilter,
+    selectedCopyBuckets,
+    selectedPokemonStages,
+    selectedExStatuses,
+    selectedTrainerTypes,
+    sortBy,
+    sortDirection,
     collection,
     setOrderById,
   ]);
@@ -910,20 +1881,17 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
         variant="primary"
         size="lg"
         fullWidth
-        onClick={() =>
-          navigate(
-            lastCollectionSetSlug
-              ? `/collection/${lastCollectionSetSlug}`
-              : "/collection",
-          )
-        }
+        onClick={() => {
+          if (lastCollectionSetId) setSelectedSetFilters([lastCollectionSetId]);
+          navigate("/collection");
+        }}
         className="h-24 flex flex-col items-center justify-center gap-1 py-5 group"
       >
         <Library className="size-8 shrink-0 group-hover:scale-110 transition-transform" />
         <span className="text-lg">My Collection</span>
-        {lastCollectionSetSlug != null &&
+        {lastCollectionSetId != null &&
           (() => {
-            const set = getSetBySlug(lastCollectionSetSlug);
+            const set = SETS.find((item) => item.id === lastCollectionSetId);
             return set ? (
               <span className="text-[10px] text-gray-200 font-normal leading-tight">
                 {set.name}
@@ -1028,14 +1996,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     return () => document.removeEventListener("keydown", handler);
   }, [location.pathname, inspectView]);
 
-  const closeCollectionSetDropdownAndFocusSearch = useCallback(() => {
-    if (!collectionSetDropdownOpen) return;
-    setCollectionSetDropdownClosing(true);
-  }, [collectionSetDropdownOpen]);
-
-  const finishCloseCollectionSetDropdown = useCallback(() => {
-    setCollectionSetDropdownOpen(false);
-    setCollectionSetDropdownClosing(false);
+  const openCollectionSearch = useCallback(() => {
+    setCollectionSearchOpen(true);
     setTimeout(() => collectionSearchInputRef.current?.focus(), 0);
   }, []);
 
@@ -1049,101 +2011,464 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
     }, 0);
   }, []);
 
-  // Dropdown open: reveal after one frame for fade+slide in
-  useEffect(() => {
-    if (collectionSetDropdownOpen && !collectionSetDropdownClosing) {
-      setCollectionSetDropdownRevealed(false);
-      const id = requestAnimationFrame(() => {
-        requestAnimationFrame(() => setCollectionSetDropdownRevealed(true));
+  const resetCollectionFilters = useCallback(() => {
+    setSelectedSetFilters([]);
+    setCollectionSetDropdownOpen(false);
+    setCollectionBoosterDropdownOpen(false);
+    setSelectedBoosterPackFilters([]);
+    setSelectedRarities([]);
+    setSelectedPokemonTypes([]);
+    setHpMinInput("ANY");
+    setHpMaxInput("ANY");
+    setAttackMinInput("ANY");
+    setAttackMaxInput("ANY");
+    setCraftCostMinInput("ANY");
+    setCraftCostMaxInput("ANY");
+    setSelectedWeaknessFilters([]);
+    setRetreatMinInput("");
+    setRetreatMaxInput("");
+    setAbilityFilter(null);
+    setSelectedCopyBuckets([]);
+    setSelectedPokemonStages([]);
+    setSortBy("collector-number");
+    setSortDirection("asc");
+    setCollectionSortDropdownOpen(false);
+    setSelectedExStatuses([]);
+    setSelectedTrainerTypes([]);
+  }, []);
+
+  const selectedSortOption =
+    SORT_OPTIONS.find((option) => option.id === sortBy) ?? SORT_OPTIONS[0];
+
+  const hasActiveCollectionFilters =
+    selectedSetFilters.length > 0 ||
+    selectedBoosterPackFilters.length > 0 ||
+    selectedRarities.length > 0 ||
+    selectedPokemonTypes.length > 0 ||
+    hpMinInput !== "ANY" ||
+    hpMaxInput !== "ANY" ||
+    attackMinInput !== "ANY" ||
+    attackMaxInput !== "ANY" ||
+    craftCostMinInput !== "ANY" ||
+    craftCostMaxInput !== "ANY" ||
+    selectedWeaknessFilters.length > 0 ||
+    retreatMinInput !== "" ||
+    retreatMaxInput !== "" ||
+    abilityFilter !== null ||
+    selectedCopyBuckets.length > 0 ||
+    selectedPokemonStages.length > 0 ||
+    sortBy !== "collector-number" ||
+    sortDirection !== "asc" ||
+    selectedExStatuses.length > 0 ||
+    selectedTrainerTypes.length > 0;
+
+  const appliedFilterChips = useMemo<ActiveFilterChip[]>(() => {
+    const chips: ActiveFilterChip[] = [];
+    const formatRange = (
+      label: string,
+      minValue: number | null,
+      maxValue: number | null,
+      bounds: { min: number; max: number },
+    ) => {
+      const hasMin = minValue != null && minValue !== bounds.min;
+      const hasMax = maxValue != null && maxValue !== bounds.max;
+      if (!hasMin && !hasMax) return null;
+      if (hasMin && hasMax) {
+        if (minValue === maxValue) return `${label}: ${minValue}`;
+        return `${label}: ${minValue}-${maxValue}`;
+      }
+      if (hasMin) return `${label}: >=${minValue}`;
+      return `${label}: <=${maxValue}`;
+    };
+
+    for (const setId of selectedSetFilters) {
+      const set = SETS.find((item) => item.id === setId);
+      chips.push({
+        key: `set:${setId}`,
+        content: `Set: ${set?.name ?? setId} (${setId})`,
+        onRemove: () =>
+          setSelectedSetFilters((prev) =>
+            prev.filter((value) => value !== setId),
+          ),
       });
-      return () => cancelAnimationFrame(id);
     }
-    if (!collectionSetDropdownOpen) {
-      setCollectionSetDropdownRevealed(false);
-      setCollectionSetDropdownClosing(false);
+    for (const booster of selectedBoosterPackFilters) {
+      const boosterName =
+        boosterPackOptions.find((option) => option.id === booster)?.name ??
+        booster;
+      chips.push({
+        key: `booster:${booster}`,
+        content: `Booster: ${boosterName}`,
+        onRemove: () =>
+          setSelectedBoosterPackFilters((prev) =>
+            prev.filter((value) => value !== booster),
+          ),
+      });
     }
-  }, [collectionSetDropdownOpen, collectionSetDropdownClosing]);
-
-  // When dropdown opens, set focused index to selected option and scroll selected into view
-  useEffect(() => {
-    if (!collectionSetDropdownOpen) return;
-    const selectedIndex =
-      selectedSetId === "ALL"
-        ? 0
-        : SETS.findIndex((s) => s.id === selectedSetId) + 1;
-    if (selectedIndex > SETS.length) setCollectionSetDropdownFocusedIndex(0);
-    else
-      setCollectionSetDropdownFocusedIndex(
-        selectedIndex >= 0 ? selectedIndex : 0,
+    if (sortBy !== "collector-number" || sortDirection !== "asc") {
+      const sortLabel =
+        SORT_OPTIONS.find((option) => option.id === sortBy)?.label ?? "Sort";
+      chips.push({
+        key: "sort",
+        content: `Sort by: ${sortLabel} ${sortDirection === "asc" ? "↑" : "↓"}`,
+        onRemove: () => {
+          setSortBy("collector-number");
+          setSortDirection("asc");
+        },
+      });
+    }
+    for (const rarity of selectedRarities) {
+      const rarityOption = RARITY_OPTIONS.find(
+        (option) => option.value === rarity,
       );
-    const listbox = collectionSetListboxRef.current;
-    if (listbox) {
-      const scroll = () => {
-        const selected = listbox.querySelector('[aria-selected="true"]');
-        (selected as HTMLElement)?.scrollIntoView({ block: "nearest" });
-      };
-      requestAnimationFrame(scroll);
+      chips.push({
+        key: `rarity:${rarity}`,
+        content: rarityOption?.icon ? (
+          <img
+            src={rarityOption.icon}
+            alt={rarity}
+            className="h-3.5 w-auto shrink-0"
+          />
+        ) : (
+          (rarityOption?.label ?? rarity)
+        ),
+        onRemove: () =>
+          setSelectedRarities((prev) =>
+            prev.filter((value) => value !== rarity),
+          ),
+      });
     }
-  }, [collectionSetDropdownOpen, selectedSetId]);
+    for (const type of selectedPokemonTypes) {
+      const typeOption = ENERGY_TYPE_OPTIONS.find(
+        (option) => option.value === type,
+      );
+      chips.push({
+        key: `ptype:${type}`,
+        content: (
+          <span className="inline-flex items-center gap-1">
+            {typeOption && (
+              <img src={typeOption.icon} alt={type} className="h-3.5 w-3.5" />
+            )}
+            {type}
+          </span>
+        ),
+        onRemove: () =>
+          setSelectedPokemonTypes((prev) =>
+            prev.filter((value) => value !== type),
+          ),
+      });
+    }
+    for (const weakness of selectedWeaknessFilters) {
+      if (weakness === "none") {
+        chips.push({
+          key: "weakness:none",
+          content: "Weakness: None",
+          onRemove: () =>
+            setSelectedWeaknessFilters((prev) =>
+              prev.filter((value) => value !== "none"),
+            ),
+        });
+        continue;
+      }
+      const weakOption = ENERGY_TYPE_OPTIONS.find(
+        (option) => option.value === weakness,
+      );
+      chips.push({
+        key: `weakness:${weakness}`,
+        content: (
+          <span className="inline-flex items-center gap-1">
+            Weakness:
+            {weakOption && (
+              <img
+                src={weakOption.icon}
+                alt={weakness}
+                className="h-3.5 w-3.5"
+              />
+            )}
+            {weakness}
+          </span>
+        ),
+        onRemove: () =>
+          setSelectedWeaknessFilters((prev) =>
+            prev.filter((value) => value !== weakness),
+          ),
+      });
+    }
+    const hpText = formatRange("HP", hpMin, hpMax, hpBounds);
+    if (hpText) {
+      chips.push({
+        key: "hp",
+        content: hpText,
+        onRemove: () => {
+          setHpMinInput("ANY");
+          setHpMaxInput("ANY");
+        },
+      });
+    }
+    const attackText = formatRange(
+      "Attack",
+      attackMin,
+      attackMax,
+      attackBounds,
+    );
+    if (attackText) {
+      chips.push({
+        key: "attack",
+        content: attackText,
+        onRemove: () => {
+          setAttackMinInput("ANY");
+          setAttackMaxInput("ANY");
+        },
+      });
+    }
+    const retreatText = formatRange(
+      "Retreat",
+      retreatMin,
+      retreatMax,
+      retreatBounds,
+    );
+    if (retreatText) {
+      chips.push({
+        key: "retreat",
+        content: retreatText,
+        onRemove: () => {
+          setRetreatMinInput("");
+          setRetreatMaxInput("");
+        },
+      });
+    }
+    const craftText = formatRange(
+      "Craft",
+      craftCostMin,
+      craftCostMax,
+      craftCostBounds,
+    );
+    if (craftText) {
+      chips.push({
+        key: "craft",
+        content: craftText,
+        onRemove: () => {
+          setCraftCostMinInput("ANY");
+          setCraftCostMaxInput("ANY");
+        },
+      });
+    }
+    for (const bucket of selectedCopyBuckets) {
+      const bucketLabel =
+        COPY_BUCKET_OPTIONS.find((option) => option.value === bucket)?.label ??
+        bucket;
+      chips.push({
+        key: `copies:${bucket}`,
+        content: bucketLabel,
+        onRemove: () =>
+          setSelectedCopyBuckets((prev) =>
+            prev.filter((value) => value !== bucket),
+          ),
+      });
+    }
+    if (abilityFilter === "has" || abilityFilter === "none") {
+      chips.push({
+        key: "ability",
+        content: abilityFilter === "has" ? "Has ability" : "No ability",
+        onRemove: () => setAbilityFilter(null),
+      });
+    }
+    for (const stage of selectedPokemonStages) {
+      chips.push({
+        key: `stage:${stage}`,
+        content: `Stage: ${stage}`,
+        onRemove: () =>
+          setSelectedPokemonStages((prev) =>
+            prev.filter((value) => value !== stage),
+          ),
+      });
+    }
+    for (const exStatus of selectedExStatuses) {
+      const label =
+        EX_STATUS_OPTIONS.find((option) => option.value === exStatus)?.label ??
+        exStatus;
+      chips.push({
+        key: `ex:${exStatus}`,
+        content: label,
+        onRemove: () =>
+          setSelectedExStatuses((prev) =>
+            prev.filter((value) => value !== exStatus),
+          ),
+      });
+    }
+    for (const trainerType of selectedTrainerTypes) {
+      const label =
+        TRAINER_TYPE_OPTIONS.find((option) => option.value === trainerType)
+          ?.label ?? trainerType;
+      chips.push({
+        key: `trainer:${trainerType}`,
+        content: label,
+        onRemove: () =>
+          setSelectedTrainerTypes((prev) =>
+            prev.filter((value) => value !== trainerType),
+          ),
+      });
+    }
+    const sectionRank = (key: string) => {
+      if (key.startsWith("set:")) return 0;
+      if (key.startsWith("booster:")) return 1;
+      if (key.startsWith("copies:")) return 2;
+      if (key === "sort") return 3;
+      if (key.startsWith("rarity:")) return 4;
+      if (key.startsWith("ptype:")) return 5;
+      if (key.startsWith("weakness:")) return 6;
+      if (key === "ability") return 7;
+      if (key.startsWith("stage:")) return 8;
+      if (key.startsWith("ex:")) return 9;
+      if (key.startsWith("trainer:")) return 10;
+      if (key === "hp") return 11;
+      if (key === "attack") return 12;
+      if (key === "craft") return 13;
+      if (key === "retreat") return 14;
+      return 99;
+    };
+    const optionRank = (key: string) => {
+      if (key.startsWith("set:")) {
+        const id = key.replace("set:", "");
+        const idx = SETS.findIndex((set) => set.id === id);
+        return idx === -1 ? 999 : idx;
+      }
+      if (key.startsWith("booster:")) {
+        const id = key.replace("booster:", "");
+        const idx = boosterPackOptions.findIndex((option) => option.id === id);
+        return idx === -1 ? 999 : idx;
+      }
+      if (key.startsWith("copies:")) {
+        const id = key.replace("copies:", "") as CopyBucket;
+        const idx = COPY_BUCKET_OPTIONS.findIndex(
+          (option) => option.value === id,
+        );
+        return idx === -1 ? 999 : idx;
+      }
+      if (key.startsWith("rarity:")) {
+        const id = key.replace("rarity:", "") as Rarity;
+        const idx = RARITY_OPTIONS.findIndex((option) => option.value === id);
+        return idx === -1 ? 999 : idx;
+      }
+      if (key.startsWith("ptype:")) {
+        const id = key.replace("ptype:", "") as EnergyType;
+        const idx = ENERGY_TYPE_OPTIONS.findIndex(
+          (option) => option.value === id,
+        );
+        return idx === -1 ? 999 : idx;
+      }
+      if (key.startsWith("weakness:")) {
+        const id = key.replace("weakness:", "");
+        if (id === "none") return 999;
+        const idx = ENERGY_TYPE_OPTIONS.findIndex(
+          (option) => option.value === id,
+        );
+        return idx === -1 ? 999 : idx;
+      }
+      if (key.startsWith("stage:")) {
+        const id = key.replace("stage:", "") as PokemonStage;
+        const idx = POKEMON_STAGE_OPTIONS.findIndex((option) => option === id);
+        return idx === -1 ? 999 : idx;
+      }
+      if (key.startsWith("ex:")) {
+        const id = key.replace("ex:", "") as ExStatus;
+        const idx = EX_STATUS_OPTIONS.findIndex(
+          (option) => option.value === id,
+        );
+        return idx === -1 ? 999 : idx;
+      }
+      if (key.startsWith("trainer:")) {
+        const id = key.replace("trainer:", "") as TrainerSubtype;
+        const idx = TRAINER_TYPE_OPTIONS.findIndex(
+          (option) => option.value === id,
+        );
+        return idx === -1 ? 999 : idx;
+      }
+      return 0;
+    };
+    return [...chips].sort((a, b) => {
+      const sectionDiff = sectionRank(a.key) - sectionRank(b.key);
+      if (sectionDiff !== 0) return sectionDiff;
+      const optionDiff = optionRank(a.key) - optionRank(b.key);
+      if (optionDiff !== 0) return optionDiff;
+      return a.key.localeCompare(b.key);
+    });
+  }, [
+    selectedSetFilters,
+    selectedBoosterPackFilters,
+    boosterPackOptions,
+    sortBy,
+    sortDirection,
+    selectedRarities,
+    selectedPokemonTypes,
+    selectedWeaknessFilters,
+    hpMin,
+    hpMax,
+    hpBounds,
+    attackMin,
+    attackMax,
+    attackBounds,
+    retreatMin,
+    retreatMax,
+    retreatBounds,
+    craftCostMin,
+    craftCostMax,
+    craftCostBounds,
+    selectedCopyBuckets,
+    abilityFilter,
+    selectedPokemonStages,
+    selectedExStatuses,
+    selectedTrainerTypes,
+  ]);
 
-  // When dropdown is open and focused index changes, focus that option
+  // Close search panel on click outside or Escape.
   useEffect(() => {
-    if (!collectionSetDropdownOpen) return;
-    const option = collectionSetListboxRef.current?.querySelector(
-      `[data-index="${collectionSetDropdownFocusedIndex}"]`,
-    ) as HTMLElement | null;
-    option?.focus();
-  }, [collectionSetDropdownOpen, collectionSetDropdownFocusedIndex]);
-
-  // Close collection set dropdown on click outside or Escape; keyboard navigation when open
-  useEffect(() => {
-    if (!collectionSetDropdownOpen) return;
+    if (!collectionSearchOpen && !collectionFiltersOpen) return;
     const handleOutside = (e: MouseEvent | TouchEvent) => {
-      const el = collectionSetDropdownRef.current;
-      if (el && !el.contains(e.target as Node))
-        closeCollectionSetDropdownAndFocusSearch();
+      const panel = collectionSearchPanelRef.current;
+      const filterToggle = collectionFilterToggleRef.current;
+      const toggle = collectionSearchToggleRef.current;
+      const searchBar = collectionSearchBarRef.current;
+      const setDropdown = collectionSetDropdownRef.current;
+      const boosterDropdown = collectionBoosterDropdownRef.current;
+      const sortDropdown = collectionSortDropdownRef.current;
+      const target = e.target as Node;
+      if (
+        panel?.contains(target) ||
+        filterToggle?.contains(target) ||
+        toggle?.contains(target) ||
+        searchBar?.contains(target)
+      ) {
+        if (setDropdown && !setDropdown.contains(target))
+          setCollectionSetDropdownOpen(false);
+        if (boosterDropdown && !boosterDropdown.contains(target))
+          setCollectionBoosterDropdownOpen(false);
+        if (sortDropdown && !sortDropdown.contains(target))
+          setCollectionSortDropdownOpen(false);
+        return;
+      }
+      if (searchQuery.trim().length === 0) {
+        setCollectionSearchOpen(false);
+      }
+      setCollectionSetDropdownOpen(false);
+      setCollectionBoosterDropdownOpen(false);
+      setCollectionSortDropdownOpen(false);
     };
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        closeCollectionSetDropdownAndFocusSearch();
-        e.preventDefault();
-        return;
-      }
-      const optionCount = SETS.length + 1;
-      if (e.key === "ArrowDown") {
-        setCollectionSetDropdownFocusedIndex((i) => (i + 1) % optionCount);
-        e.preventDefault();
-        return;
-      }
-      if (e.key === "ArrowUp") {
-        setCollectionSetDropdownFocusedIndex(
-          (i) => (i - 1 + optionCount) % optionCount,
-        );
-        e.preventDefault();
-        return;
-      }
-      if (e.key === "Home") {
-        setCollectionSetDropdownFocusedIndex(0);
-        e.preventDefault();
-        return;
-      }
-      if (e.key === "End") {
-        setCollectionSetDropdownFocusedIndex(SETS.length);
-        e.preventDefault();
-        return;
-      }
-      if (e.key === "Enter") {
-        if (collectionSetDropdownFocusedIndex === 0) {
-          navigate("/collection");
-        } else {
-          const set = SETS[collectionSetDropdownFocusedIndex - 1];
-          if (set) {
-            const slug = getSetSlug(set.id);
-            if (slug != null) navigate(`/collection/${slug}`);
-          }
+        if (collectionSetDropdownOpen) {
+          setCollectionSetDropdownOpen(false);
+          return;
         }
-        closeCollectionSetDropdownAndFocusSearch();
-        e.preventDefault();
+        if (collectionBoosterDropdownOpen) {
+          setCollectionBoosterDropdownOpen(false);
+          return;
+        }
+        if (collectionSortDropdownOpen) {
+          setCollectionSortDropdownOpen(false);
+          return;
+        }
+        setCollectionSearchOpen(false);
       }
     };
     document.addEventListener("mousedown", handleOutside);
@@ -1155,18 +2480,22 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [
+    collectionSearchOpen,
+    collectionFiltersOpen,
     collectionSetDropdownOpen,
-    closeCollectionSetDropdownAndFocusSearch,
-    collectionSetDropdownFocusedIndex,
-    navigate,
+    collectionBoosterDropdownOpen,
+    collectionSortDropdownOpen,
+    searchQuery,
   ]);
 
-  // Close collection set dropdown when leaving collection route (no animation)
+  // Close search panel when leaving collection route.
   useEffect(() => {
     if (!location.pathname.startsWith("/collection")) {
+      setCollectionSearchOpen(false);
+      setCollectionFiltersOpen(false);
       setCollectionSetDropdownOpen(false);
-      setCollectionSetDropdownClosing(false);
-      setCollectionSetDropdownRevealed(false);
+      setCollectionBoosterDropdownOpen(false);
+      setCollectionSortDropdownOpen(false);
     }
   }, [location.pathname]);
 
@@ -1563,108 +2892,8 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           </div>
         )}
 
-        <div className="sticky top-0 z-30 bg-black shrink-0 border-b border-gray-800 p-4 space-y-3 backdrop-blur-md">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate("/")}
-              className="p-2 -ml-2 text-gray-400 hover:text-white"
-            >
-              <ChevronLeft />
-            </button>
-            <h2 className="text-xl font-bold hidden min-[584px]:block">
-              Collection
-            </h2>
-            <div
-              ref={collectionSetDropdownRef}
-              className="relative flex-none min-w-0 shrink max-w-full"
-              style={{ width: collectionSetDropdownWidth ?? 240 }}
-            >
-              <button
-                type="button"
-                onClick={() => {
-                  if (collectionSetDropdownOpen)
-                    closeCollectionSetDropdownAndFocusSearch();
-                  else setCollectionSetDropdownOpen(true);
-                }}
-                aria-expanded={collectionSetDropdownOpen}
-                aria-haspopup="listbox"
-                aria-label="Select set"
-                className="group/dropdown w-full flex items-center justify-between gap-2 bg-gray-900 border border-gray-700 text-white text-sm rounded-lg px-3 py-2 outline-none transition-colors hover:bg-gray-800 hover:border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 truncate min-h-[40px]"
-              >
-                <span className="truncate">
-                  {selectedSetId === "ALL"
-                    ? "All Sets"
-                    : (SETS.find((s) => s.id === selectedSetId)?.name ??
-                      selectedSetId)}
-                </span>
-                <span className="flex items-center gap-2 shrink-0">
-                  {selectedSetId !== "ALL" && (
-                    <span className="hidden headerNarrow:inline shrink-0 text-xs font-mono text-gray-400 bg-gray-800 group-hover/dropdown:bg-gray-900 px-2 py-0.5 rounded transition-colors">
-                      {SETS.find((s) => s.id === selectedSetId)?.id ??
-                        selectedSetId}
-                    </span>
-                  )}
-                  <ChevronDown
-                    size={16}
-                    className={`text-gray-400 transition-transform ${collectionSetDropdownOpen ? "rotate-180" : ""}`}
-                  />
-                </span>
-              </button>
-              {(collectionSetDropdownOpen || collectionSetDropdownClosing) && (
-                <div
-                  ref={collectionSetListboxRef}
-                  role="listbox"
-                  className={`absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-gray-700 rounded-lg shadow-xl max-h-[min(60vh,320px)] overflow-y-auto py-1 z-50 transition-all duration-150 ease-out ${
-                    collectionSetDropdownRevealed &&
-                    !collectionSetDropdownClosing
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 -translate-y-1 pointer-events-none"
-                  }`}
-                  onTransitionEnd={(e) => {
-                    if (e.target !== collectionSetListboxRef.current) return;
-                    if (collectionSetDropdownClosing)
-                      finishCloseCollectionSetDropdown();
-                  }}
-                >
-                  <button
-                    type="button"
-                    role="option"
-                    aria-selected={selectedSetId === "ALL"}
-                    data-index={0}
-                    onClick={() => {
-                      navigate("/collection");
-                      closeCollectionSetDropdownAndFocusSearch();
-                    }}
-                    className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 text-left text-sm transition-colors hover:bg-blue-900/40 focus:bg-blue-900/40 focus:outline-none ${selectedSetId === "ALL" ? "bg-blue-900/90 text-white" : "text-gray-200"}`}
-                  >
-                    <span className="truncate">All Sets</span>
-                  </button>
-                  {SETS.map((set, index) => {
-                    const isSelected = selectedSetId === set.id;
-                    return (
-                      <button
-                        key={set.id}
-                        type="button"
-                        role="option"
-                        aria-selected={isSelected}
-                        data-index={index + 1}
-                        onClick={() => {
-                          const slug = getSetSlug(set.id);
-                          if (slug != null) navigate(`/collection/${slug}`);
-                          closeCollectionSetDropdownAndFocusSearch();
-                        }}
-                        className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 text-left text-sm transition-colors hover:bg-blue-900/40 focus:bg-blue-900/40 focus:outline-none ${isSelected ? "bg-blue-900/90 text-white" : "text-gray-200"}`}
-                      >
-                        <span className="truncate">{set.name}</span>
-                        <span className="shrink-0 text-xs font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded">
-                          {set.id}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+        <div className="sticky top-0 z-30 bg-black shrink-0 border-b border-gray-800 backdrop-blur-md">
+          <div className="p-4">
             {(() => {
               const progress = getCollectionProgress(collection, selectedSetId);
               const statsHash =
@@ -1673,198 +2902,856 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
                   : (getSetSlug(selectedSetId) ?? selectedSetId);
               return (
                 <>
-                  {/* Progress region: clickable, same height as dropdown, navigates to Statistics and scrolls to this set */}
-                  <button
-                    type="button"
-                    onClick={() => navigate(`/statistics#${statsHash}`)}
-                    className="group/progress flex min-h-[40px] min-w-[3rem] items-center gap-2 px-3 py-2 sm:flex-1 rounded-lg border border-gray-700 bg-gray-900 text-left outline-none transition-colors hover:bg-gray-800 hover:border-gray-600 cursor-pointer focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black focus:border-blue-500"
-                    aria-label={`View ${selectedSetId === "ALL" ? "All Sets" : "set"} in Statistics`}
-                  >
-                    <span className="text-xs font-medium text-blue-400 shrink-0 tabular-nums">
-                      {Math.floor(progress.percentage)}%
-                    </span>
-                    <div className="hidden sm:block flex-1 min-w-[48px] h-3 bg-gray-800 group-hover/progress:bg-gray-900 rounded-full overflow-hidden transition-colors">
+                  <div className="relative">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <button
+                        onClick={() => navigate("/")}
+                        className="p-2 -ml-2 text-gray-400 hover:text-white shrink-0"
+                      >
+                        <ChevronLeft />
+                      </button>
+                      <h2 className="text-xl font-bold hidden min-[600px]:block shrink-0">
+                        Collection
+                      </h2>
+                      <button
+                        ref={collectionFilterToggleRef}
+                        type="button"
+                        onClick={() => {
+                          setCollectionFiltersOpen((prev) => {
+                            if (prev) {
+                              setCollectionSetDropdownOpen(false);
+                              setCollectionBoosterDropdownOpen(false);
+                              setCollectionSortDropdownOpen(false);
+                            }
+                            return !prev;
+                          });
+                        }}
+                        aria-label="Toggle filters"
+                        className={`min-h-[40px] min-w-[40px] px-2 rounded-lg border shrink-0 inline-flex items-center justify-center transition-colors ${collectionFiltersOpen ? "bg-blue-600 border-blue-600 text-white" : "bg-gray-900 border-gray-700 text-gray-200 hover:bg-gray-800 hover:border-gray-600"}`}
+                      >
+                        <Filter size={16} />
+                      </button>
                       <div
-                        className="bg-gradient-to-r from-blue-600 to-purple-500 h-full rounded-full transition-all duration-1000 ease-out"
-                        style={{ width: `${Math.floor(progress.percentage)}%` }}
-                      />
+                        ref={collectionSearchBarRef}
+                        className={`min-w-0 origin-left transform transition-[width,transform] duration-150 ease-out ${collectionSearchOpen ? "mr-1 flex-1 w-auto max-w-full scale-100 min-[600px]:flex-none min-[600px]:w-[min(58vw,34rem)]" : "flex-none w-auto scale-100"}`}
+                      >
+                        {collectionSearchOpen ? (
+                          <div className="relative min-h-[40px] origin-left transform transition-all duration-150 ease-out scale-100">
+                            <Search
+                              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                              size={16}
+                            />
+                            <input
+                              ref={collectionSearchInputRef}
+                              type="text"
+                              placeholder="Search by name or number"
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                              className="w-full min-h-[40px] bg-gray-900 border border-gray-700 rounded-lg pl-9 pr-9 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            />
+                            {searchQuery.length > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSearchQuery("");
+                                  collectionSearchInputRef.current?.focus();
+                                }}
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 h-5 w-5 inline-flex items-center justify-center rounded text-gray-400 hover:text-white hover:bg-gray-800"
+                                aria-label="Clear search"
+                              >
+                                <X size={12} />
+                              </button>
+                            )}
+                          </div>
+                        ) : (
+                          <button
+                            ref={collectionSearchToggleRef}
+                            type="button"
+                            onClick={openCollectionSearch}
+                            aria-label="Open search"
+                            className="min-h-[40px] px-3 rounded-lg border shrink-0 transform transition-all duration-150 ease-out active:scale-95 bg-gray-900 border-gray-700 text-gray-200 hover:bg-gray-800 hover:border-gray-600 inline-flex items-center gap-2"
+                          >
+                            <Search size={16} />
+                            <span className="text-sm font-medium">Search</span>
+                          </button>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => navigate(`/statistics#${statsHash}`)}
+                        className="group/progress flex min-h-[40px] min-w-[3rem] min-[600px]:min-w-[4rem] items-center gap-2 px-2.5 py-2 flex-1 min-[600px]:px-3 rounded-lg border border-gray-700 bg-gray-900 text-left outline-none transition-colors hover:bg-gray-800 hover:border-gray-600 cursor-pointer focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black focus:border-blue-500"
+                        aria-label={`View ${selectedSetId === "ALL" ? "All Sets" : "set"} in Statistics`}
+                      >
+                        <span className="text-xs font-medium text-blue-400 shrink-0 tabular-nums">
+                          {Math.floor(progress.percentage)}%
+                        </span>
+                        <div className="flex-1 min-w-[16px] h-2.5 min-[600px]:h-3 bg-gray-800 group-hover/progress:bg-gray-900 rounded-full overflow-hidden transition-colors">
+                          <div
+                            className="bg-gradient-to-r from-blue-600 to-purple-500 h-full rounded-full transition-all duration-1000 ease-out"
+                            style={{
+                              width: `${Math.floor(progress.percentage)}%`,
+                            }}
+                          />
+                        </div>
+                      </button>
+                      <div className="ml-auto text-right shrink-0">
+                        <div className="text-xs text-gray-500 whitespace-nowrap">
+                          {progress.owned} / {progress.total}
+                        </div>
+                        <div className="text-[10px] text-gray-500 whitespace-nowrap">
+                          {progress.totalCopies} total
+                        </div>
+                      </div>
                     </div>
-                  </button>
-                  {/* Both labels always visible; no shortening */}
-                  <div className="ml-auto text-right shrink-0">
-                    <div className="text-xs text-gray-500 whitespace-nowrap">
-                      {progress.owned} / {progress.total}
-                    </div>
-                    <div className="text-[10px] text-gray-500 whitespace-nowrap">
-                      {progress.totalCopies} total
-                    </div>
+                    {appliedFilterChips.length > 0 && (
+                      <div className="absolute left-0 right-0 top-full mt-2 z-20">
+                        <div className="flex flex-wrap gap-1.5 rounded-md border border-gray-800 bg-black/95 p-2 shadow-lg">
+                          {appliedFilterChips.map((chip) => (
+                            <button
+                              key={chip.key}
+                              type="button"
+                              onClick={chip.onRemove}
+                              className="inline-flex items-center gap-1 rounded-md border border-gray-700 bg-gray-900 px-2 py-1 text-[11px] text-gray-200 hover:bg-gray-800"
+                              aria-label={`Remove filter ${typeof chip.content === "string" ? chip.content : ""}`}
+                            >
+                              <span className="inline-flex items-center gap-1">
+                                {chip.content}
+                              </span>
+                              <X size={11} className="text-gray-400" />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </>
               );
             })()}
-          </div>
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-                size={16}
-              />
-              <input
-                ref={collectionSearchInputRef}
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={(e) => e.target.select()}
-                className="w-full bg-gray-900 border border-gray-700 rounded-lg pl-9 pr-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
-              />
-            </div>
-            <button
-              className={`p-2 rounded-lg border ${filterOwned === "owned" ? "bg-blue-600 border-blue-600 text-white" : "bg-gray-800 border-gray-700 text-gray-400"}`}
-              onClick={() =>
-                setFilterOwned((prev) => (prev === "owned" ? "all" : "owned"))
-              }
-              title="Show Owned Only"
-            >
-              <Filter size={18} />
-            </button>
           </div>
         </div>
         <div
           ref={collectionScrollRef}
           className="flex-1 min-h-0 overflow-y-auto"
         >
-          <div className="p-4 pb-24 touch-pan-y relative">
+          <div
+            className={`${collectionFiltersOpen ? "px-3 md:px-4 pb-4 pt-4" : "px-3 md:px-4 pb-4 pt-0"} touch-pan-y relative`}
+          >
             <div
-              key={searchQuery}
-              className="transition-[opacity,transform] duration-300 ease-out"
-              style={{
-                opacity: searchResultsRevealed ? 1 : 0,
-                transform: searchResultsRevealed
-                  ? "translateY(0)"
-                  : "translateY(12px)",
-              }}
+              className={`grid overflow-hidden transition-[grid-template-rows,opacity,transform] duration-200 ease-out will-change-[grid-template-rows,opacity,transform] ${collectionFiltersOpen ? "grid-rows-[1fr] opacity-100 translate-y-0" : "grid-rows-[0fr] opacity-0 -translate-y-1 pointer-events-none"}`}
             >
-              {filteredCards.length === 0 ? (
-                <div className="py-20 text-center text-gray-500 flex flex-col items-center">
-                  <p>No cards found.</p>
-                </div>
-              ) : filteredCards.length > 50 ? (
-                <>
-                  <div
-                    style={{
-                      height: collectionVirtualizer.getTotalSize(),
-                      position: "relative",
-                      width: "100%",
-                      marginTop: 16,
-                      marginBottom: 96,
-                    }}
-                  >
-                    {collectionVirtualizer
-                      .getVirtualItems()
-                      .map((virtualRow) => (
-                        <div
-                          key={virtualRow.key}
-                          ref={collectionVirtualizer.measureElement}
-                          data-index={virtualRow.index}
-                          style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            transform: `translateY(${virtualRow.start}px)`,
-                          }}
-                          className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4 select-none"
-                        >
-                          {filteredCards
-                            .slice(
-                              virtualRow.index * collectionColumnCount,
-                              (virtualRow.index + 1) * collectionColumnCount,
-                            )
-                            .map((entry, i) => {
-                              const card = entry.card;
-                              const index =
-                                virtualRow.index * collectionColumnCount + i;
-                              return (
-                                <CardItem
-                                  key={entry.key}
-                                  card={card}
-                                  count={entry.count}
-                                  numberLabelOverride={entry.numberLabel}
-                                  showSetInNumber={selectedSetId === "ALL"}
-                                  setName={
-                                    selectedSetId === "ALL"
-                                      ? SETS.find((s) => s.id === card.set)
-                                          ?.name
-                                      : undefined
-                                  }
-                                  onIncrement={(searchWasFocused) => {
-                                    applyCollectionDelta(entry, 1);
-                                    if (searchWasFocused)
-                                      focusSearchAndSelectAll();
-                                  }}
-                                  onDecrement={(searchWasFocused) => {
-                                    applyCollectionDelta(entry, -1);
-                                    if (searchWasFocused)
-                                      focusSearchAndSelectAll();
-                                  }}
-                                  searchInputRef={collectionSearchInputRef}
-                                  onLongPress={(rect) => {
-                                    setInspectOriginRect(rect);
-                                    setInspectExitRect(null);
-                                    setInspectView({
-                                      index,
-                                      maxIndex: filteredCards.length - 1,
-                                    });
-                                    setInspectPhase("entering");
-                                  }}
-                                />
-                              );
-                            })}
-                        </div>
-                      ))}
+              <div className="min-h-0 overflow-hidden">
+                <div
+                  ref={collectionSearchPanelRef}
+                  className="border-t border-gray-800 px-3 pb-3 pt-2 space-y-2"
+                >
+                  <div className="flex items-center justify-end">
+                    <button
+                      type="button"
+                      onClick={resetCollectionFilters}
+                      disabled={!hasActiveCollectionFilters}
+                      className="h-6 inline-flex items-center gap-1 rounded-md border border-gray-700 bg-gray-900 px-2 text-[10px] text-gray-200 hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <RotateCcw size={11} />
+                      <span>Reset all</span>
+                    </button>
                   </div>
-                </>
-              ) : (
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4 select-none">
-                  {filteredCards.map((entry, index) => {
-                    const card = entry.card;
-                    return (
-                      <CardItem
-                        key={entry.key}
-                        card={card}
-                        count={entry.count}
-                        numberLabelOverride={entry.numberLabel}
-                        showSetInNumber={selectedSetId === "ALL"}
-                        setName={
-                          selectedSetId === "ALL"
-                            ? SETS.find((s) => s.id === card.set)?.name
-                            : undefined
-                        }
-                        onIncrement={(searchWasFocused) => {
-                          applyCollectionDelta(entry, 1);
-                          if (searchWasFocused) focusSearchAndSelectAll();
-                        }}
-                        onDecrement={(searchWasFocused) => {
-                          applyCollectionDelta(entry, -1);
-                          if (searchWasFocused) focusSearchAndSelectAll();
-                        }}
-                        searchInputRef={collectionSearchInputRef}
-                        onLongPress={(rect) => {
-                          setInspectOriginRect(rect);
-                          setInspectExitRect(null);
-                          setInspectView({
-                            index,
-                            maxIndex: filteredCards.length - 1,
-                          });
-                          setInspectPhase("entering");
-                        }}
-                      />
-                    );
-                  })}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div
+                      ref={collectionSetDropdownRef}
+                      className="relative rounded-md border border-gray-800 bg-gray-950/60 p-2 space-y-1"
+                    >
+                      <p className="text-[11px] text-gray-400">Scope</p>
+                      <div
+                        className={`grid ${selectedSetFilters.length > 0 && boosterPackOptions.length > 1 ? "grid-cols-2" : "grid-cols-1"} gap-1.5`}
+                      >
+                        <div className="relative">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCollectionSetDropdownOpen((prev) => !prev);
+                              setCollectionBoosterDropdownOpen(false);
+                            }}
+                            className="w-full flex items-center justify-between gap-2 bg-gray-900 border border-gray-700 text-white text-xs rounded-md px-2 py-1.5 hover:bg-gray-800"
+                          >
+                            <span className="truncate">
+                              {selectedSetFilters.length === 0
+                                ? "All Sets"
+                                : selectedSetFilters.length === 1
+                                  ? (SETS.find(
+                                      (set) => set.id === selectedSetFilters[0],
+                                    )?.name ?? selectedSetFilters[0])
+                                  : `${selectedSetFilters.length} sets selected`}
+                            </span>
+                            <span className="flex items-center gap-1.5 shrink-0">
+                              {selectedSetFilters.length > 1 && (
+                                <span className="text-[10px] font-mono text-gray-300 bg-gray-800 px-1.5 py-0.5 rounded">
+                                  {selectedSetFilters.length}
+                                </span>
+                              )}
+                              <ChevronDown
+                                size={14}
+                                className={`transition-transform ${collectionSetDropdownOpen ? "rotate-180" : ""}`}
+                              />
+                            </span>
+                          </button>
+                          {collectionSetDropdownOpen && (
+                            <div className="absolute left-0 right-0 top-full mt-1 max-h-56 overflow-y-auto z-50 rounded-md border border-gray-700 bg-gray-900 shadow-xl">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedSetFilters([])}
+                                className={`w-full px-2 py-1.5 text-left text-xs hover:bg-blue-900/30 ${selectedSetFilters.length === 0 ? "bg-blue-900/60 text-white" : "text-gray-200"}`}
+                              >
+                                All Sets
+                              </button>
+                              {SETS.map((set) => {
+                                const isSelected = selectedSetFilters.includes(
+                                  set.id,
+                                );
+                                return (
+                                  <button
+                                    key={set.id}
+                                    type="button"
+                                    onClick={() =>
+                                      setSelectedSetFilters((prev) =>
+                                        prev.includes(set.id)
+                                          ? prev.filter(
+                                              (value) => value !== set.id,
+                                            )
+                                          : [...prev, set.id],
+                                      )
+                                    }
+                                    className={`w-full flex items-center justify-between gap-2 px-2 py-1.5 text-left text-xs hover:bg-blue-900/30 ${isSelected ? "bg-blue-900/60 text-white" : "text-gray-200"}`}
+                                  >
+                                    <span className="truncate">{set.name}</span>
+                                    <span className="text-[10px] font-mono text-gray-300 bg-gray-800 px-1.5 py-0.5 rounded">
+                                      {set.id}
+                                    </span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                        {selectedSetFilters.length > 0 &&
+                          boosterPackOptions.length > 1 && (
+                            <div
+                              ref={collectionBoosterDropdownRef}
+                              className="relative"
+                            >
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setCollectionBoosterDropdownOpen(
+                                    (prev) => !prev,
+                                  );
+                                  setCollectionSetDropdownOpen(false);
+                                }}
+                                className="w-full flex items-center justify-between gap-2 bg-gray-900 border border-gray-700 text-white text-xs rounded-md px-2 py-1.5 hover:bg-gray-800"
+                              >
+                                <span className="truncate">
+                                  {selectedBoosterPackFilters.length === 0
+                                    ? "All Booster Packs"
+                                    : selectedBoosterPackFilters.length === 1
+                                      ? (boosterPackOptions.find(
+                                          (option) =>
+                                            option.id ===
+                                            selectedBoosterPackFilters[0],
+                                        )?.name ??
+                                        selectedBoosterPackFilters[0])
+                                      : `${selectedBoosterPackFilters.length} boosters`}
+                                </span>
+                                <span className="flex items-center gap-1.5 shrink-0">
+                                  {selectedBoosterPackFilters.length > 1 && (
+                                    <span className="text-[10px] font-mono text-gray-300 bg-gray-800 px-1.5 py-0.5 rounded">
+                                      {selectedBoosterPackFilters.length}
+                                    </span>
+                                  )}
+                                  <ChevronDown
+                                    size={14}
+                                    className={`transition-transform ${collectionBoosterDropdownOpen ? "rotate-180" : ""}`}
+                                  />
+                                </span>
+                              </button>
+                              {collectionBoosterDropdownOpen && (
+                                <div className="absolute left-0 right-0 top-full mt-1 max-h-56 overflow-y-auto z-50 rounded-md border border-gray-700 bg-gray-900 shadow-xl">
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setSelectedBoosterPackFilters([])
+                                    }
+                                    className={`w-full px-2 py-1.5 text-left text-xs hover:bg-blue-900/30 ${selectedBoosterPackFilters.length === 0 ? "bg-blue-900/60 text-white" : "text-gray-200"}`}
+                                  >
+                                    All Booster Packs
+                                  </button>
+                                  {boosterPackOptions.map((pack) => {
+                                    const isSelected =
+                                      selectedBoosterPackFilters.includes(
+                                        pack.id,
+                                      );
+                                    return (
+                                      <button
+                                        key={pack.id}
+                                        type="button"
+                                        onClick={() =>
+                                          setSelectedBoosterPackFilters(
+                                            (prev) =>
+                                              prev.includes(pack.id)
+                                                ? prev.filter(
+                                                    (value) =>
+                                                      value !== pack.id,
+                                                  )
+                                                : [...prev, pack.id],
+                                          )
+                                        }
+                                        className={`w-full px-2 py-1.5 text-left text-xs hover:bg-blue-900/30 ${isSelected ? "bg-blue-900/60 text-white" : "text-gray-200"}`}
+                                      >
+                                        {pack.name}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                      </div>
+                      <div className="text-[11px] text-gray-400 space-y-1">
+                        <span>Copies</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {COPY_BUCKET_OPTIONS.map((option) => {
+                            const isSelected = selectedCopyBuckets.includes(
+                              option.value,
+                            );
+                            return (
+                              <button
+                                key={option.value}
+                                type="button"
+                                onClick={() =>
+                                  setSelectedCopyBuckets((prev) =>
+                                    prev.includes(option.value)
+                                      ? prev.filter(
+                                          (value) => value !== option.value,
+                                        )
+                                      : [...prev, option.value],
+                                  )
+                                }
+                                className={`h-7 px-2 rounded-md border text-[11px] ${isSelected ? "bg-blue-600 border-blue-600 text-white" : "bg-gray-900 border-gray-700 text-gray-200 hover:bg-gray-800"}`}
+                              >
+                                {option.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="rounded-md border border-gray-800 bg-gray-950/60 p-2 space-y-2">
+                      <p className="text-[11px] text-gray-400">
+                        Ordering / View
+                      </p>
+                      <div className="grid grid-cols-[1fr_auto] gap-1.5">
+                        <div
+                          ref={collectionSortDropdownRef}
+                          className="relative"
+                        >
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setCollectionSortDropdownOpen((prev) => !prev)
+                            }
+                            className="w-full flex items-center justify-between gap-2 bg-gray-900 border border-gray-700 text-white text-xs rounded-md px-2 py-1.5 hover:bg-gray-800"
+                          >
+                            <span className="inline-flex items-center gap-1.5 truncate">
+                              <selectedSortOption.icon size={12} />
+                              <span className="truncate">
+                                Sort by: {selectedSortOption.label}
+                              </span>
+                            </span>
+                            <ChevronDown
+                              size={14}
+                              className={`transition-transform shrink-0 ${collectionSortDropdownOpen ? "rotate-180" : ""}`}
+                            />
+                          </button>
+                          {collectionSortDropdownOpen && (
+                            <div className="absolute left-0 right-0 top-full mt-1 max-h-56 overflow-y-auto z-50 rounded-md border border-gray-700 bg-gray-900 shadow-xl">
+                              {SORT_OPTIONS.map((option) => (
+                                <button
+                                  key={option.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setSortBy(option.id);
+                                    setCollectionSortDropdownOpen(false);
+                                  }}
+                                  className={`w-full flex items-center gap-2 px-2 py-1.5 text-left text-xs hover:bg-blue-900/40 ${sortBy === option.id ? "bg-blue-900/80 text-white" : "text-gray-200"}`}
+                                >
+                                  <option.icon size={12} />
+                                  <span className="truncate">
+                                    {option.label}
+                                  </span>
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSortDirection((prev) =>
+                              prev === "asc" ? "desc" : "asc",
+                            )
+                          }
+                          className="h-full min-w-[34px] inline-flex items-center justify-center rounded-md border border-gray-700 bg-gray-900 text-gray-200 hover:bg-gray-800"
+                          aria-label={
+                            sortDirection === "asc"
+                              ? "Sort ascending"
+                              : "Sort descending"
+                          }
+                          title={
+                            sortDirection === "asc"
+                              ? "Ascending (Up)"
+                              : "Descending (Down)"
+                          }
+                        >
+                          <ArrowUp
+                            size={13}
+                            className={`transition-transform duration-150 ease-out ${sortDirection === "asc" ? "rotate-0" : "rotate-180"}`}
+                          />
+                        </button>
+                      </div>
+                      <p className="text-[11px] text-gray-400">Identity</p>
+                      <p className="text-[11px] text-gray-400">Rarity</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {RARITY_OPTIONS.map((option) => {
+                          const isSelected = selectedRarities.includes(
+                            option.value,
+                          );
+                          return (
+                            <button
+                              key={option.value}
+                              type="button"
+                              onClick={() =>
+                                setSelectedRarities((prev) =>
+                                  prev.includes(option.value)
+                                    ? prev.filter(
+                                        (value) => value !== option.value,
+                                      )
+                                    : [...prev, option.value],
+                                )
+                              }
+                              className={`min-h-[28px] min-w-[28px] inline-flex items-center justify-center rounded-md border px-1.5 ${isSelected ? "bg-blue-600 border-blue-600" : "bg-gray-900 border-gray-700 hover:bg-gray-800"}`}
+                            >
+                              {option.icon ? (
+                                <img
+                                  src={option.icon}
+                                  alt={option.value}
+                                  className="h-3.5 w-auto"
+                                />
+                              ) : (
+                                <span className="text-[10px] text-white font-semibold">
+                                  {option.label}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <p className="text-[11px] text-gray-400">Pokémon Type</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {ENERGY_TYPE_OPTIONS.map((option) => {
+                          const isSelected = selectedPokemonTypes.includes(
+                            option.value,
+                          );
+                          return (
+                            <button
+                              key={option.value}
+                              type="button"
+                              onClick={() =>
+                                setSelectedPokemonTypes((prev) =>
+                                  prev.includes(option.value)
+                                    ? prev.filter(
+                                        (value) => value !== option.value,
+                                      )
+                                    : [...prev, option.value],
+                                )
+                              }
+                              className={`h-7 inline-flex items-center gap-1 rounded-md border px-2 text-[11px] ${isSelected ? "bg-blue-600 border-blue-600 text-white" : "bg-gray-900 border-gray-700 text-gray-200 hover:bg-gray-800"}`}
+                            >
+                              <img
+                                src={option.icon}
+                                alt={option.value}
+                                className="h-3.5 w-3.5"
+                              />
+                              <span>{option.value}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <p className="text-[11px] text-gray-400">Battle Traits</p>
+                      <p className="text-[11px] text-gray-400">Weakness</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {ENERGY_TYPE_OPTIONS.map((option) => {
+                          const isSelected = selectedWeaknessFilters.includes(
+                            option.value,
+                          );
+                          return (
+                            <button
+                              key={option.value}
+                              type="button"
+                              onClick={() =>
+                                setSelectedWeaknessFilters((prev) =>
+                                  prev.includes(option.value)
+                                    ? prev.filter(
+                                        (value) => value !== option.value,
+                                      )
+                                    : [...prev, option.value],
+                                )
+                              }
+                              className={`h-7 inline-flex items-center gap-1 rounded-md border px-2 text-[11px] ${isSelected ? "bg-blue-600 border-blue-600 text-white" : "bg-gray-900 border-gray-700 text-gray-200 hover:bg-gray-800"}`}
+                            >
+                              <img
+                                src={option.icon}
+                                alt={option.value}
+                                className="h-3.5 w-3.5"
+                              />
+                              <span>{option.value}</span>
+                            </button>
+                          );
+                        })}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSelectedWeaknessFilters((prev) =>
+                              prev.includes("none")
+                                ? prev.filter((value) => value !== "none")
+                                : [...prev, "none"],
+                            )
+                          }
+                          className={`h-7 inline-flex items-center rounded-md border px-2 text-[11px] ${selectedWeaknessFilters.includes("none") ? "bg-blue-600 border-blue-600 text-white" : "bg-gray-900 border-gray-700 text-gray-200 hover:bg-gray-800"}`}
+                        >
+                          None
+                        </button>
+                      </div>
+                      <p className="text-[11px] text-gray-400">Ability</p>
+                      <div className="flex gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setAbilityFilter((prev) =>
+                              prev === "has" ? null : "has",
+                            )
+                          }
+                          className={`h-7 px-2 rounded-md border text-[11px] ${abilityFilter === "has" ? "bg-blue-600 border-blue-600 text-white" : "bg-gray-900 border-gray-700 text-gray-200 hover:bg-gray-800"}`}
+                        >
+                          Has ability
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setAbilityFilter((prev) =>
+                              prev === "none" ? null : "none",
+                            )
+                          }
+                          className={`h-7 px-2 rounded-md border text-[11px] ${abilityFilter === "none" ? "bg-blue-600 border-blue-600 text-white" : "bg-gray-900 border-gray-700 text-gray-200 hover:bg-gray-800"}`}
+                        >
+                          No ability
+                        </button>
+                      </div>
+                      <p className="text-[11px] text-gray-400">Pokemon Stage</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {POKEMON_STAGE_OPTIONS.map((stage) => {
+                          const isSelected =
+                            selectedPokemonStages.includes(stage);
+                          return (
+                            <button
+                              key={stage}
+                              type="button"
+                              onClick={() =>
+                                setSelectedPokemonStages((prev) =>
+                                  prev.includes(stage)
+                                    ? prev.filter((value) => value !== stage)
+                                    : [...prev, stage],
+                                )
+                              }
+                              className={`h-7 px-2 rounded-md border text-[11px] ${isSelected ? "bg-blue-600 border-blue-600 text-white" : "bg-gray-900 border-gray-700 text-gray-200 hover:bg-gray-800"}`}
+                            >
+                              {stage}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <p className="text-[11px] text-gray-400">Card Type</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {EX_STATUS_OPTIONS.map((option) => {
+                          const isSelected = selectedExStatuses.includes(
+                            option.value,
+                          );
+                          return (
+                            <button
+                              key={option.value}
+                              type="button"
+                              onClick={() =>
+                                setSelectedExStatuses((prev) =>
+                                  prev.includes(option.value)
+                                    ? prev.filter(
+                                        (value) => value !== option.value,
+                                      )
+                                    : [...prev, option.value],
+                                )
+                              }
+                              className={`h-7 px-2 rounded-md border text-[11px] ${isSelected ? "bg-blue-600 border-blue-600 text-white" : "bg-gray-900 border-gray-700 text-gray-200 hover:bg-gray-800"}`}
+                            >
+                              {option.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <p className="text-[11px] text-gray-400">Trainer Types</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {TRAINER_TYPE_OPTIONS.map((option) => {
+                          const isSelected = selectedTrainerTypes.includes(
+                            option.value,
+                          );
+                          return (
+                            <button
+                              key={option.value}
+                              type="button"
+                              onClick={() =>
+                                setSelectedTrainerTypes((prev) =>
+                                  prev.includes(option.value)
+                                    ? prev.filter(
+                                        (value) => value !== option.value,
+                                      )
+                                    : [...prev, option.value],
+                                )
+                              }
+                              className={`h-7 px-2 rounded-md border text-[11px] ${isSelected ? "bg-blue-600 border-blue-600 text-white" : "bg-gray-900 border-gray-700 text-gray-200 hover:bg-gray-800"}`}
+                            >
+                              {option.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="rounded-md border border-gray-800 bg-gray-950/60 p-2">
+                    <p className="text-[11px] text-gray-400 mb-2">Stats</p>
+                    <div className="grid grid-cols-1 gap-3">
+                      <div className="space-y-2">
+                        <DualRangeFilter
+                          label="HP"
+                          minBound={hpBounds.min}
+                          maxBound={hpBounds.max}
+                          step={10}
+                          minValue={hpMinSliderValue}
+                          maxValue={hpMaxSliderValue}
+                          onChange={(nextMin, nextMax) => {
+                            setHpMinInput(
+                              nextMin === hpBounds.min
+                                ? "ANY"
+                                : String(nextMin),
+                            );
+                            setHpMaxInput(
+                              nextMax === hpBounds.max
+                                ? "ANY"
+                                : String(nextMax),
+                            );
+                          }}
+                        />
+                        <DualRangeFilter
+                          label="Attack"
+                          minBound={attackBounds.min}
+                          maxBound={attackBounds.max}
+                          step={10}
+                          minValue={attackMinSliderValue}
+                          maxValue={attackMaxSliderValue}
+                          onChange={(nextMin, nextMax) => {
+                            setAttackMinInput(
+                              nextMin === attackBounds.min
+                                ? "ANY"
+                                : String(nextMin),
+                            );
+                            setAttackMaxInput(
+                              nextMax === attackBounds.max
+                                ? "ANY"
+                                : String(nextMax),
+                            );
+                          }}
+                        />
+                        <DualRangeFilter
+                          label="Craft Cost"
+                          minBound={craftCostBounds.min}
+                          maxBound={craftCostBounds.max}
+                          allowedValues={craftCostStops}
+                          minValue={craftCostMinSliderValue}
+                          maxValue={craftCostMaxSliderValue}
+                          onChange={(nextMin, nextMax) => {
+                            setCraftCostMinInput(
+                              nextMin === craftCostBounds.min
+                                ? "ANY"
+                                : String(nextMin),
+                            );
+                            setCraftCostMaxInput(
+                              nextMax === craftCostBounds.max
+                                ? "ANY"
+                                : String(nextMax),
+                            );
+                          }}
+                        />
+                        <DualRangeFilter
+                          label="Retreat Cost"
+                          minBound={retreatBounds.min}
+                          maxBound={retreatBounds.max}
+                          minValue={retreatMinSliderValue}
+                          maxValue={retreatMaxSliderValue}
+                          onChange={(nextMin, nextMax) => {
+                            setRetreatMinInput(
+                              nextMin === retreatBounds.min
+                                ? ""
+                                : String(nextMin),
+                            );
+                            setRetreatMaxInput(
+                              nextMax === retreatBounds.max
+                                ? ""
+                                : String(nextMax),
+                            );
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
+          </div>
+
+          <div
+            key={searchQuery}
+            ref={collectionCardsAreaRef}
+            className="px-3 md:px-4 transition-[opacity,transform] duration-300 ease-out"
+            style={{
+              opacity: searchResultsRevealed ? 1 : 0,
+              transform: searchResultsRevealed
+                ? "translateY(0)"
+                : "translateY(12px)",
+            }}
+          >
+            {filteredCards.length === 0 ? (
+              <div className="py-20 text-center text-gray-500 flex flex-col items-center">
+                <p>No cards found.</p>
+              </div>
+            ) : filteredCards.length > 50 ? (
+              <>
+                <div
+                  style={{
+                    height: collectionVirtualizer.getTotalSize(),
+                    position: "relative",
+                    width: "100%",
+                    marginBottom: 96,
+                  }}
+                >
+                  {collectionVirtualizer.getVirtualItems().map((virtualRow) => (
+                    <div
+                      key={virtualRow.key}
+                      ref={collectionVirtualizer.measureElement}
+                      data-index={virtualRow.index}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        transform: `translateY(${virtualRow.start}px)`,
+                        gridTemplateColumns: `repeat(${collectionColumnCount}, minmax(0, 1fr))`,
+                      }}
+                      className="grid gap-3 md:gap-4 select-none"
+                    >
+                      {filteredCards
+                        .slice(
+                          virtualRow.index * collectionColumnCount,
+                          (virtualRow.index + 1) * collectionColumnCount,
+                        )
+                        .map((entry, i) => {
+                          const card = entry.card;
+                          const index =
+                            virtualRow.index * collectionColumnCount + i;
+                          return (
+                            <CardItem
+                              key={entry.key}
+                              card={card}
+                              count={entry.count}
+                              numberLabelOverride={entry.numberLabel}
+                              showSetInNumber={selectedSetId === "ALL"}
+                              setName={
+                                selectedSetId === "ALL"
+                                  ? SETS.find((s) => s.id === card.set)?.name
+                                  : undefined
+                              }
+                              onIncrement={(searchWasFocused) => {
+                                applyCollectionDelta(entry, 1);
+                                if (searchWasFocused) focusSearchAndSelectAll();
+                              }}
+                              onDecrement={(searchWasFocused) => {
+                                applyCollectionDelta(entry, -1);
+                                if (searchWasFocused) focusSearchAndSelectAll();
+                              }}
+                              searchInputRef={collectionSearchInputRef}
+                              onLongPress={(rect) => {
+                                setInspectOriginRect(rect);
+                                setInspectExitRect(null);
+                                setInspectView({
+                                  index,
+                                  maxIndex: filteredCards.length - 1,
+                                });
+                                setInspectPhase("entering");
+                              }}
+                            />
+                          );
+                        })}
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div
+                className="grid gap-3 md:gap-4 select-none"
+                style={{
+                  gridTemplateColumns: `repeat(${collectionColumnCount}, minmax(0, 1fr))`,
+                }}
+              >
+                {filteredCards.map((entry, index) => {
+                  const card = entry.card;
+                  return (
+                    <CardItem
+                      key={entry.key}
+                      card={card}
+                      count={entry.count}
+                      numberLabelOverride={entry.numberLabel}
+                      showSetInNumber={selectedSetId === "ALL"}
+                      setName={
+                        selectedSetId === "ALL"
+                          ? SETS.find((s) => s.id === card.set)?.name
+                          : undefined
+                      }
+                      onIncrement={(searchWasFocused) => {
+                        applyCollectionDelta(entry, 1);
+                        if (searchWasFocused) focusSearchAndSelectAll();
+                      }}
+                      onDecrement={(searchWasFocused) => {
+                        applyCollectionDelta(entry, -1);
+                        if (searchWasFocused) focusSearchAndSelectAll();
+                      }}
+                      searchInputRef={collectionSearchInputRef}
+                      onLongPress={(rect) => {
+                        setInspectOriginRect(rect);
+                        setInspectExitRect(null);
+                        setInspectView({
+                          index,
+                          maxIndex: filteredCards.length - 1,
+                        });
+                        setInspectPhase("entering");
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -1934,7 +3821,11 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
               key={set.id}
               type="button"
               id={slug ?? set.id}
-              onClick={() => slug != null && navigate(`/collection/${slug}`)}
+              onClick={() => {
+                setSelectedSetFilters([set.id]);
+                setLastCollectionSetId(set.id);
+                navigate("/collection");
+              }}
               className={`scroll-mt-24 w-full text-left bg-gray-900 border rounded-xl p-5 shadow-lg transition-colors hover:bg-gray-700 hover:border-gray-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${statsFlashTargetId === (slug ?? set.id) ? "ring-2 ring-blue-500 border-blue-500" : "border-gray-800"}`}
             >
               <div className="flex items-center justify-between mb-4 gap-3">
@@ -2157,24 +4048,6 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           )}
         </Modal>
       )}
-      <div
-        aria-hidden="true"
-        className="absolute -left-[9999px] opacity-0 pointer-events-none text-sm whitespace-nowrap flex items-center gap-2"
-        ref={(el) => {
-          if (el && !measurerMountedOnceRef.current) {
-            measurerMountedOnceRef.current = true;
-            setMeasurerMounted(1);
-          }
-        }}
-      >
-        <span ref={collectionSetMeasureRef}>{LONGEST_SET_NAME}</span>
-        <span
-          ref={collectionSetIdMeasureRef}
-          className="shrink-0 text-xs font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded"
-        >
-          {LONGEST_SET_ID}
-        </span>
-      </div>
       <div className="flex-1 min-h-0 overflow-hidden">
         <div
           key={
@@ -2191,7 +4064,6 @@ const App: React.FC<AppProps> = ({ clerkEnabled = true }) => {
           <Routes>
             <Route path="/" element={renderDashboard()} />
             <Route path="/collection" element={renderCollection()} />
-            <Route path="/collection/:slug" element={renderCollection()} />
             <Route path="/statistics" element={renderStats()} />
           </Routes>
         </div>
